@@ -2,6 +2,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import {PrismaClient} from "@prisma/client";
 const prisma = new PrismaClient();
+import cookieParser from "cookie-parser";
 import "dotenv/config";
 
 
@@ -22,7 +23,11 @@ export const resolvers = {
         const user = await prisma.user.create({
           data: { name, email, password: hashedPassword, contact },
         });
-        const token = jwt.sign({userId: user.id} , process.env.JWT_SECRET , { expiresIn: '2d'});
+        const token = jwt.sign({userId: user.id} , process.env.JWT_SECRET );
+        res.cookie("jwt", token, {
+          httpOnly: true,
+          maxAge: 1000 * 60 * 60 * 24 * 2,
+        });
         return {token,user}
     },
 
@@ -35,7 +40,11 @@ export const resolvers = {
         if(!valid){
             throw new Error("Inavlid Password");
         }
-        const token = jwt.sign({userId: user.id} , process.env.JWT_SECRET, { expiresIn: '2d'});
+        const token = jwt.sign({userId: user.id} , process.env.JWT_SECRET);
+        res.cookie("jwt", token, {
+          httpOnly: true,
+          maxAge: 1000 * 60 * 60 * 24 * 2,
+        });
         return {token,user}
     }
   }

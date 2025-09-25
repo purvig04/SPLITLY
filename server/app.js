@@ -1,16 +1,16 @@
 import express from "express";
-const app = express();
 import { ApolloServer } from "@apollo/server";
-import { startStandaloneServer } from "@apollo/server/standalone";
+import { expressMiddleware } from "@as-integrations/express4";
 import { typeDefs } from "./graphQL/schema.js";
 import { resolvers } from "./graphQL/resolvers.js";
 import jwt from "jsonwebtoken";
 import { PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient();
+import cookieParser from "cookie-parser";
 import "dotenv/config";
 import cors from "cors";
 
-// app.use(`/graphql`, cors(), express.json());
+const app = express();
+const prisma = new PrismaClient();
 
 const findUser = async (token) => {
   if (!token) {
@@ -32,13 +32,24 @@ const server = new ApolloServer({
   resolvers,
 });
 
-const { url } = await startStandaloneServer(server, {
-  listen: { port: 3000 },
-  context: async ({ req }) => {
-    const token = req.headers.authorization?.split(" ")[1] || "";
-    const user = await findUser(token);
-    return { prisma, user };
-  },
-});
+await server.start();
 
-console.log("server is listening on port 3000", url);
+app.use(
+  `/graphql`,
+  cors({ origin: "http://localhost:8081", credentials: true }),
+  express.json(),
+  cookieParser(),
+  expressMiddleware(server,{
+    context: async ({ req }) => {
+        const token = req.cookies.token; // Read token from cookies
+        const user = await findUser(token);
+        return { prisma, user };}
+  })
+);
+
+
+app.listen(3000,()=>
+{
+    console.log("server is listening on port 3000");
+
+})

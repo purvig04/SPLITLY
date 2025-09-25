@@ -18,8 +18,9 @@ export const resolvers = {
   },
 
   Mutation:{
-    async register(parent,{name,email,password,contact}){
-        const hashedPassword =bcrypt.hash(password,10)
+    async register(parent,{name,email,password,contact},context){
+        const {res} =context;
+        const hashedPassword = await bcrypt.hash(password,10)
         const user = await prisma.user.create({
           data: { name, email, password: hashedPassword, contact },
         });
@@ -32,7 +33,7 @@ export const resolvers = {
     },
 
     async login (parent,{email,password}){
-        const user = await prisma.user.findUnique({where : email})
+        const user = await prisma.user.findUnique({where : {email}})
         if(!user){
             throw new Error("Invalid email");
         }

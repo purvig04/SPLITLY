@@ -17,19 +17,13 @@ export const resolvers = {
   },
 
   Mutation: {
-    async register(parent, { name, email, password, contact }, context) {
-      const { res } = context;
+    async register(parent, { name, email, password, contact }) {
       const hashedPassword = await bcrypt.hash(password, 10);
       const user = await prisma.user.create({
         data: { name, email, password: hashedPassword, contact },
       });
 
-      const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET);
-      res.cookie("jwt", token, {
-        httpOnly: true,
-        maxAge: 1000 * 60 * 60 * 24 * 2,
-      });
-      return { token, user };
+      return  user ;
     },
 
     async login(parent, { email, password }, context) {
@@ -48,6 +42,12 @@ export const resolvers = {
         maxAge: 1000 * 60 * 60 * 24 * 2,
       });
       return { token, user };
+    },
+
+    async logout(parent, args, context) {
+      const { res } = context;
+      res.clearCookie("jwt", { httpOnly: true });
+      return true;
     },
   },
 };

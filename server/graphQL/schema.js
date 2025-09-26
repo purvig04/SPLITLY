@@ -14,10 +14,9 @@ export const typeDefs = `#graphql
     }
 
     type Mutation{
-        register( name:String! password:String! email:String! contact:String! ):AuthPayload
+        register( name:String! password:String! email:String! contact:String! ):User!
         login(password:String! email:String! ):AuthPayload
-
-
+        logout:Boolean!
     }
 
     type AuthPayload {

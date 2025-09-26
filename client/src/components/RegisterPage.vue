@@ -26,8 +26,33 @@
 </template>
 
 <script>
+import { useMutation } from "@vue/apollo-composable";
+import gql from "graphql-tag";
+
+const REGISTER_MUTATION = gql`
+  mutation Register(
+    $password: String!
+    $email: String!
+    $contact: String!
+    $name: String!
+  ) {
+    register(
+      password: $password
+      email: $email
+      contact: $contact
+      name: $name
+    ) {
+      token
+    }
+  }
+`;
+
 export default {
   name: "RegisterPage",
+  setup() {
+    const { mutate: registerMutation } = useMutation(REGISTER_MUTATION);
+    return { registerMutation };
+  },
   data() {
     return {
       name: "",
@@ -36,6 +61,23 @@ export default {
       contact: "",
       // errors: {}
     };
+  },
+  methods: {
+    async register() {
+      try {
+        await this.registerMutation({
+          name: this.name,
+          email: this.email,
+          password: this.password,
+          contact: this.contact,
+        });
+        console.log("Registration sucessful");
+
+        this.$router.push("/login");
+      } catch (error) {
+        console.log("REgister failed from frontendddddd",error);
+      }
+    },
   },
 };
 </script>

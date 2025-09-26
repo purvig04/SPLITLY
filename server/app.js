@@ -40,10 +40,10 @@ app.use(
   express.json(),
   cookieParser(),
   expressMiddleware(server,{
-    context: async ({ req }) => {
+    context: async ({ req,res }) => {
         const token = req.cookies.token; // Read token from cookies
         const user = await findUser(token);
-        return { prisma, user };}
+        return { prisma, user ,res };}
   })
 );
 

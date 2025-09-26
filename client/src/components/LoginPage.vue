@@ -53,7 +53,7 @@ export default {
         });
         console.log("Login sucessful");
 
-        // this.$router.push("/landing");
+        this.$router.push("/home");
       } catch (error) {
         console.log("Login failed from frontendddddd", error);
       }

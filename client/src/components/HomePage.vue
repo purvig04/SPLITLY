@@ -22,7 +22,7 @@ export default {
     async logout(){
         try{
             await this.logoutMutation();
-            console.log("LOgout successful");
+            console.log("Logout successful");
             
             this.$router.push('/landing')
         }catch(error){

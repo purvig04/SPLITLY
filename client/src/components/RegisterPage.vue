@@ -42,7 +42,8 @@ const REGISTER_MUTATION = gql`
       contact: $contact
       name: $name
     ) {
-      token
+      id
+      email
     }
   }
 `;
@@ -75,7 +76,7 @@ export default {
 
         this.$router.push("/login");
       } catch (error) {
-        console.log("REgister failed from frontendddddd",error);
+        console.log("REgister failed from frontendddddd", error);
       }
     },
   },

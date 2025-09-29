@@ -1,9 +1,3 @@
-<template>
-  <h2>Home Page</h2>
-  <button @click="logout">Logout</button>
-</template>
-
-<script>
 import { useMutation } from "@vue/apollo-composable";
 import gql from "graphql-tag";
 
@@ -32,4 +26,3 @@ export default {
     }
   }
 };
-</script>

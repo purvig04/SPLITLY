@@ -1,8 +1,8 @@
 import { createWebHistory, createRouter } from "vue-router";
-import RegisterPage from "./components/RegisterPage.vue";
-import LoginPage from "./components/LoginPage.vue";
-import HomePage from "./components/HomePage.vue";
-import LandingPage from "./components/LandingPage.vue";
+import RegisterPage from "../views/SignUp/SignUpPage.vue";
+import LoginPage from "../views/Login/LoginPage.vue";
+import HomePage from "../views/Home/HomePage.vue";
+import LandingPage from "../views/Landing/LandingPage.vue";
 
 const routes = [
   { name: "Register", path: "/register", component: RegisterPage },

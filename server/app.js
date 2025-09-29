@@ -39,17 +39,15 @@ app.use(
   cors({ origin: "http://localhost:8081", credentials: true }),
   express.json(),
   cookieParser(),
-  expressMiddleware(server,{
-    context: async ({ req,res }) => {
-        const token = req.cookies.token; // Read token from cookies
-        const user = await findUser(token);
-        return { prisma, user ,res };}
+  expressMiddleware(server, {
+    context: async ({ req, res }) => {
+      const token = req.cookies.token; // Read token from cookies
+      const user = await findUser(token);
+      return { prisma, user, res };
+    },
   })
 );
 
-
-app.listen(3000,()=>
-{
-    console.log("server is listening on port 3000");
-
-})
+app.listen(3000, () => {
+  console.log("server is listening on port 3000");
+});

@@ -1,93 +1,14 @@
 <template>
-<router-view></router-view>
+  <router-view></router-view>
 </template>
 
 <script>
-
 export default {
   name: 'App',
   components: {
-    
+
   }
 }
 </script>
 
-<style>
-#app {
-  /* font-family: Avenir, Helvetica, Arial, sans-serif; */
-  /* -webkit-font-smoothing: antialiased; */
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-body{
-  font-family: 'Quicksand', sans-serif;
-  background: #fafafa;
-}
-
-form {
-  width: 360px;
-  margin: 0 auto;
-  padding: 30px;
-  box-shadow: 1px 2px 3px rgba(0,0,0,0.1);
-  border-radius: 10px;
-  background: white;
-}
-
-.register , .login{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 90vh;
-}
-
-form h2{
-  font-size: 2.4em;
-  font-weight: 900;
-  margin-bottom: 40px;
-}
-
-.register label ,.login label{
-  float: left;
-  margin-bottom: 3px;
-}
-
-.register input ,.login input{
-  width: 100%;
-    height: 35px;
-    padding-left: 12px;
-    display: block;
-    font-size: 1em;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    
-}
-
-.error{
-  color: #ff0099;
-  margin: 0px 0px;
-  font-size: 0.8em;
-  font-weight: bold;
-  
-}
-
-.register button , .login button{
-  width: 100%;
-  padding: 12px;
-  background: #225750;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-weight: bold;
-  cursor: pointer;
-  text-transform: uppercase;
-  font-weight: 700;
-  margin-top: 5px;
-}
-
-.register button:hover ,.login button:hover{ 
-  background-color: #3d867d;
-}
-</style>
+<style src="./assets/styles/global.css" />

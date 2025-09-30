@@ -8,4 +8,7 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 import '@fortawesome/fontawesome-free/js/all.min.js';
 
 
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
+
 createApp(App).provide(DefaultApolloClient, apolloClient).use(router).mount("#app");

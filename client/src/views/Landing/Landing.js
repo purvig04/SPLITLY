@@ -7,7 +7,7 @@ export default {
       console.log(token);
       
       if (token) {
-        this.$router.push("/home");
+        this.$router.push("/");
       } else {
         this.$router.push("/register");
       }

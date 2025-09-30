@@ -7,8 +7,8 @@ import LandingPage from "../views/Landing/LandingPage.vue";
 const routes = [
   { name: "Register", path: "/register", component: RegisterPage },
   { name: "Login", path: "/login", component: LoginPage },
-  { name: "Home", path: "/home", component: HomePage },
-  { name: "Landing", path: "/", component: LandingPage },
+  { name: "Home", path: "/", component: HomePage },
+  { name: "Landing", path: "/landing", component: LandingPage },
 ];
 
 const router = createRouter({ history: createWebHistory(), routes });

@@ -1,0 +1,38 @@
+.navbar {
+    /* background: linear-gradient(to right, #225750, #B0E7E0); */
+    background: #225750;
+}
+
+.brand-name {
+    font-size: 1.5rem;
+    font-weight: bolder;
+}
+
+.signup{
+    border-radius: 3rem;
+    padding: 6px 24px ;
+    background: #B0E7E0;
+    /* background: rgba(176, 231, 224, 0.7); */
+    border: none;
+    /* font-size: 1.1rem; */
+    color: #225750;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.signup:hover, .login-btn:hover{
+    color: #B0E7E0 !important;
+    background-color: rgba(176, 231, 224, 0.15) !important;
+    border-color: #B0E7E0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.login-btn{
+    border-radius: 3rem;
+    padding:  6px 20px  ;
+    background: transparent;
+    border: 2px solid #B0E7E0 !important;
+    color: #B0E7E0;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}

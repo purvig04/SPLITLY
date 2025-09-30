@@ -17,8 +17,8 @@ export default {
         try{
             await this.logoutMutation();
             console.log("Logout successful");
-            
-            this.$router.push('/landing')
+            localStorage.removeItem("userLoggedIn")
+            this.$router.push('/')
         }catch(error){
             console.log("Logout failed",error);
             

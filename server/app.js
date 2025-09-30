@@ -31,7 +31,6 @@ const server = new ApolloServer({
   typeDefs,
   resolvers,
 });
-
 await server.start();
 
 app.use(
@@ -41,7 +40,7 @@ app.use(
   cookieParser(),
   expressMiddleware(server, {
     context: async ({ req, res }) => {
-      const token = req.cookies.token; // Read token from cookies
+      const token = req.cookies.jwt; // Read token from cookies
       const user = await findUser(token);
       return { prisma, user, res };
     },

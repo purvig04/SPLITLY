@@ -1,5 +1,6 @@
 <template>
   <div class="register">
+    
     <form>
       <h2>Register Page</h2>
       <label for="name">Name*</label>
@@ -25,4 +26,4 @@
     </form>
   </div>
 </template>
-<script src="./SignUp.js" />
+<script src="./Register.js" />

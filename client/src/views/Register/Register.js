@@ -1,10 +1,5 @@
-import { useAuthService } from "@/services/auth.service";
 export default {
   name: "RegisterPage",
-  setup() {
-    const { register } = useAuthService();
-    return { register };
-  },
   data() {
     return {
       name: "",
@@ -14,6 +9,11 @@ export default {
       contact: "",
       errors: {},
     };
+  },
+  computed: {
+    error() {
+      return this.$store.getters["auth/getError"];
+    },
   },
   methods: {
     validateForm() {
@@ -49,25 +49,20 @@ export default {
         return;
       }
       try {
-        const { data } = await this.register(
-          this.name,
-          this.email,
-          this.password,
-          this.contact
-        );
+        const data = await this.$store.dispatch("auth/register", {
+          name: this.name,
+          email: this.email,
+          password: this.password,
+          contact: this.contact,
+        });
         if (data && data.register && data.register.id) {
-          console.info(
-            `Registration successful for user: ${data.register.email}`
-          );
+          console.info(`Registration successful for user: ${data.register.email}`);
           this.$router.push("/login");
         } else {
-          console.warn(
-            "Registration failed: Invalid response from server.",
-            data
-          );
+          console.warn("Registration failed: Invalid response from server.", data);
         }
-      } catch (error) {
-        console.error("Registration error:", error);
+      } catch (err) {
+        console.error("Registration error:", err);
       }
     },
   },

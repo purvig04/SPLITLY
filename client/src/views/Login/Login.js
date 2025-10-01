@@ -1,25 +1,30 @@
-import { useAuthService } from "@/services/auth.service";
 export default {
   name: "LoginPage",
-  setup() {
-    const { login } = useAuthService(); // import login from service
-    return { login };
-  },
   data() {
     return {
       email: "",
       password: "",
     };
   },
+  computed: {
+    userLoggedIn() {
+      return this.$store.getters["auth/isLoggedIn"];
+    },
+    error() {
+      return this.$store.getters["auth/getError"];
+    },
+  },
   methods: {
     async loginUser() {
       try {
-        await this.login(this.email, this.password);
+        await this.$store.dispatch("auth/login", {
+          email: this.email,
+          password: this.password,
+        });
         console.log("Login successful");
         this.$router.push("/home");
-        localStorage.setItem("userLoggedIn", true)
-      } catch (error) {
-        console.log("Login failed", error);
+      } catch (err) {
+        console.error("Login failed", err);
       }
     },
   },

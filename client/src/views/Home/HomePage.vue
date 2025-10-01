@@ -1,6 +1,6 @@
 <template>
-    <h2>Home Page</h2>
-    <button @click="logout">Logout</button>
+    <h2 align="center">Home Page</h2>
+    <button @click="logout" style="margin-left: 50%;">Logout</button>
 </template>
 
 <script src="./Home.js" />

@@ -1,51 +1,60 @@
-import { useMutation } from "@vue/apollo-composable";
 import gql from "graphql-tag";
-// GraphQL mutations
+import apolloClient from "@/apollo";
+
 const LOGIN_MUTATION = gql`
-  mutation Login($password: String!, $email: String!) {
-    login(password: $password, email: $email) {
+  mutation Login($email: String!, $password: String!) {
+    login(email: $email, password: $password) {
       token
+      user {
+        id
+        email
+        name
+      }
     }
   }
 `;
-
 const REGISTER_MUTATION = gql`
   mutation Register(
-    $password: String!
-    $email: String!
-    $contact: String!
     $name: String!
+    $email: String!
+    $password: String!
+    $contact: String!
   ) {
     register(
-      password: $password
-      email: $email
-      contact: $contact
       name: $name
+      email: $email
+      password: $password
+      contact: $contact
     ) {
       id
       email
     }
   }
 `;
-
-
-export function useAuthService() {
-  // Setup mutations
-  const { mutate: loginMutation } = useMutation(LOGIN_MUTATION);
-  const { mutate: registerMutation } = useMutation(REGISTER_MUTATION);
-
-  // Login function
-  async function login(email, password) {
-    return loginMutation({ email, password });
+const LOGOUT_MUTATION = gql`
+  mutation Logout {
+    logout
   }
-
-  // Register function
-  async function register(name, email, password, contact) {
-    return registerMutation({ name, email, password, contact });
-  }
-  
-  return {
-    login,
-    register,
-  };
-}
+`;
+export const authService = {
+  async login(email, password) {
+    const resp = await apolloClient.mutate({
+      mutation: LOGIN_MUTATION,
+      variables: { email, password },
+    });
+    return resp.data;
+  },
+  async register(name, email, password, contact) {
+    const resp = await apolloClient.mutate({
+      mutation: REGISTER_MUTATION,
+      variables: { name, email, password, contact },
+    });
+    return resp.data;
+  },
+  async logout() {
+    const resp = await apolloClient.mutate({
+      mutation: LOGOUT_MUTATION,
+    });
+    return resp.data;
+  },
+};

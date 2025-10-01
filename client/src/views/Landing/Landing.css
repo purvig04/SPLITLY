@@ -1,0 +1,54 @@
+
+.main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: calc(100vh - 4rem);
+    margin-top: -4rem;
+    background: linear-gradient(to right, #225750, #b0e7e0);
+    padding: 1rem; 
+  }
+  
+  #landing {
+    width: 100%;
+  }
+  
+  .landing-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1.2; 
+    margin-bottom: 0;
+  }
+  
+  .landing-subtitle {
+    font-size: 1.25rem;
+    font-weight: 400;
+    color: #f1f1f1;
+    line-height: 1.1; 
+    display: block; 
+    margin-top: 0.5rem; 
+  }
+  
+  /* CTA Button */
+  .landing-btn {
+    background-color: #f1f1f1;
+    border: none;
+    font-weight: 500;
+    color: rgb(3, 3, 3);
+    padding: 0.75rem 2rem;
+    font-size: 1.1rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+    border-radius: 50px; 
+  }
+  
+  .landing-btn:hover {
+    transform: translateY(-3px);
+    background: linear-gradient(to right, #225750, #b0e7e0);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  }
+  
+  .landing-illustration {
+    max-width: 90%;
+    height: auto;
+  }
+  

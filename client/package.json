@@ -8,8 +8,22 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@apollo/client": "^3.4.13",
+    "@fortawesome/fontawesome-free": "^7.0.1",
+    "@fortawesome/fontawesome-svg-core": "^7.0.1",
+    "@fortawesome/free-solid-svg-icons": "^7.0.1",
+    "@fortawesome/vue-fontawesome": "^3.1.2",
+    "@popperjs/core": "^2.11.8",
+    "@vue/apollo-composable": "^4.0.0",
+    "bootstrap": "^5.3.8",
     "core-js": "^3.8.3",
-    "vue": "^3.2.13"
+    "graphql": "^16.11.0",
+    "graphql-tag": "^2.12.6",
+    "js-cookie": "^3.0.5",
+    "vue": "^3.5.22",
+    "vue-apollo": "^3.1.2",
+    "vue-router": "^4.5.1",
+    "vuex": "^4.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",

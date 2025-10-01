@@ -6,7 +6,6 @@
     height: calc(100vh - 4rem);
     margin-top: -4rem;
     background: linear-gradient(to right, #225750, #b0e7e0);
-    padding: 1rem; 
   }
   
   #landing {

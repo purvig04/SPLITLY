@@ -2,7 +2,7 @@
   <div class="register">
     
     <form>
-      <h2>Register Page</h2>
+      <h2>Register</h2>
       <label for="name">Name*</label>
       <input type="text" id="name" v-model="name" />
       <p v-if="errors.name" class="error">{{ errors.name }}</p>

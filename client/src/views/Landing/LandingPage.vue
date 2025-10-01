@@ -1,7 +1,6 @@
 <template>
-  <div class="main">
   <!-- Full-page container  -->
-  <div class="d-flex align-items-center justify-content-center vh-100 p-3">
+  <div class="d-flex align-items-center justify-content-center vh-100 p-3 main">
     <!-- Landing Section -->
     <section id="landing" class="landing-section">
       <div class="container">
@@ -30,7 +29,6 @@
       </div>
     </section>
   </div>
-</div>
 </template>
 
 

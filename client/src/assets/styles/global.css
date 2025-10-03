@@ -26,7 +26,8 @@ form {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 90vh;
+  height: 100vh;
+    background: linear-gradient(to right, #225750, #b0e7e0);
 }
 
 form h2 {

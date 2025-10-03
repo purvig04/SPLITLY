@@ -1,35 +1,50 @@
 .navbar {
-    background: #225750;
+  background: #225750;
+  max-height: 4rem;
 }
-
 .brand-name {
-    font-size: 1.5rem;
-    font-weight: bolder;
+  font-size: 1.5rem;
+  font-weight: bolder;
 }
-
-.signup, .logout-btn{
-    border-radius: 3rem;
-    padding: 6px 24px ;
-    background: #B0E7E0;
-    border: none;
-    color: #225750;
-    font-weight: 500;
-    transition: all 0.3s ease;
+.signup,
+.logout-btn,
+.login-btn {
+  border-radius: 3rem;
+  padding: 6px 24px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  border: 2px solid transparent; /* Add transparent border to all */
 }
-
-.signup:hover, .login-btn:hover, .logout-btn:hover {
-    color: #B0E7E0 !important;
-    background-color: rgba(176, 231, 224, 0.15) !important;
-    border-color: #B0E7E0;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+.signup,
+.logout-btn {
+  background: #b0e7e0;
+  color: #225750;
+  border-color: #b0e7e0;
 }
-
-.login-btn{
-    border-radius: 3rem;
-    padding:  6px 20px  ;
-    background: transparent;
-    border: 2px solid #B0E7E0 !important;
-    color: #B0E7E0;
-    font-weight: 500;
-    transition: all 0.3s ease;
+.login-btn {
+  background: transparent;
+  border-color: #b0e7e0 !important;
+  color: #b0e7e0;
+}
+.signup:hover,
+.login-btn:hover,
+.logout-btn:hover {
+  color: #b0e7e0 !important;
+  background-color: rgba(176, 231, 224, 0.15) !important;
+  border-color: #b0e7e0 !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+.signup:active,
+.signup:focus,
+.login-btn:active,
+.login-btn:focus,
+.logout-btn:active,
+.logout-btn:focus {
+  background-color: rgba(176, 231, 224, 0.25) !important;
+  color: #b0e7e0 !important;
+  border-color: #b0e7e0 !important;
+  box-shadow: none !important;
+}
+.navbar-brand span {
+  color: #ffffff;
 }

@@ -1,21 +1,11 @@
 <template>
-    <SideBar />
-    <router-view></router-view>
+  <div class="main-layout">
+    <SideBar/>
+    <div v-if="sidebarState" :class="sidebarState.isCollapsed?'content':'expanded'"><router-view /></div>
+  </div>
 </template>
 
-<script>
-import SideBar from '../views/SideBar/SideBar.vue';
+<script src="./MainLayout.js" />
+<style src="./MainLayout.css" scoped />
 
-export default {
-    name: 'MainLayout',
-    components: {
-        SideBar,
-    },
 
-    data() {
-        return {
-
-        }
-    }
-}
-</script>

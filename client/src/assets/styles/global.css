@@ -7,8 +7,8 @@
 
 body {
   font-family: "Quicksand", sans-serif;
-  background: linear-gradient(to right, #225750, #b0e7e0);
-  padding-top: 5rem;
+  /* background: linear-gradient(to right, #225750, #b0e7e0); */
+  /* padding-top: 5rem; */
 }
 
 form {
@@ -22,10 +22,12 @@ form {
 
 .register,
 .login {
+  padding-top: 5rem;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 90vh;
+  height: 100vh;
+    background: linear-gradient(to right, #225750, #b0e7e0);
 }
 
 form h2 {

@@ -1,9 +1,24 @@
+import { sidebarState,toggleSidebar } from "@/store/sidebarStore";
+import { mapGetters } from "vuex";
+
 export default {
   name: "SideBar",
+  setup(){
+    return {
+      toggleSidebar,
+      sidebarState
+    }
+  },
+   computed:{
+      ...mapGetters('auth',['getUser']),
+      user(){
+        return this.getUser
+      }
+    },
+  
   data() {
     return {
       activeItem: 'Home',
-      isCollapsed: true,
     };
   },
 
@@ -12,8 +27,5 @@ export default {
         this.activeItem = val
     },
 
-    toggleSidebar() {
-        this.isCollapsed = !this.isCollapsed
-    }
   }
 };

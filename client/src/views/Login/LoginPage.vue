@@ -1,7 +1,7 @@
 <template>
   <div class="login">
     <form>
-      <h2>Login Page</h2>
+      <h2>Login </h2>
       <label for="email">Email:</label>
       <input type="email" id="email" v-model="email" />
       <label for="password">Password:</label>

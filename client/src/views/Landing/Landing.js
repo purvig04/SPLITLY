@@ -9,7 +9,7 @@ export default {
      if(storedUser){
       this.$router.push("/home");
      }else{
-      this.$router.push("/register");
+      this.$router.push("/login");
      }
       
   

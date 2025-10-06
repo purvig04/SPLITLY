@@ -1,5 +1,5 @@
 <template>
-  <div class="main">
+  <div class="main" >
     <div class="container">
       <!-- Top Row: Welcome Card and Balance Cards -->
       <div class="row mb-4 g-4">

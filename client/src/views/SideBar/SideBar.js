@@ -1,9 +1,17 @@
+import { sidebarState,toggleSidebar } from "@/store/sidebarStore";
+
 export default {
   name: "SideBar",
+  setup(){
+    return {
+      toggleSidebar,
+      sidebarState
+    }
+  },
+  
   data() {
     return {
       activeItem: 'Home',
-      isCollapsed: true,
     };
   },
 
@@ -12,8 +20,5 @@ export default {
         this.activeItem = val
     },
 
-    toggleSidebar() {
-        this.isCollapsed = !this.isCollapsed
-    }
   }
 };

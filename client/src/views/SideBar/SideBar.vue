@@ -1,10 +1,10 @@
 <template>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 
-    <div class="d-flex flex-column flex-shrink-0 pt-3 sidebar" :class="{ collapsed: isCollapsed }">
+    <div class="d-flex flex-column flex-shrink-0 pt-3 sidebar" :class="{ collapsed: sidebarState.isCollapsed }">
         <ul class="nav flex-column mb-auto">
             <li class="nav-item sidebar-icon" @click="toggleSidebar()">
-                <i :class="isCollapsed ? 'bi bi-layout-sidebar' : 'bi bi-layout-sidebar-inset'"></i><span
+                <i :class="sidebarState.isCollapsed ? 'bi bi-layout-sidebar' : 'bi bi-layout-sidebar-inset'"></i><span
                     class="nav-text">&nbsp; Close</span>
             </li>
             <li class="nav-item">

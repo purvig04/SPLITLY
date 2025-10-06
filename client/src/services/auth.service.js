@@ -42,7 +42,7 @@ export const authService = {
       mutation: LOGIN_MUTATION,
       variables: { email, password },
     });
-    return resp.data;
+    return resp.data.login;
   },
   async register(name, email, password, contact) {
     const resp = await apolloClient.mutate({

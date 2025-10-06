@@ -10,7 +10,7 @@
               <div v-if="loading">
       <p>Loading user data...</p>
     </div>
-              <h2 v-else class="mb-2">Welcome, {{ result.getUser.name }}  👋</h2>
+              <h2 v-else class="mb-2"> <div v-if="user">Welcome, {{ user.name }}  👋</div></h2>
               <p class="text-muted">Here's a quick look at your balances</p>
             </div>
           </div>

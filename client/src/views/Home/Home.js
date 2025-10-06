@@ -1,25 +1,18 @@
-import { useQuery } from "@vue/apollo-composable";
-import gql from "graphql-tag";
-
-const GET_USER = gql`
-  query GetUser {
-    getUser {
-      name
-    }
-  }
-`;
+// import { computed } from "vue";
+import { mapGetters } from "vuex";
 
 export default {
   name: "HomePage",
-  setup(){
-    const {result, loading, error} = useQuery(GET_USER)
-
-    return {result , loading,error}
-    
+  computed:{
+    ...mapGetters('auth',['getUser']),
+    user(){
+      return this.getUser
+    }
   },
+
   data() {
     return {
-      user: { name: "Purvi" }, // Replace with backend fetched value
+
       balances: {
         owedToYou: 2500, // from backend
         youOwe: 1200, // from backend

@@ -27,7 +27,7 @@
             <router-link to="#" class="d-flex align-items-center link-dark text-decoration-none" aria-expanded="false">
                 <img src="https://media.istockphoto.com/id/1300845620/vector/user-icon-flat-isolated-on-white-background-user-symbol-vector-illustration.jpg?s=612x612&w=0&k=20&c=yBeyba0hUkh14_jgv1OKqIH0CCSWU_4ckRkAoy2p73o=" alt="" width="32" height="32"
                     class="rounded-circle me-2">
-                <strong>User</strong>
+                <strong v-if="user">{{ user.name }}</strong>
             </router-link>
         </div>
     </div>

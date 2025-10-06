@@ -1,4 +1,5 @@
 import { sidebarState,toggleSidebar } from "@/store/sidebarStore";
+import { mapGetters } from "vuex";
 
 export default {
   name: "SideBar",
@@ -8,6 +9,12 @@ export default {
       sidebarState
     }
   },
+   computed:{
+      ...mapGetters('auth',['getUser']),
+      user(){
+        return this.getUser
+      }
+    },
   
   data() {
     return {

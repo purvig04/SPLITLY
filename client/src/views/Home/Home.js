@@ -43,12 +43,11 @@ export default {
     this.fetchUserName();
 
     const storedUser = JSON.parse(localStorage.getItem("userLoggedIn"));
-    console.log(storedUser);
 
     if (storedUser) {
       this.$router.push("/home");
     } else {
-      this.$router.push("/register");
+      this.$router.push("/login");
     }
   },
 };

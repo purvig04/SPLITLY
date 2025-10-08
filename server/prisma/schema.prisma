@@ -14,7 +14,43 @@ model User{
     password String 
     contact String @map("phone_no")
     createdAt DateTime @default(now()) @map("created_at")
-    updatedAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    createdGroups Group[] @relation("UserToGroup") //since user can create many groups
+    memberOf GroupMember[] @relation("UserToMembers") //since user can be in more than one group
 
     @@map("users")
 }
+
+model Group {
+  id String @id @default(uuid())
+  title String
+  type GroupType
+  createdById String 
+  createdBy User @relation("UserToGroup" , fields: [createdById] , references: [id])
+
+  createdAt DateTime @default(now())  
+  updatedAt DateTime @updatedAt
+  
+  members GroupMember[] @relation("GroupToMembers")
+
+  @@map("groups")
+}
+enum GroupType{
+  PERSONAL
+  NON_GROUP
+  GROUP
+}
+model GroupMember{
+  id String @id @default(uuid())
+
+  user User @relation("UserToMembers", fields: [userId] , references: [id])
+  userId String
+  
+  group Group @relation(fields: [groupId] , references: [id] , name: "GroupToMembers")
+  groupId String
+
+  joinedAt DateTime @default(now())
+  @@map("group_members")
+}
+

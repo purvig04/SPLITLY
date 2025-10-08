@@ -1,5 +1,5 @@
 // import { computed } from "vue";
-import { mapGetters } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
   name: "HomePage",
@@ -22,9 +22,10 @@ export default {
 
 
   methods: {
-    async fetchUserName() {return },
+    ...mapActions("group", ["fetchGroups"]),
     goToGroups() {
       this.$router.push("/groups");
+      this.fetchGroups()
     },
     goToNonGroup() {
       this.$router.push("/non-group");
@@ -40,15 +41,12 @@ export default {
     },
   },
   mounted() {
-    this.fetchUserName();
-
     const storedUser = JSON.parse(localStorage.getItem("userLoggedIn"));
-    console.log(storedUser);
-
     if (storedUser) {
       this.$router.push("/home");
+
     } else {
-      this.$router.push("/register");
+      this.$router.push("/login");
     }
   },
 };

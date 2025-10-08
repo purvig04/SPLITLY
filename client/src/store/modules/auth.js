@@ -1,3 +1,4 @@
+import apolloClient from "@/apollo";
 import { authService } from "@/services/auth.service";
 import { userService } from "@/services/user.service";
 const state = () => ({
@@ -42,6 +43,8 @@ const actions = {
       localStorage.setItem("userId", user.id);
       localStorage.setItem("userLoggedIn", "true");
 
+
+
       return user;
     } catch (err) {
       commit("SET_ERROR", err);
@@ -74,6 +77,7 @@ const actions = {
       localStorage.removeItem("userId");
       localStorage.removeItem("userLoggedIn");
 
+      apolloClient.clearStore();
       commit("RESET_AUTH");
     } catch (err) {
       commit("SET_ERROR", err);

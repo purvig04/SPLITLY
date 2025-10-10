@@ -1,5 +1,7 @@
 export const groupTypeDefs = `#graphql
     type Query {
+      
+        getGroupDetails(id:ID!):Group!
         getGroups(type: String): [Group!]!
     }
 

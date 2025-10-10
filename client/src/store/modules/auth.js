@@ -43,8 +43,6 @@ const actions = {
       sessionStorage.setItem("userId", user.id);
       sessionStorage.setItem("userLoggedIn", "true");
 
-
-
       return user;
     } catch (err) {
       commit("SET_ERROR", err);
@@ -86,6 +84,11 @@ const actions = {
     }
   },
   async fetchUser({ commit, state }) {
+    const authToken = localStorage.getItem("userLoggedIn");
+    if (!authToken) {
+      return; // Exit early if not authenticated
+    }
+
     //when page refresh user is fetched from here
     try {
       const { getUser } = await userService.getUser();

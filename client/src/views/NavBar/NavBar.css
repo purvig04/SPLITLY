@@ -1,6 +1,7 @@
 .navbar {
   background: #225750;
   max-height: 4rem;
+  height: 4rem;
 }
 .brand-name {
   font-size: 1.5rem;

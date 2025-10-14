@@ -1,11 +1,16 @@
 export const groupResolvers = {
   Query: {
-    getGroups(_, __, { prisma, user }) {
+    getGroups(_, { type }, { prisma, user }) {
       return prisma.group.findMany({
         where: {
-          OR: [
-            { createdById: user.id },
-            { members: { some: { userId: user.id } } },
+          AND: [
+            {
+              OR: [
+                { createdById: user.id },
+                { members: { some: { userId: user.id } } },
+              ],
+            },
+            ...(type ? [{ type }] : []),
           ],
         },
         include: {

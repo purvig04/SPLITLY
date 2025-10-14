@@ -2,8 +2,8 @@ import apolloClient from "@/apollo";
 import { authService } from "@/services/auth.service";
 import { userService } from "@/services/user.service";
 const state = () => ({
-  userLoggedIn: !!localStorage.getItem("userLoggedIn"),
-  userId: localStorage.getItem("userId") || null,
+  userLoggedIn: !!sessionStorage.getItem("userLoggedIn"),
+  userId: sessionStorage.getItem("userId") || null,
   user: null,
   error: null,
 });
@@ -40,8 +40,8 @@ const actions = {
       commit("SET_USER_LOGGED_IN", true);
       commit("SET_USER_DATA", user); //after logging in user is fetched from here
 
-      localStorage.setItem("userId", user.id);
-      localStorage.setItem("userLoggedIn", "true");
+      sessionStorage.setItem("userId", user.id);
+      sessionStorage.setItem("userLoggedIn", "true");
 
 
 
@@ -74,8 +74,8 @@ const actions = {
         console.warn("Backend logout failed:", e);
       }
 
-      localStorage.removeItem("userId");
-      localStorage.removeItem("userLoggedIn");
+      sessionStorage.removeItem("userId");
+      sessionStorage.removeItem("userLoggedIn");
 
       apolloClient.clearStore();
       commit("RESET_AUTH");

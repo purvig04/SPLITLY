@@ -13,14 +13,14 @@ const mutations = {
   },
 };
 const actions = {
-  async fetchGroups({ commit }) {
+  async fetchGroups({ commit }, type) {
     commit("SET_LOADING", true);
     try {
-      const { getGroups } = await groupService.getGroups();
-      const grp = Object.values(getGroups);
-      console.log("group in fethcgroup in store", grp);
+      const groups = await groupService.getGroups(type);
 
-      commit("SET_GROUPS", grp);
+      console.log("group in fethcgroup in store", groups);
+
+      commit("SET_GROUPS", Array.isArray(groups) ? [...groups] : []);
     } catch (err) {
       console.error("Failed to fetch groups", err);
     } finally {
@@ -28,15 +28,16 @@ const actions = {
     }
   },
 
-  async createGroup({dispatch},{title}){
-    try{
-        await groupService.createGroup(title);
-        await dispatch("fetchGroups")
-    }catch(e){
-        console.log("failed to create group",e);
-        
+  async createGroup({ dispatch }, payload) {
+    try {
+      const {title, type} = payload
+      const created = await groupService.createGroup(title, type);
+      console.log("Created Group: ", created);
+      await dispatch("fetchGroups", type);
+    } catch (e) {
+      console.log("failed to create group", e);
     }
-  }
+  },
 };
 const getters = {
   isLoading: (state) => state.loading,

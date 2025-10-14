@@ -1,6 +1,6 @@
 export const groupTypeDefs = `#graphql
     type Query {
-        getGroups: [Group!]!
+        getGroups(type: String): [Group!]!
     }
 
     type Mutation{

@@ -7,7 +7,15 @@ export const groupTypeDefs = `#graphql
 
     type Mutation{
         createGroup(title:String!, type:GroupType,members:[String]):Group!
+        addMemberToGroup(groupId:String!, emails:[String!]!):AddMemberToGroupResult!
     }
+
+    type AddMemberToGroupResult {
+        added: [String!]!
+        invited: [String!]!
+        alreadyMembers: [String!]!
+        updatedGroup: Group!
+}
 
     enum GroupType{
         PERSONAL

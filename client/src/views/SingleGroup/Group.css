@@ -1,0 +1,136 @@
+
+  .main {
+    min-height: 100vh;
+    background: #dcf1ee;
+    padding-top: 5rem;
+    padding-bottom: 3rem;
+  }
+
+  /* Expenses Section */
+.add-expense-button{
+    background-color: #225750;
+    color: white;
+    width: auto;
+    padding: 7px 13px;
+    font-size: 1rem;
+    font-weight: 700;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: none;
+}
+
+
+.add-expense-button:hover {
+    color: white;
+    cursor: pointer;
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    background-color: #225750;
+  }
+  
+
+  .whole-section {
+    background: white;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .expense-card {
+    border-radius: 12px;
+    border: none;
+    transition: all 0.2s ease;
+    cursor: pointer;
+  }
+
+  .expenses-list{
+    border: 1.5px solid rgb(201, 195, 195);
+    border-radius: 10px;
+    padding: 20px;
+  }
+  
+  .expense-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .expense-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #225750;
+  }
+  
+  .expense-amount {
+    font-size: 1.25rem;
+    color: #333;
+  }
+
+  
+  /* Modal Styles */
+  .suggested-friends-list {
+    max-height: 300px;
+    overflow-y: auto;
+  }
+  
+  .friend-item {
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 2px solid transparent;
+  }
+  
+  .friend-item:hover {
+    background-color: #f8f9fa;
+  }
+  
+  .friend-item.selected {
+    border-color: #0d6efd;
+    background-color: #e7f1ff;
+  }
+  
+  .form-check-input:checked {
+    background-color: #225750;
+    border-color: #225750;
+  }
+
+  .removeSelectedEmail-btn{
+    background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  outline: inherit;
+  color: white;
+  }
+  
+  /* Responsive */
+  @media (max-width: 991px) {
+    .main {
+      margin-left: 4rem;
+    }
+  }
+  
+  @media (max-width: 767px) {
+    .main {
+      margin-left: 0;
+      padding-top: 4.5rem;
+    }
+  
+    .group-header {
+      padding: 1.5rem;
+    }
+  
+    .expenses-section {
+      padding: 1.5rem;
+    }
+  
+    .avatar-circle {
+      width: 32px;
+      height: 32px;
+      font-size: 0.75rem;
+    }
+  }

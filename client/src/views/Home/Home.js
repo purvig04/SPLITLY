@@ -25,7 +25,7 @@ export default {
     ...mapActions("group", ["fetchGroups"]),
     goToGroups() {
       this.$router.push("/groups");
-      this.fetchGroups()
+      this.fetchGroups();
     },
     goToNonGroup() {
       this.$router.push("/non-group");
@@ -41,7 +41,7 @@ export default {
     },
   },
   mounted() {
-    const storedUser = JSON.parse(localStorage.getItem("userLoggedIn"));
+    const storedUser = JSON.parse(sessionStorage.getItem("userLoggedIn"));
     if (storedUser) {
       this.$router.push("/home");
 

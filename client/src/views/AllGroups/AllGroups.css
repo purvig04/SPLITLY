@@ -33,3 +33,11 @@
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
   background-color: #225750;
 }
+
+.close-button{
+  background-color: gray;
+}
+
+.close-button:hover{
+  background-color: rgb(180, 180, 180);
+}

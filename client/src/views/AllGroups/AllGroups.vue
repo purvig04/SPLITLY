@@ -1,6 +1,13 @@
 <template>
   <div class="main">
     <div class="container my-4">
+      <button
+        class="btn btn-link text-muted p-0 mb-3"
+        @click="goBack"
+        title="Groups"
+      >
+        <i class="fa-solid fa-arrow-left"></i>
+      </button>
       <div class="d-flex justify-content-between align-items-center mb-3">
         <h2>Your Groups</h2>
         <button
@@ -69,12 +76,12 @@
               <div class="modal-footer">
                 <button
                   type="button"
-                  class="btn btn-secondary"
+                  class="btn create-group-button close-button"
                   data-bs-dismiss="modal"
                 >
                   Close
                 </button>
-                <button type="submit" class="btn btn-primary">Create</button>
+                <button type="submit" class="btn create-group-button">Create</button>
               </div>
             </form>
           </div>

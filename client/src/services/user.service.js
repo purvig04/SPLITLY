@@ -4,6 +4,7 @@ import apolloClient from "@/apollo";
 const GET_USER = gql`
   query GetUser {
     getUser {
+    id
       name
       contact
       createdAt

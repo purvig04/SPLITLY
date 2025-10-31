@@ -37,6 +37,30 @@ const GET_GROUP_DETAILS = gql`
   }
 `;
 
+const RENAME_GROUP = gql`
+  mutation RenameGroup($groupId: String!, $title: String!) {
+    renameGroup(groupId: $groupId, title: $title) {
+      id
+      createdById
+      title
+      type
+      members {
+        user {
+          name
+          id
+          email
+        }
+      }
+    }
+  }
+`;
+
+const DELETE_GROUP = gql`
+  mutation DeleteGroup($groupId: String!) {
+    deleteGroup(groupId: $groupId)
+  }
+`;
+
 const ADD_MEMBER_TO_GROUP = gql`
   mutation AddMemberToGroup($groupId: String!, $emails: [String!]!) {
     addMemberToGroup(groupId: $groupId, emails: $emails) {
@@ -76,8 +100,6 @@ export const groupService = {
       variables: { title, type },
       refetchQueries: [{ query: GET_GROUPS, variables: { type } }],
       awaitRefetchQueries: true,
-      mutation: CREATE_GROUP_MUTATION,
-      variables: { title },
     });
     return resp.data;
   },
@@ -89,6 +111,24 @@ export const groupService = {
       fetchPolicy: "network-only",
     });
     return resp.data;
+  },
+
+  async renameGroup(groupId,title){
+    const resp=await apolloClient.mutate({
+      mutation:RENAME_GROUP,
+      variables:{groupId,title},
+      fetchPolicy:'no-cache'
+    })
+    return resp.data
+  },
+
+  async deleteGroup(groupId){
+    const resp=await apolloClient.mutate({
+      mutation:DELETE_GROUP,
+      variables:{groupId},
+      fetchPolicy:"no-cache"
+    })
+    return resp.data
   },
 
   async addMemberToGroup(groupId,emails){

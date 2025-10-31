@@ -16,7 +16,7 @@
                 </router-link>
             </li>
             <li>
-                <router-link to="#" :class="{ active: activeItem === 'Friends' }" @click="setActive('Friends')">
+                <router-link to="/friends" :class="{ active: activeItem === 'Friends' }" @click="setActive('Friends')">
                     <i class="fa-solid fa-user-group"></i><span class="nav-text">&nbsp; Friends</span>
                 </router-link>
             </li>

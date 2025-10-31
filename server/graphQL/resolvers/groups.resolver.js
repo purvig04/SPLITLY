@@ -60,13 +60,13 @@ export const groupResolvers = {
     },
 
     async addMemberToGroup(_, { groupId, emails }, { prisma }) {
-      const added=[];
-      const invited=[];
-      const alreadyMembers=[];
-    
-      for (const email of emails){
-        const user = await prisma.user.findUnique({where : {email}});
-        if(!user){
+      const added = [];
+      const invited = [];
+      const alreadyMembers = [];
+
+      for (const email of emails) {
+        const user = await prisma.user.findUnique({ where: { email } });
+        if (!user) {
           invited.push(email);
           continue;
         }
@@ -76,31 +76,43 @@ export const groupResolvers = {
         });
 
         if (existing) {
-          alreadyMembers.push(email)
+          alreadyMembers.push(email);
           continue;
         }
 
         await prisma.groupMember.create({
-          data:{
+          data: {
             groupId,
-            userId:user.id
-          }
-        })
+            userId: user.id,
+          },
+        });
 
         added.push(email);
       }
-     
 
-       
-        const updatedGroup = await prisma.group.findUnique({
-          where: { id: groupId },
+      const updatedGroup = await prisma.group.findUnique({
+        where: { id: groupId },
 
-          include: {
-            members: { include: { user: true } },
-          },
-        });
-        return {added, invited, alreadyMembers, updatedGroup};
-      
+        include: {
+          members: { include: { user: true } },
+        },
+      });
+      return { added, invited, alreadyMembers, updatedGroup };
     },
+    
+    async renameGroup (_,{groupId , title},{prisma}){
+      return prisma.group.update({
+        where:{id:groupId},
+        data:{title},
+        include:{members:{include:{user:true}}}
+      })
+    },
+
+    async deleteGroup(_,{groupId},{prisma}){
+      const deletedG=await prisma.group.delete({
+        where:{id:groupId}
+      })
+      return !!deletedG
+    }
   },
 };

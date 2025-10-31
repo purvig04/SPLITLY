@@ -8,6 +8,8 @@ export const groupTypeDefs = `#graphql
     type Mutation{
         createGroup(title:String!, type:GroupType,members:[String]):Group!
         addMemberToGroup(groupId:String!, emails:[String!]!):AddMemberToGroupResult!
+        renameGroup(groupId:String! , title:String!):Group!
+        deleteGroup(groupId:String! ):Boolean!
     }
 
     type AddMemberToGroupResult {

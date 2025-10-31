@@ -84,7 +84,7 @@ const actions = {
     }
   },
   async fetchUser({ commit, state }) {
-    const authToken = localStorage.getItem("userLoggedIn");
+    const authToken = sessionStorage.getItem("userLoggedIn");
     if (!authToken) {
       return; // Exit early if not authenticated
     }

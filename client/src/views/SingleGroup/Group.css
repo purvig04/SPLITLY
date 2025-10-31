@@ -1,0 +1,208 @@
+.main {
+  min-height: 100vh;
+  background: #DCF1EE;
+  padding-top: 5rem;
+  padding-bottom: 3rem;
+}
+/* Group Header + Stats Section */
+.whole-section {
+  background: #ffffff;
+  padding: 2rem;
+  border-radius: 15px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+.whole-section h4 {
+  color: #225750;
+  font-weight: 700;
+}
+/* Expense Button */
+.add-expense-button {
+  background-color: #225750;
+  color: white;
+  padding: 7px 13px;
+  font-size: 1rem;
+  font-weight: 700;
+  border: none;
+  border-radius: 6px;
+  width: auto;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+.add-expense-button:hover {
+  color: white;
+  background-color: #225750;
+
+  cursor: pointer;
+  transform: scale(1.05);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+/* Expense List */
+.expenses-list {
+  border: 1.5px solid rgb(201, 195, 195);
+  border-radius: 10px;
+  padding: 20px;
+  margin-top: 1rem;
+}
+.expense-card {
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: #fafafa;
+}
+.expense-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background: #f0fdfa;
+}
+.expense-icon {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background: #F0F0F0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #225750;
+  font-size: 1.25rem;
+}
+.expense-amount {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+}
+/* Balance Styles */
+.text-success {
+  color: #28a745 !important;
+}
+.text-danger {
+  color: #dc3545 !important;
+}
+.text-muted {
+  color: #6c757d !important;
+}
+/* Modal Styles */
+.modal-content {
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+.suggested-friends-list {
+  max-height: 300px;
+  overflow-y: auto; 
+}
+.friend-item {
+  display: flex;
+  align-items: left;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+  border-radius: 8px;
+}
+.friend-item:hover {
+  background-color: #F8F9FA;
+}
+.friend-item.selected {
+  border-color: #0D6EFD;
+  background-color: #E7F1FF;
+}
+/* Add Member Status Messages */
+.alert-success {
+  background-color: #d1e7dd;
+  color: #0f5132;
+}
+.alert-info {
+  background-color: #cff4fc;
+  color: #055160;
+}
+.alert-warning {
+  background-color: #fff3cd;
+  color: #664d03;
+}
+.alert-danger {
+  background-color: #f8d7da;
+  color: #842029;
+}
+/* Remove Email Button */
+.removeSelectedEmail-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  outline: none;
+  color: #dc3545;
+  font-weight: bold;
+  transition: color 0.2s ease;
+}
+.removeSelectedEmail-btn:hover {
+  color: #a71d2a;
+}
+/* Responsive Styles */
+@media (max-width: 991px) {
+  .main {
+    margin-left: 4rem;
+  }
+}
+@media (max-width: 767px) {
+  .main {
+    margin-left: 0;
+    padding-top: 4.5rem;
+  }
+  .whole-section {
+    padding: 1.5rem;
+  }
+  .expenses-list {
+    padding: 1rem;
+  }
+  .expense-icon {
+    width: 35px;
+    height: 35px;
+    font-size: 1rem;
+  }
+  .add-expense-button {
+    font-size: 0.9rem;
+    padding: 6px 12px;
+  }
+}
+
+.custom-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1050;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.custom-modal {
+  background: white;
+  border-radius: 10px;
+  max-width: 600px;
+  width: 90%;
+  animation: fadeIn 0.3s ease;
+  box-shadow: 0 0 20px rgba(0,0,0,0.3);
+}
+.custom-modal.large {
+  max-width: 800px;
+}
+.modal-header,
+.modal-footer {
+  padding: 0.8rem;
+  border-bottom: 1px solid #dee2e6;
+}
+.modal-footer {
+  border-top: 1px solid #dee2e6;
+}
+.modal-body {
+  padding: 1rem;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+.modal-open {
+  overflow: hidden;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}

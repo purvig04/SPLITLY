@@ -1,11 +1,23 @@
 export const groupTypeDefs = `#graphql
     type Query {
+      
+        getGroupDetails(id:ID!):Group!
         getGroups(type: String): [Group!]!
     }
 
     type Mutation{
         createGroup(title:String!, type:GroupType,members:[String]):Group!
+        addMemberToGroup(groupId:String!, emails:[String!]!):AddMemberToGroupResult!
+        renameGroup(groupId:String! , title:String!):Group!
+        deleteGroup(groupId:String! ):Boolean!
     }
+
+    type AddMemberToGroupResult {
+        added: [String!]!
+        invited: [String!]!
+        alreadyMembers: [String!]!
+        updatedGroup: Group!
+}
 
     enum GroupType{
         PERSONAL

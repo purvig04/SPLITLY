@@ -48,7 +48,7 @@
                 >
                   <div class="friend-info">
                     <div class="friend-avatar">
-                      {{ getInitials(friend.name) }}
+                      {{ getInitial(friend.name) }}
                     </div>
                     <div class="friend-name">
                       <h5 class="mb-0">{{ friend.name }}</h5>

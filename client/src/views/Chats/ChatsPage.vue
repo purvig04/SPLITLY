@@ -4,7 +4,7 @@
     <div class="panel-header">
       <div class="friend-info-header">
         <div class="friend-avatar-large">
-          {{ getInitials(friend ? friend.name : "N A") }}
+          {{ getInitial(friend ? friend.name : "N A") }}
         </div>
         <div>
           <h4 class="mb-1">{{ friend?.name }}</h4>
@@ -40,79 +40,12 @@
         <i class="fa-solid fa-comment"></i> Chats
       </button>
     </div>
-    <!-- Content Area -->
+    <!-- Tab Content -->
     <div class="panel-content">
-      <!-- Expenses Tab -->
-      <div v-if="activeTab === 'expenses'" class="expenses-tab">
-        <div v-if="expenses.length === 0" class="empty-state">
-          <img
-            src="https://img.icons8.com/color/64/receipt.png"
-            alt="No Expenses"
-            class="mb-2 opacity-50"
-          />
-          <p class="text-muted">No expenses yet</p>
-        </div>
-        <div v-else class="expenses-list">
-          <div
-            v-for="expense in expenses"
-            :key="expense.id"
-            class="expense-item"
-          >
-            <div class="expense-icon">
-              <i class="fa-solid fa-receipt"></i>
-            </div>
-            <div class="expense-info">
-              <h6 class="mb-1">{{ expense.description }}</h6>
-              <span class="expense-date">{{ formatDate(expense.date) }}</span>
-            </div>
-            <div class="expense-amount" :class="expense.type">
-              <span v-if="expense.type === 'owed'">+₹{{ expense.amount.toFixed(2) }}</span>
-              <span v-else>-₹{{ expense.amount.toFixed(2) }}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- Chats Tab -->
-      <div v-if="activeTab === 'chats'" class="chats-tab">
-        <div class="messages-container" ref="messagesContainer">
-          <div v-if="chats?.length === 0" class="empty-state">
-            <img
-              src="https://img.icons8.com/color/64/chat.png"
-              alt="No Messages"
-              class="mb-2 opacity-50"
-            />
-            <p class="text-muted">No messages yet</p>
-          </div>
-          <div v-else class="messages-list">
-            <div
-              v-for="message in chats"
-              :key="message.id"
-              class="message-item"
-              :class="{ 'message-sent': message.sentByYou, 'message-received': !message.sentByYou }"
-            >
-              <div class="message-bubble">
-                <p class="message-text">{{ message.chatMessage }}</p>
-                <span class="message-time">{{ formatDate(parseInt(message.createdAt)) }} {{ formatTime(parseInt(message.createdAt)) }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- Message Input -->
-        <div class="message-input-container">
-          <input
-            v-model="newMessage"
-            type="text"
-            class="message-input"
-            placeholder="Type a message..."
-            @keyup.enter="sendMessage"
-          />
-          <button class="btn-send" @click="sendMessage" :disabled="!newMessage.trim()">
-            <i class="fa-solid fa-paper-plane"></i>
-          </button>
-        </div>
-      </div>
+      <ExpenseTab v-if="activeTab === 'expenses'" />
+      <ChatTab v-else :groupId="friend.groupId"/>
     </div>
-    <!-- Action Buttons -->
+    <!-- Footer Actions -->
     <div class="panel-footer">
       <button class="btn btn-settle" @click="settleUp">
         <i class="fa-solid fa-handshake"></i> Settle Up
@@ -123,8 +56,5 @@
     </div>
   </div>
 </template>
-
-import friends from '@/store/modules/friends.js';
-
 <script src="./Chats.js" />
 <style src="./Chats.css" scoped />

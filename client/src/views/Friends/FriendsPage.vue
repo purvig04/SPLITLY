@@ -44,7 +44,7 @@
                   :key="friend.id"
                   class="friend-item hover-card"
                   :class="{ 'active-friend': selectedFriendId === friend.id }"
-                  @click="goToFriendDetail(friend.id)"
+                  @click="goToFriendChat(friend.id)"
                 >
                   <div class="friend-info">
                     <div class="friend-avatar">

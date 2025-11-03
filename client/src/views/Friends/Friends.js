@@ -23,7 +23,7 @@ export default {
 
   methods: {
     ...mapActions("friends", ["loadFriends"]),
-    goToFriendDetail(friendId) {
+    goToFriendChat(friendId) {
       this.$router.push({ name: "Chats", params: { friendId } });
     },
     goToAddExpense() {

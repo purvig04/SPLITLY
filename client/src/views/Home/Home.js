@@ -3,23 +3,24 @@ import { mapActions, mapGetters } from "vuex";
 
 export default {
   name: "HomePage",
-  computed:{
-    ...mapGetters('auth',['getUser']),
-    user(){
-      return this.getUser
-    }
+  computed: {
+    ...mapGetters("auth", ["getUser", "isLoading"]),
+    user() {
+      return this.getUser;
+    },
+    loading() {
+      return this.isLoading;
+    },
   },
 
   data() {
     return {
-
       balances: {
         owedToYou: 2500, // from backend
         youOwe: 1200, // from backend
       },
     };
   },
-
 
   methods: {
     ...mapActions("group", ["fetchGroups"]),
@@ -44,7 +45,6 @@ export default {
     const storedUser = JSON.parse(sessionStorage.getItem("userLoggedIn"));
     if (storedUser) {
       this.$router.push("/home");
-
     } else {
       this.$router.push("/login");
     }

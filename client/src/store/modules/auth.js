@@ -6,6 +6,7 @@ const state = () => ({
   userId: sessionStorage.getItem("userId") || null,
   user: null,
   error: null,
+  loading: false,
 });
 const mutations = {
   SET_ERROR(state, error) {
@@ -26,11 +27,14 @@ const mutations = {
     state.user = null;
     state.error = null;
   },
+  SET_LOADING(state, val) {
+    state.loading = val;
+  },
 };
 const actions = {
   async login({ commit }, { email, password }) {
     commit("SET_ERROR", null);
-
+    commit("SET_LOADING", true);
     try {
       const { user } = await authService.login(email, password);
 
@@ -48,6 +52,8 @@ const actions = {
       commit("SET_ERROR", err);
 
       throw err;
+    } finally {
+      commit("SET_LOADING", false);
     }
   },
   async register({ commit }, { name, email, password, contact }) {
@@ -106,6 +112,7 @@ const getters = {
   getUserId: (state) => state.userId,
   getUser: (state) => state.user,
   getError: (state) => state.error,
+  isLoading: (state) => state.loading,
 };
 export default {
   namespaced: true,

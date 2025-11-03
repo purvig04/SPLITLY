@@ -1,13 +1,14 @@
 export const friendsTypeDefs = `#graphql
     type Query {
-        getPersonalGroups: [PersonalGroup!]!
+        getFriends: [Friend!]!
     }
 
-    type PersonalGroup {
+    type Friend {
         id: ID
         name: String
         email: String
         phone: String
+        groupId: String
         groupTitle: String
         groupType: String
         owedToYou: Float

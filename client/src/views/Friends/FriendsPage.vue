@@ -44,11 +44,11 @@
                   :key="friend.id"
                   class="friend-item hover-card"
                   :class="{ 'active-friend': selectedFriendId === friend.id }"
-                  @click="goToFriendDetail(friend.id)"
+                  @click="goToFriendChat(friend.id)"
                 >
                   <div class="friend-info">
                     <div class="friend-avatar">
-                      {{ getInitials(friend.name) }}
+                      {{ getInitial(friend.name) }}
                     </div>
                     <div class="friend-name">
                       <h5 class="mb-0">{{ friend.name }}</h5>

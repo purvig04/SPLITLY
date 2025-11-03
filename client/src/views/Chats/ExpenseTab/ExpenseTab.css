@@ -1,0 +1,53 @@
+/* ===== ExpenseTab.css ===== */
+.expenses-tab {
+  padding: 1rem;
+}
+.expenses-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.expense-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  transition: all 0.2s ease;
+}
+.expense-item:hover {
+  box-shadow: 0 2px 8px rgba(34, 87, 80, 0.15);
+  transform: translateX(2px);
+}
+.expense-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: #225750;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.expense-info h6 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin: 0;
+}
+.expense-date {
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+.expense-amount {
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+.expense-amount.owed {
+  color: #10b981;
+}
+.expense-amount.owe {
+  color: #ef4444;
+}

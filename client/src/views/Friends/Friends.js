@@ -1,3 +1,4 @@
+import { getInitials } from "@/utils/stringHelpers";
 import { mapGetters, mapActions } from "vuex";
 
 export default {
@@ -9,7 +10,7 @@ export default {
       return this.getFriends;
     },
     loading() {
-      return this.isLoading;                                      
+      return this.isLoading;
     },
     selectedFriendId() {
       return this.$route.params.friendId
@@ -23,19 +24,14 @@ export default {
 
   methods: {
     ...mapActions("friends", ["loadFriends"]),
-    goToFriendDetail(friendId) {
+    goToFriendChat(friendId) {
       this.$router.push({ name: "Chats", params: { friendId } });
     },
     goToAddExpense() {
       //Logic
     },
-    getInitials(name) {
-      return name
-        .split(" ")
-        .map((word) => word[0])
-        .join("")
-        .toUpperCase()
-        .slice(0, 2);
+    getInitial(name) {
+      return getInitials(name);
     },
   },
 

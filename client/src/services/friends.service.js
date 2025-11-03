@@ -1,13 +1,14 @@
 import gql from "graphql-tag";
 import apolloClient from "@/apollo";
 
-const GET_PERSONAL_GROUPS = gql`
-  query GetPersonalGroups {
-    getPersonalGroups {
+const GET_FRIENDS = gql`
+  query GetFriends {
+    getFriends {
       id
       name
       email
       phone
+      groupId
       groupTitle
       groupType
     }
@@ -16,25 +17,29 @@ const GET_PERSONAL_GROUPS = gql`
 
 //Friends Expense query
 
-export const fetchPersonalGroups = async () => {
+export const fetchFriends = async () => {
   try {
     //Fetching Friends
     const { data } = await apolloClient.query({
-      query: GET_PERSONAL_GROUPS,
+      query: GET_FRIENDS,
       fetchPolicy: "no-cache",
     });
 
-    const friendsData = data.getPersonalGroups;
-
+    const friendsData = data.getFriends;
+    // console.log("FDSERVICE", friendsData);
+    
     //Fetching Expenses with friend
 
     const friends = friendsData.map((friend) => ({
       id: friend.id,
-      name: friend.name,
-      owedToYou: 0, //Later fetched from expense query
-      youOwe: 0, //Later fetched from expense query
+      "name": friend.name,
+      email: friend.email,
+      groupId: friend.groupId,
+      owedToYou: 102, //Later fetched from expense query
+      youOwe: 20, //Later fetched from expense query
     }));
-
+    // console.log("FD::::", friendsData);
+    
     return friends;
   } catch (error) {
     console.error("Error fetching friends' data: ", error);

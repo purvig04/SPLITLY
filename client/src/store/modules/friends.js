@@ -1,4 +1,4 @@
-import { fetchPersonalGroups } from "@/services/friends.service";
+import { fetchFriends } from "@/services/friends.service";
 
 const state = () => ({
   friends: [],
@@ -19,7 +19,7 @@ const actions = {
     commit("SET_LOADING", true);
 
     try {
-      const friends = await fetchPersonalGroups();
+      const friends = await fetchFriends();      
       commit("SET_FRIENDS", friends);
     } catch (error) {
       console.error("Error loading friends: ", error);

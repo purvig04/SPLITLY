@@ -28,6 +28,7 @@
         </div>
       </div>
     </div>
+    <div class="bottom-anchor" ref="bottomAnchor"></div>
     <div class="message-input-container">
       <input
         v-model="newMessage"

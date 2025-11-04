@@ -22,6 +22,19 @@ const SEND_CHAT = gql`
   }
 `;
 
+const MESSAGE_SUBSCRIPTION = gql`
+  subscription MessageAdded($groupId: ID!) {
+    messageAdded(group_id: $groupId) {
+      chatMessage
+      groupId
+      id
+      createdAt
+      senderId
+      updatedAt
+    }
+  }
+`;
+
 export const getChats = async (group_id) => {
   try {
     const { data } = await apolloClient.query({
@@ -54,11 +67,29 @@ export const sendChat = async (payload) => {
     const { data } = await apolloClient.mutate({
       mutation: SEND_CHAT,
       variables: { group_id, chatMessage },
-      refetchQueries: [{ query: GET_CHATS, variables: { group_id } }],
-      awaitRefetchQueries: true,
+      // refetchQueries: [{ query: GET_CHATS, variables: { group_id } }],
+      // awaitRefetchQueries: true,
     });
     return data;
   } catch (error) {
     console.log("Error:", error);
   }
+};
+
+export const subscribeToMessage = (groupId, callback) => {
+  const observable = apolloClient.subscribe({
+    query: MESSAGE_SUBSCRIPTION,
+    variables: { groupId },
+  });
+
+  const subscription = observable.subscribe({
+    next: ({ data }) => {
+      if (data?.messageAdded) {
+        callback(data.messageAdded);
+      }
+    },
+    error: (err) => console.error("Subscription Error:", err),
+  });
+
+  return subscription;
 };

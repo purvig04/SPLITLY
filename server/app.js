@@ -4,11 +4,14 @@ import { expressMiddleware } from "@as-integrations/express4";
 import cookieParser from "cookie-parser";
 import "dotenv/config";
 import cors from "cors";
+import { createServer } from "http";
 
 import { schema } from "./graphQL/schema.js";
 import { context } from "./graphQL/context.js";
+import { setupWebSocket } from "./websocket.js";
 
 const app = express();
+const httpServer = createServer(app);
 
 const server = new ApolloServer({
   schema,
@@ -18,12 +21,20 @@ await server.start();
 
 app.use(
   `/graphql`,
-  cors({ origin: `http://localhost:${process.env.PORT}`, credentials: true }),
+  cors({
+    origin: [
+      `https://j7zkqf80-8081.inc1.devtunnels.ms`,
+      `http://localhost:${process.env.PORT}`,
+    ],
+    credentials: true,
+  }),
   express.json(),
   cookieParser(),
   expressMiddleware(server, { context })
 );
 
-app.listen(3001, () => {
+setupWebSocket(httpServer, schema);
+
+httpServer.listen(3001, () => {
   console.log("server is listening on port 3001");
 });

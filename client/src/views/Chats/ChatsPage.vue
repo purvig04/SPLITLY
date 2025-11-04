@@ -45,15 +45,6 @@
       <ExpenseTab v-if="activeTab === 'expenses'" />
       <ChatTab v-else :groupId="friend.groupId"/>
     </div>
-    <!-- Footer Actions -->
-    <div class="panel-footer">
-      <button class="btn btn-settle" @click="settleUp">
-        <i class="fa-solid fa-handshake"></i> Settle Up
-      </button>
-      <button class="btn btn-add-expense" @click="addExpense">
-        <i class="fa-solid fa-plus"></i> Add Expense
-      </button>
-    </div>
   </div>
 </template>
 <script src="./Chats.js" />

@@ -2,6 +2,8 @@ import { mapActions, mapGetters } from "vuex";
 
 export default {
   name: "ChatTab",
+  props: ["groupId"],
+
   data() {
     return {
       newMessage: "",
@@ -15,21 +17,28 @@ export default {
     },
   },
 
-  props: ["groupId"],
-
-  mounted() {
-    this.scrollToBottom();
-  },
-  updated() {
-    this.scrollToBottom();
+  watch: {
+    chats: {
+      handler() {
+        this.$nextTick(() => {
+          setTimeout(() => {
+            this.scrollToBottom({ smooth: true });
+            // console.log("watch timeout");
+          }, 1);
+        });
+      },
+      deep: true,
+    },
   },
 
   methods: {
-    ...mapActions("chats", ["sendChat"]),
-    scrollToBottom() {
-      const container = this.$refs.messagesContainer;
-      if (container) container.scrollTop = container.scrollHeight;
-    },
+    ...mapActions("chats", [
+      "loadChats",
+      "sendChat",
+      "subscribeToChats",
+      "stopSubscription",
+    ]),
+
     formatDate(date) {
       return new Date(date).toLocaleDateString("en-US", {
         month: "short",
@@ -49,18 +58,52 @@ export default {
 
     async sendMessage() {
       const text = this.newMessage.trim();
-      console.log("Messageeee::: ",text);
-      
+
       if (!text) return;
       const message = {
         group_id: this.groupId,
         chatMessage: this.newMessage,
       };
-      console.log("Mesageeeeeee: ", message);
-      
+
       await this.sendChat(message);
       this.newMessage = "";
-      this.$nextTick(this.scrollToBottom);
+
+      this.$nextTick(() => {
+        setTimeout(() => {
+          this.scrollToBottom({ smooth: true });
+          // console.log("sendmessage timeout");
+        }, 30);
+      });
     },
+
+    scrollToBottom() {
+      this.$nextTick(() => {
+        const bottomAnchor = this.$refs.bottomAnchor;
+        if (bottomAnchor) {
+          bottomAnchor.scrollIntoView({ behavior: "smooth" }); // Smooth scrolling
+        }
+      });
+    },
+  },
+
+  async mounted() {
+    this._previousBodyOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    await this.loadChats(this.groupId);
+
+    this.$nextTick(() => {
+      setTimeout(() => {
+        this.scrollToBottom({ instant: true });
+        // console.log("mounted timeout");
+      }, 30);
+    });
+
+    this.subscribeToChats(this.groupId);
+  },
+
+  beforeUnmount() {
+    document.body.style.overflow = this._previousBodyOverflow || "";
+    this.stopSubscription();
   },
 };

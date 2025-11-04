@@ -24,7 +24,7 @@ export const friendsResolvers = {
           if (!member.user || member.user.id === user.id) continue;
 
           const friend = member.user;
-          const key = `${friend.id}-${group.id}`;
+          const key = `${friend.id}`;
 
           if (!friendsMap.has(key)) {
             friendsMap.set(key, {

@@ -15,4 +15,8 @@ export const chatTypeDefs = `#graphql
         updatedAt: String!
         chatMessage: String!
     }
+
+    type Subscription {
+        messageAdded(group_id: ID!): Chats!
+    }
 `;

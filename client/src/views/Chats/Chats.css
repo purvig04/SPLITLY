@@ -3,7 +3,7 @@
   top: 4rem;
   right: 0;
   width: 20rem;
-  height: 100vh;
+  height: calc(100vh - 4rem);
   background: #ffffff;
   box-shadow: -4px 0 12px rgba(0, 0, 0, 0.15);
   display: flex;
@@ -347,22 +347,7 @@
   justify-content: center;
   gap: 0.4rem;
 }
-.btn-settle {
-  background: #f3f4f6;
-  color: #4b5563;
-}
-.btn-settle:hover {
-  background: #e5e7eb;
-  transform: translateY(-1px);
-}
-.btn-add-expense {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-}
-.btn-add-expense:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-}
+
 /* Scrollbar Styling */
 .panel-content::-webkit-scrollbar,
 .messages-container::-webkit-scrollbar {

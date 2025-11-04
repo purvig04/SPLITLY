@@ -43,7 +43,18 @@ export default {
     },
 
     setExpenses() {
-        this.expenses = this.getMockExpenses
-    }
+      this.expenses = this.getMockExpenses();
+    },
+  },
+
+  mounted() {
+    this._previousBodyOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    this.setExpenses();
+  },
+
+  beforeUnmount() {
+    document.body.style.overflow = this._previousBodyOverflow || "";
   },
 };

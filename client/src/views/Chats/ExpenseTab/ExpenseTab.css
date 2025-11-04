@@ -42,6 +42,8 @@
   color: #9ca3af;
 }
 .expense-amount {
+  position: absolute;
+  right: 1rem;
   font-size: 0.95rem;
   font-weight: 700;
 }
@@ -50,4 +52,46 @@
 }
 .expense-amount.owe {
   color: #ef4444;
+}
+.btn-settle {
+  background: #f3f4f6;
+  color: #225750;
+}
+.btn-settle:hover {
+  background: #e5e7eb;
+  transform: translateY(-1px);
+}
+.btn-add-expense {
+  background: #225750;
+  color: white;
+}
+.btn-add-expense:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(34, 87, 80, 0.4);
+  color: #225750;
+}
+.panel-footer {
+  display: flex;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 1rem;
+  background: white;
+  border-top: 1px solid #e9ecef;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+.panel-footer .btn {
+  flex: 1;
+  padding: 0.75rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
 }

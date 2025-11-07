@@ -69,9 +69,11 @@ model GroupMember {
 model Category{
   id String @id @default(uuid())
   name String @unique
-  description String? 
+  keywords String[] 
 
   expenses Expense[] @relation("CategoryExpenses")
+    @@index([keywords], type: Gin) 
+
 
   @@map("category")
 }

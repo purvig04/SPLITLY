@@ -16,9 +16,13 @@ model User {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt
 
-  createdGroups Group[]       @relation("UserToGroup") //since user can create many groups
-  memberOf      GroupMember[] @relation("UserToMembers") //since user can be in more than one group
-  Chats         Chats[]
+    createdGroups Group[] @relation("UserToGroup") //since user can create many groups
+    memberOf GroupMember[] @relation("UserToMembers") //since user can be in more than one group
+    expenseCreated Expense[] @relation("UserCreatedExpenses") //one user can create many expenses 
+    payer Settlement[] @relation("Payer")
+    receiver Settlement[] @relation("Receiver")
+      Chats         Chats[]
+
 
   @@map("users")
 }
@@ -34,7 +38,10 @@ model Group {
   updatedAt DateTime @updatedAt
 
   members GroupMember[] @relation("GroupToMembers")
-  Chats   Chats[]
+  expenses Expense[] @relation("GroupExpenses")
+  settlements Settlement[] @relation("GroupSettlement")
+    Chats   Chats[]
+
 
   @@map("groups")
 }
@@ -57,6 +64,62 @@ model GroupMember {
   joinedAt DateTime @default(now())
 
   @@map("group_members")
+}
+
+model Category{
+  id String @id @default(uuid())
+  name String @unique
+  keywords String[] 
+
+  expenses Expense[] @relation("CategoryExpenses")
+    @@index([keywords], type: Gin) 
+
+
+  @@map("category")
+}
+
+model Expense{
+  id String @id @default(uuid()) 
+  title String
+  description String?
+
+  group Group @relation("GroupExpenses",fields: [groupId], references: [id])
+  groupId String
+
+  totalAmount Float
+
+  category Category @relation("CategoryExpenses",fields: [categoryId], references: [id])
+  categoryId String
+   
+  paid_by Json[]
+  shared_amounts Json[]
+
+  createdByUser User @relation("UserCreatedExpenses",fields: [created_by], references: [id])
+  created_by String
+
+  is_Settled Boolean @default(false)
+  createdAt DateTime @default(now())  
+  updatedAt DateTime @updatedAt
+
+  @@map("expense")
+} 
+
+model Settlement{
+    id String @id @default(uuid()) 
+
+    group Group @relation("GroupSettlement",fields: [group_id], references: [id])
+    group_id String
+
+    payer User @relation("Payer",fields: [payer_id], references: [id])
+    payer_id String
+
+  receiver User @relation("Receiver",fields: [receiver_id], references: [id])
+    receiver_id String
+
+    amount Float
+    created_at DateTime @default(now())
+
+    @@map("settlement")
 }
 
 model Chats {

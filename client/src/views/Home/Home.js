@@ -43,9 +43,9 @@ export default {
   },
   mounted() {
     const storedUser = JSON.parse(sessionStorage.getItem("userLoggedIn"));
-    if (storedUser) {
-      this.$router.push("/home");
-    } else {
+    console.log("mounting home");
+
+    if (!storedUser) {
       this.$router.push("/login");
     }
   },

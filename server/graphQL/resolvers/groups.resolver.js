@@ -99,20 +99,20 @@ export const groupResolvers = {
       });
       return { added, invited, alreadyMembers, updatedGroup };
     },
-    
-    async renameGroup (_,{groupId , title},{prisma}){
+
+    async renameGroup(_, { groupId, title }, { prisma }) {
       return prisma.group.update({
-        where:{id:groupId},
-        data:{title},
-        include:{members:{include:{user:true}}}
-      })
+        where: { id: groupId },
+        data: { title },
+        include: { members: { include: { user: true } } },
+      });
     },
 
-    async deleteGroup(_,{groupId},{prisma}){
-      const deletedG=await prisma.group.delete({
-        where:{id:groupId}
-      })
-      return !!deletedG
-    }
+    async deleteGroup(_, { groupId }, { prisma }) {
+      const deletedG = await prisma.group.delete({
+        where: { id: groupId },
+      });
+      return !!deletedG;
+    },
   },
 };

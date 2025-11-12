@@ -1,6 +1,7 @@
 import { mapGetters, mapActions } from "vuex";
 import { groupService } from "@/services/groups.service";
 import { userService } from "@/services/user.service";
+import { expenseService } from "@/services/expenses.service";
 export default {
   name: "GroupPage",
   data() {
@@ -14,67 +15,6 @@ export default {
         { userId: "2", userName: "Jane Smith", amount: 250 },
       ],
       youOwe: [{ userId: "3", userName: "Bob Wilson", amount: 300 }],
-      suggestedFriends: [
-        { id: "1", name: "Alice Johnson", email: "alice@example.com" },
-        { id: "2", name: "Charlie Brown", email: "charlie@example.com" },
-      ],//will remove this
-      hardcodedExpenses: [
-        {
-          id: "1",
-          title: "Hotel Booking",
-          description: "Beach resort for 3 nights",
-          paidBy: "Rahul Sharma",
-          amount: 4500,
-          date: "Jan 15, 2025",
-          category: "Accommodation",
-          icon: "fa-solid fa-hotel",
-          yourShare: 1500,
-        },
-        {
-          id: "2",
-          title: "Dinner at Beach Shack",
-          description: "Seafood dinner with drinks",
-          paidBy: "You",
-          amount: 2800,
-          date: "Jan 16, 2025",
-          category: "Food & Drinks",
-          icon: "fa-solid fa-utensils",
-          yourShare: -933,
-        },
-        {
-          id: "3",
-          title: "Scuba Diving",
-          description: "Adventure sports activity",
-          paidBy: "Priya Patel",
-          amount: 6000,
-          date: "Jan 17, 2025",
-          category: "Activities",
-          icon: "fa-solid fa-person-swimming",
-          yourShare: 2000,
-        },
-        {
-          id: "4",
-          title: "Cab Fare",
-          description: "Airport pickup and drop",
-          paidBy: "Amit Kumar",
-          amount: 1200,
-          date: "Jan 15, 2025",
-          category: "Transport",
-          icon: "fa-solid fa-taxi",
-          yourShare: -400,
-        },
-        {
-          id: "5",
-          title: "Grocery Shopping",
-          description: "Snacks and beverages",
-          paidBy: "You",
-          amount: 850,
-          date: "Jan 16, 2025",
-          category: "Food",
-          icon: "fa-solid fa-shopping-cart",
-          yourShare: -283,
-        },
-      ],
       selectedFriends: [],
       emailInput: "",
       userExists: null,
@@ -88,6 +28,10 @@ export default {
   computed: {
     ...mapGetters("groups", ["getGroupById", "isLoading"]),
     ...mapGetters("friends", ["getFriends", "isLoading"]),
+    ...mapGetters("auth", ["getUser"]),
+    user() {
+      return this.getUser;
+    },
     friends() {
       return this.getFriends;
     },
@@ -97,18 +41,32 @@ export default {
     groupId() {
       return this.$route.params.id;
     },
-    // suggestedFriends(){
- 
-      //FOR NOW THIS LOGIC WONT WORK BECAUSE NO FRIENDS IN THIS GROUP
-// if(this.friends.length===0){console.log("no friends found");return 
-// }
-// const diff = this.friends.filter(
-//   element => !this.group.members.includes(element)
-// );
+    suggestedFriends() {
+      if (!this.friends || this.friends.length === 0) {
+        console.log("no friends found");
+        return;
+      }
+      if (
+        !this.group ||
+        !this.group.members ||
+        this.group.members.length === 0
+      ) {
+        console.log("no members found");
+        return;
+      }
+      const diff = this.friends
+        .filter(
+          (friend) =>
+            !this.group.members.some((member) => member.user?.id === friend.id)
+        )
+        .map((friend) => ({
+          id: friend.id,
+          name: friend.name,
+          email: friend.email,
+        }));
 
-// console.log(diff);
- 
-    // },
+      return diff;
+    },
     totalOwed() {
       return this.owedToYou.reduce((sum, item) => sum + item.amount, 0);
     },
@@ -117,7 +75,41 @@ export default {
     },
   },
   methods: {
+    ...mapActions("friends", ["loadFriends"]),
     ...mapActions("groups", ["addMembers"]),
+
+    getUserNamesById(userId) {
+      const member = this.group.members.find((m) => m.user.id === userId);
+      if (member) {
+        return member.user.name;
+      }
+      return "Unknown";
+    },
+
+    getPaidBySummary(expense) {
+      const payers = expense.paid_by;
+      if (!payers || payers.length === 0) {
+        return "No payment info";
+      }
+      if (payers.length === 1) {
+        const name = this.getUserNamesById(payers[0].userId);
+        return `Paid by ${name} `;
+      }
+      return `Paid by ${payers.length} people`;
+    },
+
+    getAmountShared(expense) {
+      const userId = this.user.id;
+      const payer = expense.paid_by.find((p) => p.userId === userId);
+      const sharer = expense.shared_amounts.find((s) => s.userId === userId);
+
+      const payerAmount = Number(payer?.amount || 0)
+      const sharerAmount = Number(sharer?.amount || 0);
+
+      return payerAmount-sharerAmount;
+      
+    },
+
     async fetchGroupDetail() {
       try {
         const { getGroupDetails } = await groupService.getGroupDetails(
@@ -135,7 +127,12 @@ export default {
     async loadExpenses() {
       this.loadingExpenses = true;
       try {
-        this.expenses = [];
+        const { getExpensesByGroup } = await expenseService.getExpensesByGroup(
+          this.groupId
+        );
+        console.log(getExpensesByGroup);
+
+        this.expenses = getExpensesByGroup;
       } catch (error) {
         console.error("Error loading expenses:", error);
       } finally {
@@ -229,12 +226,14 @@ export default {
         this.addingMembers = false;
       }
     },
-    getYourShareText(share) {
+    getYourShareText(expense) {
+      const share = this.getAmountShared(expense);
       if (share > 0) return `you lent ₹${share}`;
       if (share < 0) return `you owe ₹${Math.abs(share)}`;
-      return "settled";
+      return "Not included";
     },
-    getShareClass(share) {
+    getShareClass(expense) {
+      const share = this.getAmountShared(expense);
       if (share > 0) return "text-success";
       if (share < 0) return "text-danger";
       return "text-muted";
@@ -261,8 +260,14 @@ export default {
       this.isShowMembersOpen = false;
     },
   },
+  async created() {
+    await this.loadFriends();
+  },
   async mounted() {
     await this.fetchGroupDetail();
+    if (!this.user) {
+      await this.$store.dispatch("auth/fetchUser");
+    }
   },
   watch: {
     groupId(newId) {

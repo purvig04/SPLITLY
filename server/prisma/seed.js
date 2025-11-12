@@ -5,6 +5,7 @@ async function main() {
   const categories = [
     {
       name: "Food",
+      icon: "fa-solid fa-utensils",
       keywords: [
         "food",
         "meal",
@@ -19,6 +20,7 @@ async function main() {
     },
     {
       name: "Travel",
+      icon: "fa-solid fa-plane",
       keywords: [
         "travel",
         "trip",
@@ -34,6 +36,7 @@ async function main() {
     },
     {
       name: "Utilities",
+      icon: "fa-solid fa-bolt",
       keywords: [
         "electricity",
         "bills",
@@ -48,6 +51,7 @@ async function main() {
     },
     {
       name: "Entertainment",
+      icon: "fa-solid fa-film",
       keywords: [
         "movie",
         "party",
@@ -62,6 +66,7 @@ async function main() {
     },
     {
       name: "Shopping",
+      icon: "fa-solid fa-bag-shopping",
       keywords: [
         "shopping",
         "clothes",
@@ -74,6 +79,7 @@ async function main() {
     },
     {
       name: "Groceries",
+      icon: "fa-solid fa-bag-shopping",
       keywords: [
         "grocery",
         "vegetable",
@@ -87,6 +93,7 @@ async function main() {
     },
     {
       name: "Health & Fitness",
+      icon: "fa-solid fa-dumbbell",
       keywords: [
         "gym",
         "doctor",
@@ -100,6 +107,7 @@ async function main() {
     },
     {
       name: "Education",
+      icon: "fa-solid fa-graduation-cap",
       keywords: [
         "book",
         "course",
@@ -114,6 +122,7 @@ async function main() {
     },
     {
       name: "Rent",
+      icon: "fa-solid fa-house",
       keywords: [
         "rent",
         "room",
@@ -126,6 +135,7 @@ async function main() {
     },
     {
       name: "Other",
+      icon: "fa-solid fa-ellipsis",
       keywords: ["other", "misc", "general", "random", "unclassified"],
     },
   ];
@@ -133,7 +143,10 @@ async function main() {
   for (const category of categories) {
     await prisma.category.upsert({
       where: { name: category.name },
-      update: {},
+      update: {
+        icon: category.icon,
+        keywords: category.keywords,
+      },
       create: category,
     });
   }

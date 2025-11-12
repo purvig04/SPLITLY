@@ -70,6 +70,7 @@ model Category{
   id String @id @default(uuid())
   name String @unique
   keywords String[] 
+  icon      String?
 
   expenses Expense[] @relation("CategoryExpenses")
     @@index([keywords], type: Gin) 

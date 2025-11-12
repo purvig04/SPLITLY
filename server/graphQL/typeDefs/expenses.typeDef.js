@@ -28,7 +28,7 @@ scalar DateTime
         title: String!
         description: String
         groupId: String!
-        totalAmount: Float!
+        totalAmount: Float
         categoryId: String!
         paid_by: JSON
         shared_amounts: JSON
@@ -52,4 +52,3 @@ scalar DateTime
         deleteExpense(id: Int!): Boolean!
     }
 `;
-

@@ -23,7 +23,7 @@ app.use(
   `/graphql`,
   cors({
     origin: [
-      `https://j7zkqf80-8081.inc1.devtunnels.ms`,
+      `https://j7zkqf80-${process.env.PORT}.inc1.devtunnels.ms`,
       `http://localhost:${process.env.PORT}`,
     ],
     credentials: true,

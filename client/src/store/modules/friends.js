@@ -19,7 +19,7 @@ const actions = {
     commit("SET_LOADING", true);
 
     try {
-      const friends = await fetchFriends();      
+      const friends = await fetchFriends();
       commit("SET_FRIENDS", friends);
     } catch (error) {
       console.error("Error loading friends: ", error);
@@ -33,6 +33,17 @@ const actions = {
 const getters = {
   getFriends: (state) => state.friends,
   isLoading: (state) => state.loading,
+
+  getFriendsByIds: (state) => (idArray) => {
+    if (!idArray || idArray?.length === 0) return [];
+    else {
+      const selectedFriends = idArray.map((id) => {
+        return state.friends.find((friend) => friend.id === id);
+      });
+
+      return selectedFriends;
+    }
+  },
 };
 
 export default {

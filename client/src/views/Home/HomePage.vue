@@ -110,6 +110,7 @@
         <i class="fa-solid fa-plus"></i> Add Expense
       </button>
     </div>
+    <router-view></router-view>
   </div>
 </template>
 

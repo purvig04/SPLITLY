@@ -1,6 +1,8 @@
 export default {
   name: "ExpenseTab",
 
+  props: ["friendId"],
+
   data() {
     return {
       expenses: [],
@@ -45,12 +47,16 @@ export default {
     setExpenses() {
       this.expenses = this.getMockExpenses();
     },
+    goToAddExpense() {
+      // console.log("Expense tab Fid:", this.friendId);
+      this.$router.push({ name: "AddExpense", query: { source: "friend", friendId: this.friendId } });
+    },
   },
 
   mounted() {
     this._previousBodyOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-
+    
     this.setExpenses();
   },
 

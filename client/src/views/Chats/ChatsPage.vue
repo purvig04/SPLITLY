@@ -42,7 +42,7 @@
     </div>
     <!-- Tab Content -->
     <div class="panel-content">
-      <ExpenseTab v-if="activeTab === 'expenses'" />
+      <ExpenseTab v-if="activeTab === 'expenses'" :friendId="friendId"/>
       <ChatTab v-else :groupId="friend.groupId"/>
     </div>
   </div>

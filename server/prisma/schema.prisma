@@ -84,8 +84,8 @@ model Expense{
   title String
   description String?
 
-  group Group @relation("GroupExpenses",fields: [groupId], references: [id])
-  groupId String
+  group Group? @relation("GroupExpenses",fields: [groupId], references: [id])
+  groupId String?
 
   totalAmount Float
 

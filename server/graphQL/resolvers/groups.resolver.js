@@ -32,6 +32,35 @@ export const groupResolvers = {
         },
       });
     },
+
+    async getPersonalGroupId(_, { otherUserId }, { prisma, user }) {
+      if (!user) {
+        throw new Error("Authentication required");
+      }
+
+      const currentUserId = user.id;
+      if (!otherUserId) {
+        throw new Error("otherUserId required");
+      }
+
+      if (currentUserId === otherUserId) {
+        return null;
+      }
+
+      const result = await prisma.$queryRaw`
+        SELECT g.id
+        FROM groups g
+        JOIN group_members gm ON gm."groupId" = g.id
+        WHERE g.type = 'PERSONAL'
+          AND gm."userId" IN (${currentUserId}, ${otherUserId})
+        GROUP BY g.id
+        HAVING COUNT(DISTINCT gm."userId") = 2
+          AND COUNT(*) = 2
+        LIMIT 1;
+      `;
+
+      return result && result.length ? result[0].id : null;
+    },
   },
   Mutation: {
     async createGroup(_, { title, type, members = [] }, { prisma, user }) {

@@ -1,0 +1,152 @@
+.participant-amount-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+/* Equal Split */
+.amount-display {
+  font-size: 15px;
+  font-weight: 600;
+  color: #225750;
+  padding: 6px 0;
+}
+
+/* Unequal Split */
+.amount-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.currency-prefix {
+  font-size: 13px;
+  font-weight: 500;
+  color: #6b7280;
+  margin-right: 4px;
+}
+
+.amount-input {
+  width: 90px;
+  padding: 6px 8px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  text-align: right;
+  transition: border-color 0.2s;
+}
+
+.amount-input:focus {
+  outline: none;
+  border-color: #225750;
+  box-shadow: 0 0 0 2px rgba(34, 87, 80, 0.1);
+}
+
+/* Percentage Split */
+.percentage-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.percentage-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.percentage-symbol {
+  position: absolute;
+  right: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #6b7280;
+  pointer-events: none;
+}
+
+.percentage-input-wrapper .amount-input {
+  padding-right: 24px;
+}
+
+.calculated-amount {
+  font-size: 12px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+/* Shares Split */
+.shares-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.shares-control {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  overflow: hidden;
+  background-color: white;
+}
+
+.share-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background-color: #f3f4f6;
+  color: #374151;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.share-btn:hover {
+  background-color: #e5e7eb;
+}
+
+.share-btn:active {
+  background-color: #d1d5db;
+}
+
+.share-input {
+  width: 50px;
+  border: none;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 500;
+  color: #1f2937;
+  padding: 6px 4px;
+}
+
+.share-input:focus {
+  outline: none;
+}
+
+/* Remove number input arrows */
+.amount-input::-webkit-inner-spin-button,
+.amount-input::-webkit-outer-spin-button,
+.share-input::-webkit-inner-spin-button,
+.share-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.amount-input[type=number],
+.share-input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.excluded-text {
+  color: #9ca3af;
+  font-size: 13px;
+  font-style: italic;
+}

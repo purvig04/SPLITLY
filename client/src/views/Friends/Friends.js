@@ -28,7 +28,7 @@ export default {
       this.$router.push({ name: "Chats", params: { friendId } });
     },
     goToAddExpense() {
-      //Logic
+      this.$router.push({ name: "AddExpense", query: { source: "friends" } });
     },
     getInitial(name) {
       return getInitials(name);

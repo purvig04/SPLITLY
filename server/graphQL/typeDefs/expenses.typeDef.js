@@ -7,7 +7,7 @@ scalar DateTime
         id:String!
         title: String!
         description: String!
-        groupId: String!
+        groupId: String
         totalAmount: Float!
         categoryId: String!
         paid_by:JSON
@@ -18,7 +18,7 @@ scalar DateTime
         updatedAt: DateTime!
 
         category: Category!
-        group: Group!
+        group: Group
         createdByUser: User!
     }
 
@@ -27,7 +27,7 @@ scalar DateTime
     input CreateExpenseInput {
         title: String!
         description: String
-        groupId: String!
+        groupId: String
         totalAmount: Float
         categoryId: String!
         paid_by: JSON

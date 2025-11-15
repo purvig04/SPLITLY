@@ -70,7 +70,7 @@
             <h5 class="mb-0">Expenses</h5>
             <button
               class="btn rounded-pill add-expense-button"
-              @click="addExpense"
+              @click="goToAddExpense"
             >
               <i class="fa-solid fa-plus"></i> Add Expense
             </button>

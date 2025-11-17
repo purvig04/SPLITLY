@@ -18,6 +18,41 @@ const GET_EXPENSES_BY_GROUP = gql`
   }
 `;
 
+const GET_EXPENSE_BY_ID = gql`
+  query GetExpenseById($id: String!) {
+    getExpenseById(id: $id) {
+      category {
+        icon
+        name
+      }
+      createdAt
+      createdByUser {
+        id
+        name
+      }
+      description
+      paid_by
+      shared_amounts
+      title
+      totalAmount
+      updatedAt
+      updatedByUser {
+        id  
+        name
+      }
+      group {
+        title
+        members {
+          user {
+            name
+            id
+          }
+        }
+      }
+    }
+  }
+`;
+
 const CREATE_EXPENSE = gql`
   mutation CreateExpense($input: CreateExpenseInput!) {
     createExpense(input: $input) {
@@ -34,6 +69,14 @@ export const expenseService = {
     const resp = await apolloClient.query({
       query: GET_EXPENSES_BY_GROUP,
       variables: { groupId },
+      fetchPolicy: "network-only",
+    });
+    return resp.data;
+  },
+  async getExpenseById(id) {
+    const resp = await apolloClient.query({
+      query: GET_EXPENSE_BY_ID,
+      variables: { id },
       fetchPolicy: "network-only",
     });
     return resp.data;

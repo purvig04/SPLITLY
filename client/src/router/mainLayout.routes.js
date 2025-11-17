@@ -6,13 +6,18 @@ import ChatsPage from "@/views/Chats/ChatsPage.vue";
 import AllGroups from "@/views/AllGroups/AllGroups.vue";
 import GroupPage from "@/views/SingleGroup/GroupPage.vue";
 import EditGroup from "@/views/EditGroup/EditGroup.vue";
+import AddExpenseModal from "@/views/AddExpense/AddExpenseModal/AddExpenseModal.vue";
 
 export default {
   path: "/home",
   component: MainLayout,
   children: [
-    { name: "Home", path: "/home", component: HomePage },
-
+    {
+      name: "Home",
+      path: "/home",
+      component: HomePage,
+    },
+    { name: "AddExpense", path: "/add-expense", component: AddExpenseModal },
     {
       name: "Friends",
       path: "/friends",
@@ -29,6 +34,5 @@ export default {
       component: EditGroup,
       props: true,
     },
-    //   { name: "Friends", path: "/friends", component: FriendsPage },
   ],
 };

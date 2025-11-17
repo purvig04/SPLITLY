@@ -29,7 +29,7 @@
       <button class="btn btn-settle" @click="settleUp">
         <i class="fa-solid fa-handshake"></i> Settle Up
       </button>
-      <button class="btn btn-add-expense" @click="addExpense">
+      <button class="btn btn-add-expense" @click="goToAddExpense">
         <i class="fa-solid fa-plus"></i> Add Expense
       </button>
     </div>

@@ -103,11 +103,10 @@ export default {
       const payer = expense.paid_by.find((p) => p.userId === userId);
       const sharer = expense.shared_amounts.find((s) => s.userId === userId);
 
-      const payerAmount = Number(payer?.amount || 0)
+      const payerAmount = Number(payer?.amount || 0);
       const sharerAmount = Number(sharer?.amount || 0);
 
-      return payerAmount-sharerAmount;
-      
+      return payerAmount - sharerAmount;
     },
 
     async fetchGroupDetail() {
@@ -244,8 +243,11 @@ export default {
     editGroup() {
       this.$router.push(`/group/${this.groupId}/edit`);
     },
-    addExpense() {
-      this.$router.push(`/groups/${this.groupId}/add-expense`);
+    goToAddExpense() {
+      this.$router.push({
+        name: "AddExpense",
+        query: { source: "group", groupId: this.groupId },
+      });
     },
     viewExpense(expenseId) {
       this.$router.push(`/expenses/${expenseId}`);

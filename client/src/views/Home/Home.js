@@ -38,7 +38,7 @@ export default {
       this.$router.push("/analysis");
     },
     goToAddExpense() {
-      this.$router.push("/add-expense");
+      this.$router.push({ name: "AddExpense" });
     },
   },
   mounted() {

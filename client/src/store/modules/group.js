@@ -30,10 +30,11 @@ const actions = {
 
   async createGroup({ dispatch }, payload) {
     try {
-      const {title, type} = payload
+      const { title, type } = payload;
       const created = await groupService.createGroup(title, type);
       console.log("Created Group: ", created);
       await dispatch("fetchGroups", type);
+      return created;
     } catch (e) {
       console.log("failed to create group", e);
     }
@@ -42,6 +43,30 @@ const actions = {
 const getters = {
   isLoading: (state) => state.loading,
   getGroups: (state) => state.groups,
+
+  getGroupsWithMemberCount: (state) => {
+    const Groups = state.groups.map((group) => ({
+      id: group.id,
+      name: group.title,
+      members: group.members?.length || 0,
+    }));
+
+    return Groups;
+  },
+
+  getGroupById: (state) => (id) => {
+    const group = state.groups.find((group) => group.id === id);
+    const selectedGroup = {
+      id: group.id,
+      name: group.title,
+      members: group.members.map((m) => ({
+        id: m.user.id,
+        name:
+          m.user.id === sessionStorage.getItem("userId") ? "You" : m.user.name,
+      })),
+    };
+    return selectedGroup;
+  },
 };
 export default {
   namespaced: true,

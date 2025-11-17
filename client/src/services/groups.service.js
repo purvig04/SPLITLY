@@ -6,6 +6,12 @@ const GET_GROUPS = gql`
     getGroups(type: $type) {
       title
       id
+      members {
+        user {
+          id
+          name
+        }
+      }
     }
   }
 `;
@@ -15,6 +21,7 @@ const CREATE_GROUP_MUTATION = gql`
     createGroup(title: $title, type: $type) {
       type
       title
+      id
     }
   }
 `;
@@ -84,6 +91,12 @@ const ADD_MEMBER_TO_GROUP = gql`
   }
 `;
 
+const GET_PERSONAL_GROUP_ID = gql`
+  query GetFriends($otherUserId: ID!) {
+    getPersonalGroupId(otherUserId: $otherUserId)
+  }
+`;
+
 export const groupService = {
   async getGroups(type) {
     const resp = await apolloClient.query({
@@ -113,31 +126,40 @@ export const groupService = {
     return resp.data;
   },
 
-  async renameGroup(groupId,title){
-    const resp=await apolloClient.mutate({
-      mutation:RENAME_GROUP,
-      variables:{groupId,title},
-      fetchPolicy:'no-cache'
-    })
-    return resp.data
-  },
-
-  async deleteGroup(groupId){
-    const resp=await apolloClient.mutate({
-      mutation:DELETE_GROUP,
-      variables:{groupId},
-      fetchPolicy:"no-cache"
-    })
-    return resp.data
-  },
-
-  async addMemberToGroup(groupId,emails){
+  async renameGroup(groupId, title) {
     const resp = await apolloClient.mutate({
-      mutation:ADD_MEMBER_TO_GROUP,
-      variables:{groupId , emails},
-      fetchPolicy:'no-cache',
-    })
-    return resp.data
-  }
-  
+      mutation: RENAME_GROUP,
+      variables: { groupId, title },
+      fetchPolicy: "no-cache",
+    });
+    return resp.data;
+  },
+
+  async deleteGroup(groupId) {
+    const resp = await apolloClient.mutate({
+      mutation: DELETE_GROUP,
+      variables: { groupId },
+      fetchPolicy: "no-cache",
+    });
+    return resp.data;
+  },
+
+  async addMemberToGroup(groupId, emails) {
+    const resp = await apolloClient.mutate({
+      mutation: ADD_MEMBER_TO_GROUP,
+      variables: { groupId, emails },
+      fetchPolicy: "no-cache",
+    });
+    return resp.data;
+  },
+
+  async getPersonalGroupId(otherUserId) {
+    const resp = await apolloClient.query({
+      query: GET_PERSONAL_GROUP_ID,
+      variables: { otherUserId },
+      fetchPolicy: "no-cache",
+    });
+
+    return resp.data.getPersonalGroupId
+  },
 };

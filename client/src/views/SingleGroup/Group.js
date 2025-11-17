@@ -2,12 +2,16 @@ import { mapGetters, mapActions } from "vuex";
 import { groupService } from "@/services/groups.service";
 import { userService } from "@/services/user.service";
 import { expenseService } from "@/services/expenses.service";
+import ExpenseDetail from "../ExpenseDetailModal/ExpenseDetail.vue";
 export default {
   name: "GroupPage",
+  components: { ExpenseDetail },
   data() {
     return {
       group: null,
       expenses: [],
+      selectedExpense: null,
+      showExpenseModal: false,
       isModalOpen: false, // Add Member Modal
       isShowMembersOpen: false, // Show Members Modal
       owedToYou: [
@@ -104,9 +108,22 @@ export default {
       const sharer = expense.shared_amounts.find((s) => s.userId === userId);
 
       const payerAmount = Number(payer?.amount || 0);
+      const payerAmount = Number(payer?.amount || 0);
       const sharerAmount = Number(sharer?.amount || 0);
 
       return payerAmount - sharerAmount;
+    },
+
+    async openExpenseModal(expenseId) {
+      const { getExpenseById } = await expenseService.getExpenseById(
+        expenseId
+      );
+      this.selectedExpense = getExpenseById;
+      this.showExpenseModal = true;
+    },
+    closeExpenseModal() {
+      this.selectedExpense = null;
+      this.showExpenseModal = false;
     },
 
     async fetchGroupDetail() {
@@ -248,9 +265,6 @@ export default {
         name: "AddExpense",
         query: { source: "group", groupId: this.groupId },
       });
-    },
-    viewExpense(expenseId) {
-      this.$router.push(`/expenses/${expenseId}`);
     },
     toggleModal() {
       this.isModalOpen = !this.isModalOpen;

@@ -81,7 +81,7 @@
               v-for="expense in expenses"
               :key="expense.id"
               class="expense-card mb-3"
-              @click="viewExpense(expense.id)"
+              @click="openExpenseModal(expense.id)"
             >
               <div class="d-flex justify-content-between align-items-start">
                 <div class="flex-grow-1">
@@ -108,6 +108,7 @@
                 </div>
               </div>
             </div>
+            <ExpenseDetail v-if="showExpenseModal" :expense="selectedExpense" @close="closeExpenseModal"/>
           </div>
           <!-- if no expenses -->
           <div v-else class="text-center text-muted py-4">
@@ -286,5 +287,7 @@
   </div>
 </template>
 
-<script src="./Group.js"></script>
+<script src="./Group.js">
+
+</script>
 <style src="./Group.css" scoped />

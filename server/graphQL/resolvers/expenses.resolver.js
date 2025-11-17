@@ -22,8 +22,17 @@ export const expensesResolvers = {
         where: { id },
         include: {
           category: true,
-          group: true,
+  
           createdByUser: true,
+          group: {
+           include:{
+            members:{
+              include:{
+                user:true
+              }
+            }
+           }
+          }
         },
       });
     },
@@ -99,6 +108,7 @@ export const expensesResolvers = {
           paid_by: paid_by ?? existing.paid_by,
           shared_amounts: shared_amounts ?? existing.shared_amounts,
           is_settled: is_settled ?? existing.is_settled,
+          updated_by:user.id
         },
         include: {
           category: true,

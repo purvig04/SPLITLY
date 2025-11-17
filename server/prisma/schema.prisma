@@ -19,6 +19,7 @@ model User {
     createdGroups Group[] @relation("UserToGroup") //since user can create many groups
     memberOf GroupMember[] @relation("UserToMembers") //since user can be in more than one group
     expenseCreated Expense[] @relation("UserCreatedExpenses") //one user can create many expenses 
+    expenseUpdated Expense[] @relation("UserUpdatedExpenses")
     payer Settlement[] @relation("Payer")
     receiver Settlement[] @relation("Receiver")
       Chats         Chats[]
@@ -97,6 +98,9 @@ model Expense{
 
   createdByUser User @relation("UserCreatedExpenses",fields: [created_by], references: [id])
   created_by String
+
+  updatedByUser User? @relation("UserUpdatedExpenses", fields: [updated_by], references: [id])
+  updated_by String?
 
   is_Settled Boolean @default(false)
   createdAt DateTime @default(now())  

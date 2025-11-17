@@ -13,6 +13,7 @@ scalar DateTime
         paid_by:JSON
         shared_amounts:JSON
         created_by: String!
+        updated_by:String!
         is_settled:Boolean
         createdAt: DateTime!
         updatedAt: DateTime!
@@ -20,6 +21,7 @@ scalar DateTime
         category: Category!
         group: Group
         createdByUser: User!
+        updatedByUser:User
     }
 
     

@@ -1,0 +1,63 @@
+.main {
+  min-height: 100vh;
+  background: #dcf1ee;
+  padding-top: 5rem;
+  padding-bottom: 3rem;
+}
+.expense-detail {
+  max-width: 600px;
+  margin: 2rem auto;
+}
+.people-diagram {
+  display: flex;
+  align-items: flex-start;
+}
+.total-amount {
+  min-width: 80px;
+  text-align: right;
+  font-size: 1.25rem;
+  margin-right: 16px;
+}
+.connections {
+  flex-grow: 1;
+}
+.connection-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  position: relative;
+}
+.line {
+  width: 10%;
+  height: 2px;
+  background-color: #ccc;
+  margin-right: 8px;
+}
+.person-dot {
+  width: 6px;
+  height: 6px;
+  background-color: #a0a1a2;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+.person-info {
+  flex-grow: 1;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1050;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 10px;
+  max-width: 600px;
+  width: 90%;
+  position: relative;
+}

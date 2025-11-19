@@ -6,7 +6,7 @@ scalar DateTime
     type Expense{
         id:String!
         title: String!
-        description: String!
+        description: String
         groupId: String
         totalAmount: Float!
         categoryId: String!
@@ -51,6 +51,6 @@ scalar DateTime
     type Mutation {
         createExpense(input: CreateExpenseInput!): Expense!
         updateExpense(id: String!, input: UpdateExpenseInput!): Expense!
-        deleteExpense(id: Int!): Boolean!
+        deleteExpense(id: String!): Boolean!
     }
 `;

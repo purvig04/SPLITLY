@@ -12,26 +12,45 @@ export default {
   data() {
     return {
       newGroupTitle: "",
+      modalInstance: null,
     };
   },
   methods: {
     ...mapActions("group", ["fetchGroups", "createGroup"]),
+
+    openModal() {
+      const modalEl = document.getElementById("createGroupModal");
+      this.modalInstance = new bootstrap.Modal(modalEl);
+      this.modalInstance.show();
+    },
+
+    closeModal() {
+      if (this.modalInstance) {
+        this.modalInstance.hide();
+      }
+
+      this.newGroupTitle = "";
+    },
     async handleCreateGroup() {
+      if (!this.newGroupTitle.trim()) {
+        alert("Please enter a valid group name.");
+
+        return;
+      }
+
       await this.createGroup({ title: this.newGroupTitle }, "GROUP");
       // Close modal
-      const modalEl = document.getElementById("createGroupModal");
-      const modal = bootstrap.Modal.getInstance(modalEl);
-      if (modal) modal.hide();
-      this.newGroupTitle = ""; // Reset input
+      this.closeModal();
+      this.fetchGroups("GROUP");
     },
     goToGroup(id) {
       this.$router.push(`/group/${id}`);
     },
-    goBack(){
-      this.$router.push('/home')
-    }
+    goBack() {
+      this.$router.push("/home");
+    },
   },
   async created() {
-    await this.$store.dispatch("group/fetchGroups", "GROUP");
+    await this.fetchGroups("GROUP");
   },
 };

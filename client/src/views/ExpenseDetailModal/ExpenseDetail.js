@@ -1,4 +1,5 @@
-// import { expenseService } from "@/services/expenses.service";
+import { expenseService } from "@/services/expenses.service";
+import { mapGetters } from "vuex";
 
 export default {
   name: "ExpenseDetail",
@@ -7,8 +8,12 @@ export default {
   },
   data() {},
   computed: {
+    ...mapGetters("auth", ["getUser"]),
+    user() {
+      return this.getUser;
+    },
+
     peopleSummary() {
-      // Combine payers and sharers to compute per-user details
       const summary = [];
       this.expense.group.members.forEach((member) => {
         const paid =
@@ -22,12 +27,23 @@ export default {
           summary.push({
             id: member.user.id,
             name: member.user.name,
-            paid,
-            net,
+            paid: Number(paid).toFixed(2),
+            shared: Number(shared).toFixed(2),
+            net: Number(net).toFixed(2),
           });
         }
       });
       return summary;
+    },
+
+    sortedPeople() {
+      const userId = this.user.id;
+
+      return this.peopleSummary.slice().sort((a, b) => {
+        if (a.id === userId) return -1;
+        if (b.id === userId) return 1;
+        return 0;
+      });
     },
   },
   methods: {
@@ -37,15 +53,29 @@ export default {
     editExpense() {
       this.$emit("edit-expense", this.expense);
     },
-    deleteExpense() {
-      if (confirm("Are you sure you want to delete this expense?")) {
-        this.$emit("delete-expense", this.expense.id);
+    async deleteExpense() {
+      if (!confirm("Are you sure you want to delete this expense?")) return;
+
+      try {
+        const { deleteExpense: success } = await expenseService.deleteExpense(
+          this.expense.id
+        );
+
+        if (success) {
+          console.log("expense deleted");
+          console.log("groupid", this.expense.groupId);
+          this.$emit('deleted')
+          
+        } else {
+          console.error("Error deleting expense");
+        }
+      } catch (error) {
+        console.error("Server error while deleting expense:", error);
       }
     },
   },
   mounted() {
     console.log("expense detail mounted");
     console.log("expense", this.expense);
-
   },
 };

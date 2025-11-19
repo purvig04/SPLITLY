@@ -61,3 +61,13 @@
   width: 90%;
   position: relative;
 }
+
+.edit-expense-button{
+  color: #225750;
+  border: 1px solid #225750 ;
+}
+
+.edit-expense-button:hover{
+  color: white;
+  background-color: #225750 ;
+}

@@ -21,6 +21,7 @@ const GET_EXPENSES_BY_GROUP = gql`
 const GET_EXPENSE_BY_ID = gql`
   query GetExpenseById($id: String!) {
     getExpenseById(id: $id) {
+      id
       category {
         icon
         name
@@ -37,9 +38,10 @@ const GET_EXPENSE_BY_ID = gql`
       totalAmount
       updatedAt
       updatedByUser {
-        id  
+        id
         name
       }
+      groupId
       group {
         title
         members {
@@ -64,6 +66,12 @@ const CREATE_EXPENSE = gql`
   }
 `;
 
+const DELETE_EXPENSE = gql`
+  mutation DeleteExpense($id: String!) {
+    deleteExpense(id: $id)
+  }
+`;
+
 export const expenseService = {
   async getExpensesByGroup(groupId) {
     const resp = await apolloClient.query({
@@ -78,6 +86,14 @@ export const expenseService = {
       query: GET_EXPENSE_BY_ID,
       variables: { id },
       fetchPolicy: "network-only",
+    });
+    return resp.data;
+  },
+  async deleteExpense(id) {
+    const resp = await apolloClient.mutate({
+      mutation: DELETE_EXPENSE,
+      variables: { id },
+      fetchPolicy: "no-cache",
     });
     return resp.data;
   },

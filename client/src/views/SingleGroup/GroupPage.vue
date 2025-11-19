@@ -108,7 +108,12 @@
                 </div>
               </div>
             </div>
-            <ExpenseDetail v-if="showExpenseModal" :expense="selectedExpense" @close="closeExpenseModal"/>
+            <ExpenseDetail
+              v-if="showExpenseModal"
+              :expense="selectedExpense"
+              @close="closeExpenseModal"
+              @deleted="refreshGroup"
+            />
           </div>
           <!-- if no expenses -->
           <div v-else class="text-center text-muted py-4">
@@ -146,7 +151,7 @@
     <div
       v-if="isModalOpen"
       class="custom-modal-backdrop"
-      @click.self="isModalOpen = false"
+      @click.self="toggleModal"
     >
       <div class="custom-modal large">
         <div class="modal-header">
@@ -154,7 +159,7 @@
           <button
             type="button"
             class="btn-close"
-            @click="isModalOpen = false"
+            @click="toggleModal"
           ></button>
         </div>
         <div class="modal-body">
@@ -240,14 +245,14 @@
               <span
                 v-for="email in selectedFriends"
                 :key="email"
-                class="badge bg-primary fs-6"
+                class="badge fs-6"
               >
-                {{ email }}
+                <span style="font-weight: 400"> {{ email }}</span>
                 <button
                   class="removeSelectedEmail-btn"
                   @click="removeSelectedEmail(email)"
                 >
-                  <i class="fa-solid fa-times ms-1"></i>
+                  <i class="fa-solid fa-times ms-1 text-white"></i>
                 </button>
               </span>
             </div>
@@ -261,33 +266,33 @@
             {{ addMemberResult }}
           </div>
         </div>
-        <div class="modal-footer">
-          <button
-            type="button"
-            class="btn btn-secondary"
-            @click="isModalOpen = false"
-          >
-            Cancel
-          </button>
-          <button
-            type="button"
-            class="btn btn-primary"
-            @click="handleAddMembers"
-            :disabled="selectedFriends.length === 0 || addingMembers"
-          >
-            {{
-              addingMembers
-                ? "Adding..."
-                : `Add ${selectedFriends.length} Member(s)`
-            }}
-          </button>
+        <div class="footer">
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              @click="toggleModal"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              @click="handleAddMembers"
+              :disabled="selectedFriends.length === 0 || addingMembers"
+            >
+              {{
+                addingMembers
+                  ? "Adding..."
+                  : `Add ${selectedFriends.length} Member(s)`
+              }}
+            </button>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </template>
 
-<script src="./Group.js">
-
-</script>
+<script src="./Group.js"></script>
 <style src="./Group.css" scoped />

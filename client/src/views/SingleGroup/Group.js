@@ -108,16 +108,13 @@ export default {
       const sharer = expense.shared_amounts.find((s) => s.userId === userId);
 
       const payerAmount = Number(payer?.amount || 0);
-      const payerAmount = Number(payer?.amount || 0);
       const sharerAmount = Number(sharer?.amount || 0);
 
       return payerAmount - sharerAmount;
     },
 
     async openExpenseModal(expenseId) {
-      const { getExpenseById } = await expenseService.getExpenseById(
-        expenseId
-      );
+      const { getExpenseById } = await expenseService.getExpenseById(expenseId);
       this.selectedExpense = getExpenseById;
       this.showExpenseModal = true;
     },
@@ -139,6 +136,10 @@ export default {
         console.error("Error loading group:", error);
         this.$router.push("/groups");
       }
+    },
+
+    async refreshGroup(){
+      await this.fetchGroupDetail();
     },
     async loadExpenses() {
       this.loadingExpenses = true;
@@ -244,8 +245,8 @@ export default {
     },
     getYourShareText(expense) {
       const share = this.getAmountShared(expense);
-      if (share > 0) return `you lent ₹${share}`;
-      if (share < 0) return `you owe ₹${Math.abs(share)}`;
+      if (share > 0) return `you lent ₹${share.toFixed(2)}`;
+      if (share < 0) return `you owe ₹${Math.abs(share).toFixed(2)}`;
       return "Not included";
     },
     getShareClass(expense) {
@@ -268,6 +269,9 @@ export default {
     },
     toggleModal() {
       this.isModalOpen = !this.isModalOpen;
+      if(this.isModalOpen===false){
+        this.selectedFriends = []
+      }
     },
     openShowMembers() {
       this.isShowMembersOpen = true;
@@ -284,6 +288,7 @@ export default {
     if (!this.user) {
       await this.$store.dispatch("auth/fetchUser");
     }
+    
   },
   watch: {
     groupId(newId) {

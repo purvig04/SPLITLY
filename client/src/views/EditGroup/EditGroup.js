@@ -20,7 +20,7 @@ export default {
     return {
       group: {},
       newGroupName: "",
-      abc: "",
+      errorMessage: "",
     };
   },
 
@@ -36,6 +36,10 @@ export default {
       }
     },
     async renameGroup() {
+      if(!this.newGroupName){
+        this.errorMessage = "Please enter a valid group name.";
+        return;
+      }
       try {
         const { renameGroup } = await groupService.renameGroup(
           this.groupId,

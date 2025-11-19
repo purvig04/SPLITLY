@@ -2,12 +2,16 @@ import { mapGetters, mapActions } from "vuex";
 import { groupService } from "@/services/groups.service";
 import { userService } from "@/services/user.service";
 import { expenseService } from "@/services/expenses.service";
+import ExpenseDetail from "../ExpenseDetailModal/ExpenseDetail.vue";
 export default {
   name: "GroupPage",
+  components: { ExpenseDetail },
   data() {
     return {
       group: null,
       expenses: [],
+      selectedExpense: null,
+      showExpenseModal: false,
       isModalOpen: false, // Add Member Modal
       isShowMembersOpen: false, // Show Members Modal
       owedToYou: [
@@ -109,6 +113,16 @@ export default {
       return payerAmount - sharerAmount;
     },
 
+    async openExpenseModal(expenseId) {
+      const { getExpenseById } = await expenseService.getExpenseById(expenseId);
+      this.selectedExpense = getExpenseById;
+      this.showExpenseModal = true;
+    },
+    closeExpenseModal() {
+      this.selectedExpense = null;
+      this.showExpenseModal = false;
+    },
+
     async fetchGroupDetail() {
       try {
         const { getGroupDetails } = await groupService.getGroupDetails(
@@ -122,6 +136,10 @@ export default {
         console.error("Error loading group:", error);
         this.$router.push("/groups");
       }
+    },
+
+    async refreshGroup(){
+      await this.fetchGroupDetail();
     },
     async loadExpenses() {
       this.loadingExpenses = true;
@@ -227,8 +245,8 @@ export default {
     },
     getYourShareText(expense) {
       const share = this.getAmountShared(expense);
-      if (share > 0) return `you lent ₹${share}`;
-      if (share < 0) return `you owe ₹${Math.abs(share)}`;
+      if (share > 0) return `you lent ₹${share.toFixed(2)}`;
+      if (share < 0) return `you owe ₹${Math.abs(share).toFixed(2)}`;
       return "Not included";
     },
     getShareClass(expense) {
@@ -249,11 +267,11 @@ export default {
         query: { source: "group", groupId: this.groupId },
       });
     },
-    viewExpense(expenseId) {
-      this.$router.push(`/expenses/${expenseId}`);
-    },
     toggleModal() {
       this.isModalOpen = !this.isModalOpen;
+      if(this.isModalOpen===false){
+        this.selectedFriends = []
+      }
     },
     openShowMembers() {
       this.isShowMembersOpen = true;
@@ -270,6 +288,7 @@ export default {
     if (!this.user) {
       await this.$store.dispatch("auth/fetchUser");
     }
+    
   },
   watch: {
     groupId(newId) {

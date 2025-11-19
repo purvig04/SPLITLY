@@ -6,13 +6,14 @@ scalar DateTime
     type Expense{
         id:String!
         title: String!
-        description: String!
+        description: String
         groupId: String
         totalAmount: Float!
         categoryId: String!
         paid_by:JSON
         shared_amounts:JSON
         created_by: String!
+        updated_by:String!
         is_settled:Boolean
         createdAt: DateTime!
         updatedAt: DateTime!
@@ -20,6 +21,7 @@ scalar DateTime
         category: Category!
         group: Group
         createdByUser: User!
+        updatedByUser:User
     }
 
     
@@ -49,6 +51,6 @@ scalar DateTime
     type Mutation {
         createExpense(input: CreateExpenseInput!): Expense!
         updateExpense(id: String!, input: UpdateExpenseInput!): Expense!
-        deleteExpense(id: Int!): Boolean!
+        deleteExpense(id: String!): Boolean!
     }
 `;

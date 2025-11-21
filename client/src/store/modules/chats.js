@@ -3,11 +3,13 @@ import {
   sendChat,
   subscribeToMessage,
 } from "@/services/chat.service";
+import { getFriendById } from "@/services/friends.service";
 
 const state = () => ({
   chats: [],
   loading: false,
   subscription: null,
+  groupId: null,
 });
 
 const mutations = {
@@ -30,15 +32,24 @@ const mutations = {
   CLEAR_SUBSCRIPTION(state) {
     state.subscription = null;
   },
+
+  SET_GROUP_ID(state, id) {
+    state.groupId = id;
+  },
 };
 
 const actions = {
-  async loadChats({ commit }, group_id) {
+  async loadChats({ commit, state, dispatch }, payload) {
     commit("SET_LOADING", true);
     try {
-      const chats = await getChats(group_id);
-      // chats.sort((a, b) => a.createdAt - b.createdAt);
-      commit("SET_CHATS", chats);
+      await dispatch("setGroupId", payload);
+
+      if (state.groupId) {
+        const chats = await getChats(state.groupId);
+        commit("SET_CHATS", chats);
+      } else {
+        commit("SET_CHATS", []);
+      }
     } catch (err) {
       console.log("An error occured:", err);
     } finally {
@@ -46,12 +57,18 @@ const actions = {
     }
   },
 
-  async sendChat({ commit, dispatch }, payload) {
+  async sendChat({ commit, dispatch, state }, payload) {
     commit("SET_LOADING", true);
     try {
-      await sendChat(payload);
-      // console.log("Sent Chat:", chat);
-      await dispatch("loadChats", payload.group_id);
+      if (state.groupId) {
+        await sendChat({
+          group_id: state.groupId,
+          chatMessage: payload.chatMessage,
+        });
+        await dispatch("loadChats", { id: payload.id, type: payload.type });
+      } else {
+        console.log("Not a friend");
+      }
     } catch (err) {
       console.log("An error occured:", err);
     } finally {
@@ -59,20 +76,22 @@ const actions = {
     }
   },
 
-  subscribeToChats({ commit, state }, group_id) {
-    if (state.subscription) return;
+  async subscribeToChats({ commit, state }) {
+    if (state.groupId) {
+      if (state.subscription) return;
 
-    const subscription = subscribeToMessage(group_id, (newMessage) => {
-      commit("ADD_CHAT", {
-        ...newMessage,
-        sentByYou:
-          newMessage.senderId === sessionStorage.getItem("userId")
-            ? true
-            : false,
+      const subscription = subscribeToMessage(state.groupId, (newMessage) => {
+        commit("ADD_CHAT", {
+          ...newMessage,
+          sentByYou:
+            newMessage.senderId === sessionStorage.getItem("userId")
+              ? true
+              : false,
+        });
       });
-    });
 
-    commit("SET_SUBSCRIPTION", subscription);
+      commit("SET_SUBSCRIPTION", subscription);
+    }
   },
 
   stopSubscription({ state, commit }) {
@@ -81,10 +100,27 @@ const actions = {
       commit("CLEAR_SUBSCRIPTION");
     }
   },
+
+  async setGroupId({ commit }, payload) {
+    const { id, type } = payload;
+    if (type === "friends") {
+      const f = await getFriendById(id);
+      if (f) {
+        commit("SET_GROUP_ID", f.groupId);
+      } else {
+        commit("SET_GROUP_ID", null);
+      }
+    } else {
+      commit("SET_GROUP_ID", id);
+    }
+  },
 };
 
 const getters = {
-  getChats: (state) => state.chats,
+  getChats: (state) => {
+    console.log("Chats store:", state.chats);
+    return state.chats;
+  },
   getSubscription: (state) => state.subscription,
 };
 

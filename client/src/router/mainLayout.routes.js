@@ -23,10 +23,27 @@ export default {
       path: "/friends",
       component: FriendsPage,
       children: [
-        { name: "Chats", path: "chats/:friendId", component: ChatsPage },
+        {
+          name: "Chats",
+          path: "chats/:id",
+          component: ChatsPage,
+          props: true,
+        },
       ],
     },
-    { name: "Groups", path: "/groups", component: AllGroups },
+    {
+      name: "Groups",
+      path: "/groups",
+      component: AllGroups,
+      children: [
+        {
+          name: "GroupChats",
+          path: "chats/:id",
+          component: ChatsPage,
+          props: true,
+        },
+      ],
+    },
     { name: "Group", path: "/group/:id", component: GroupPage, props: true },
     {
       name: "EditGroup",

@@ -2,6 +2,7 @@ import { mapActions, mapGetters } from "vuex";
 import ChatTab from "./ChatTab/ChatTab.vue";
 import ExpenseTab from "./ExpenseTab/ExpenseTab.vue";
 import { getInitials } from "@/utils/stringHelpers";
+
 export default {
   name: "ChatsPage",
 
@@ -10,69 +11,110 @@ export default {
     ExpenseTab,
   },
 
+  props: {
+    id: {
+      type: String,
+      required: true,
+    },
+  },
+
   data() {
     return {
       activeTab: "expenses",
       friend: null,
       loading: false,
-      friendId: null,
+      group: null,
     };
   },
+
   computed: {
     ...mapGetters("friends", ["getFriends"]),
+    ...mapGetters("group", ["getGroups"]),
     friendsData() {
       return this.getFriends;
     },
+    groupsData() {
+      return this.getGroups;
+    },
   },
+
   watch: {
     friendsData: {
       async handler(newVal) {
-        if (newVal?.length && this.friendId) {
+        if (newVal?.length && this.id) {
           await this.loadFriendData();
         }
       },
       deep: true,
     },
-    "$route.params.friendId": {
-      immediate: true,
-      handler(newId) {
-        this.setFriendId(newId);
-      },
-    },
-    friendId: {
+    id: {
       immediate: true,
       async handler() {
-        if (this.friendId) {
+        if (this.id) {
           await this.loadFriendData();
+          await this.loadGroupData();
         }
       },
     },
+    groupsData: {
+      async handler(newVal) {
+        if (newVal?.length && this.id) {
+          await this.loadGroupData();
+        }
+      },
+      deep: true,
+    },
   },
+
   methods: {
     ...mapActions("chats", ["loadChats"]),
-    setFriendId(id) {
-      this.friendId = id;
+
+    goToDetails() {
+      if (this.group) {
+        this.$router.push({ name: "Group", params: { id: this.id } });
+      }
     },
-    async loadFriendData() {
+
+    loadFriendData() {
       this.setLoading(true);
       try {
-        const friend = this.friendsData.find((f) => f.id === this.friendId);
+        const friend = this.friendsData.find((f) => f.id === this.id);
         this.friend = friend ? { ...friend } : null;
-        if (this.friend && this.friend.groupId) {
-          await this.loadChats(this.friend.groupId);
-        }
+        // console.log("Friend Chat:", this.friend);
       } catch (error) {
         console.error("Error loading friend data:", error);
       } finally {
         this.setLoading(false);
       }
     },
+
+    loadGroupData() {
+      this.setLoading(true);
+      try {
+        const group = this.groupsData.find((g) => g.id === this.id);
+        this.group = group ? { ...group } : null;
+        // console.log("Group Chat:", this.group);
+      } catch (error) {
+        console.error("Error loading group data:", error);
+      } finally {
+        this.setLoading(false);
+      }
+    },
+
     setLoading(state) {
       this.loading = state;
     },
+
     closeDetail() {
-      this.$router.push({ name: "Friends" });
+      if (this.$route.path.includes("/friends")) {
+        this.$router.push({ name: "Friends" });
+      } else if (this.$route.path.includes("/groups")) {
+        this.$router.push({ name: "Groups" });
+      } else {
+        this.$router.go(-1);
+      }
     },
+
     getInitial(name) {
       return getInitials(name);
     },

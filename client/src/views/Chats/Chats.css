@@ -36,7 +36,7 @@
   align-items: center;
   flex: 1;
 }
-.friend-avatar-large {
+.avatar-large {
   width: 48px;
   height: 48px;
   border-radius: 50%;
@@ -49,6 +49,7 @@
   font-size: 1.1rem;
   flex-shrink: 0;
   border: 2px solid rgba(255, 255, 255, 0.3);
+  cursor: pointer;
 }
 .panel-header h4 {
   color: white;

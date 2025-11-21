@@ -34,8 +34,6 @@ export const chatResolvers = {
   Subscription: {
     messageAdded: {
       subscribe: (_, { group_id }) => {
-        console.log("Subscribing with pubsub", !!pubsub);
-
         return pubsub.asyncIterableIterator([`MESSAGE_SENT_${group_id}`]);
       },
     },

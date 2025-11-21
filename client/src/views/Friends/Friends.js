@@ -18,14 +18,14 @@ export default {
         : null;
     },
     hasChatPanel() {
-      return !!this.$route.params.friendId;
+      return !!this.$route.params.id;
     },
   },
 
   methods: {
     ...mapActions("friends", ["loadFriends"]),
     goToFriendChat(friendId) {
-      this.$router.push({ name: "Chats", params: { friendId } });
+      this.$router.push({ name: "Chats", params: { id: friendId } });
     },
     goToAddExpense() {
       this.$router.push({ name: "AddExpense", query: { source: "friends" } });

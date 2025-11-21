@@ -8,6 +8,9 @@ export default {
     groups() {
       return this.getGroups;
     },
+    hasChatPanel() {
+      return !!this.$route.params.id;
+    },
   },
   data() {
     return {
@@ -44,7 +47,7 @@ export default {
       this.fetchGroups("GROUP");
     },
     goToGroup(id) {
-      this.$router.push(`/group/${id}`);
+      this.$router.push({ name: "GroupChats", params: { id } });
     },
     goBack() {
       this.$router.push("/home");

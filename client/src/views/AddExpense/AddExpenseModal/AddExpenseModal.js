@@ -111,7 +111,7 @@ export default {
       if (source === "group" && groupId) {
         this.$router.push({ name: "Group", params: { id: groupId } });
       } else if (source === "friend" && friendId) {
-        this.$router.push({ name: "Chats", params: { friendId } });
+        this.$router.push({ name: "Chats", params: { id: friendId } });
       } else if (source === "friends") {
         this.$router.push({ name: "Friends" });
       } else if (source === "groups") {
@@ -142,18 +142,7 @@ export default {
     },
 
     async handleSubmit(expenseData) {
-      this.expenseData.title = expenseData.title;
-      this.expenseData.description = expenseData.description;
-      this.expenseData.totalAmount = expenseData.totalAmount;
-      this.expenseData.categoryId = expenseData.categoryId;
-
-      this.expenseData.paid_by = Object.entries(expenseData.paid_by || {}).map(
-        ([userId, amount]) => ({ userId, amount })
-      );
-
-      this.expenseData.shared_amounts = Object.entries(
-        expenseData.shared_amounts || {}
-      ).map(([userId, amount]) => ({ userId, amount }));
+      this.expenseData = { ...expenseData };
 
       if (this.selectedGroupId) {
         this.expenseData.groupId = this.selectedGroupId;
@@ -167,6 +156,8 @@ export default {
       } else {
         this.expenseData.groupId = null;
       }
+
+      console.log("Expense Data:", this.expenseData);
 
       await createExpense(JSON.parse(JSON.stringify(this.expenseData)));
 

@@ -3,14 +3,16 @@
     <!-- Header -->
     <div class="panel-header">
       <div class="friend-info-header">
-        <div class="friend-avatar-large">
-          {{ getInitial(friend ? friend.name : "N A") }}
+        <div class="avatar-large" @click="goToDetails">
+          {{ getInitial(friend ? friend.name : group ? group.title : "N A") }}
         </div>
         <div>
-          <h4 class="mb-1">{{ friend?.name }}</h4>
+          <h4 class="mb-1">
+            {{ friend ? friend.name : group ? group.title : "N A" }}
+          </h4>
           <div class="balance-summary">
             <span v-if="friend?.owedToYou > 0" class="text-success-custom">
-              owes you ₹{{ friend?.owedToYou.toFixed(2) }}
+              you are owed ₹{{ friend?.owedToYou.toFixed(2) }}
             </span>
             <span v-else-if="friend?.youOwe > 0" class="text-danger-custom">
               you owe ₹{{ friend?.youOwe.toFixed(2) }}
@@ -42,10 +44,18 @@
     </div>
     <!-- Tab Content -->
     <div class="panel-content">
-      <ExpenseTab v-if="activeTab === 'expenses'" :friendId="friendId"/>
-      <ChatTab v-else :groupId="friend.groupId"/>
+      <ExpenseTab
+        v-if="activeTab === 'expenses'"
+        :friendId="id"
+        :page="group ? 'groups' : 'friends'"
+      />
+      <ChatTab v-else :id="id" :page="group ? 'groups' : 'friends'" />
     </div>
   </div>
 </template>
+
+import group from '@/store/modules/group.js'; import group from
+'@/store/modules/group.js';
+
 <script src="./Chats.js" />
 <style src="./Chats.css" scoped />

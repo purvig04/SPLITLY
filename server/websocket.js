@@ -31,8 +31,6 @@ export function setupWebSocket(httpServer, schema) {
         }
 
         const user = token ? await findUser(token) : null;
-        console.log("Subs with pubsub:", !!pubsub, "User:", user);
-        
         return { prisma, pubsub, user };
       },
       keepAlive: 10000,

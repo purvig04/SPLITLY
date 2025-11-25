@@ -11,6 +11,7 @@ export const userTypeDefs = `#graphql
     type Query{
         getUser:User
         checkUserExists(email:String!):Boolean!
+        getUserById(userId: ID!): User
     }
 
 

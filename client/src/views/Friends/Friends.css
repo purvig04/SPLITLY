@@ -1,8 +1,9 @@
 .main {
   margin-top: 4rem;
-  min-height: calc(100vh - 4rem);
+  height: calc(100vh - 4rem);
   background: #dcf1ee;
   padding: 2rem 0;
+  overflow-y: auto;
 }
 .container {
   max-width: 1200px;

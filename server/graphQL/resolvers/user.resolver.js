@@ -13,7 +13,17 @@ export const userResolvers = {
       return context.user;
     },
 
-    async checkUserExists(_,{email},{prisma}){
+    async getUserById(_, { userId }, __) {
+      const user = await prisma.user.findUnique({
+        where: {
+          id: userId,
+        },
+      });
+
+      return user;
+    },
+
+    async checkUserExists(_, { email }, { prisma }) {
       const user = await prisma.user.findUnique({
         where: {
           email,
@@ -21,7 +31,7 @@ export const userResolvers = {
       });
 
       return !!user;
-    }
+    },
   },
 
   Mutation: {

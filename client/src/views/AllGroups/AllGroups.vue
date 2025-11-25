@@ -1,5 +1,5 @@
 <template>
-  <div class="main">
+  <div class="main" :class="{ 'has-chat-panel': hasChatPanel }">
     <div class="container my-4">
       <button
         class="btn btn-link text-muted p-0 mb-3"
@@ -90,6 +90,7 @@
         </div>
       </div>
     </div>
+    <router-view></router-view>
   </div>
 </template>
 

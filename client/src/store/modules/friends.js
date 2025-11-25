@@ -1,4 +1,6 @@
 import { fetchFriends } from "@/services/friends.service";
+import { groupService } from "@/services/groups.service";
+import { getUserById } from "@/services/user.service";
 
 const state = () => ({
   friends: [],
@@ -26,6 +28,23 @@ const actions = {
       commit("SET_FRIENDS", []);
     } finally {
       commit("SET_LOADING", false);
+    }
+  },
+
+  async createFriend(_, friendId) {
+    try {
+      const { name: friendName, email } = await getUserById(friendId);
+      const { name } = await getUserById(sessionStorage.getItem("userId"));
+
+      const title = `${name.split(" ")[0]}_${friendName.split(" ")[0]}`;
+      const { createGroup } = await groupService.createGroup(title, "PERSONAL");
+      const groupId = createGroup.id;
+
+      await groupService.addMemberToGroup(groupId, [email]);
+
+      return groupId
+    } catch (error) {
+      console.log("Error creating Friend", error);
     }
   },
 };

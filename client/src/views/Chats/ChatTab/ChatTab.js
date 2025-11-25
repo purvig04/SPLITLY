@@ -1,12 +1,28 @@
+import { getFriendById } from "@/services/friends.service";
+import { getUserById } from "@/services/user.service";
 import { mapActions, mapGetters } from "vuex";
 
 export default {
   name: "ChatTab",
-  props: ["groupId"],
+
+  props: {
+    id: {
+      type: String,
+      required: true,
+    },
+    page: {
+      type: String,
+      required: true,
+      validator: (value) => ["friends", "groups"].includes(value),
+    },
+  },
 
   data() {
     return {
       newMessage: "",
+      isFriend: false,
+      isCheckingFriend: false,
+      userCache: {},
     };
   },
 
@@ -15,19 +31,45 @@ export default {
     chats() {
       return this.getChats;
     },
+    shouldShowMessageBar() {
+      return this.isFriend;
+    },
+    shouldShowStartChatButton() {
+      return !this.isFriend && !this.isCheckingFriend;
+    },
+    isGroupChat() {
+      return this.page === "groups";
+    },
   },
 
   watch: {
     chats: {
-      handler() {
+      async handler() {
+        // Load sender names for group chats
+        if (this.page === "groups") {
+          await this.loadSenderNames();
+        }
+
         this.$nextTick(() => {
           setTimeout(() => {
             this.scrollToBottom({ smooth: true });
-            // console.log("watch timeout");
           }, 1);
         });
       },
       deep: true,
+    },
+
+    id: {
+      immediate: true,
+      async handler(newId) {
+        this.userCache = {}; // Clear cache when switching chats
+        await this.stopSubscription();
+        if (this.page === "friends") await this.checkIfFriend();
+        if (this.isFriend || this.page === "groups") {
+          await this.loadChats({ id: newId, type: this.page });
+          await this.subscribeToChats();
+        }
+      },
     },
   },
 
@@ -39,6 +81,8 @@ export default {
       "stopSubscription",
     ]),
 
+    ...mapActions("friends", ["createFriend"]),
+
     formatDate(date) {
       return new Date(date).toLocaleDateString("en-US", {
         month: "short",
@@ -46,6 +90,7 @@ export default {
         year: "numeric",
       });
     },
+
     formatTime(timestamp) {
       const date = new Date(timestamp);
       const hours = date.getHours();
@@ -61,8 +106,9 @@ export default {
 
       if (!text) return;
       const message = {
-        group_id: this.groupId,
+        id: this.id,
         chatMessage: this.newMessage,
+        type: this.page,
       };
 
       await this.sendChat(message);
@@ -71,7 +117,6 @@ export default {
       this.$nextTick(() => {
         setTimeout(() => {
           this.scrollToBottom({ smooth: true });
-          // console.log("sendmessage timeout");
         }, 30);
       });
     },
@@ -80,30 +125,80 @@ export default {
       this.$nextTick(() => {
         const bottomAnchor = this.$refs.bottomAnchor;
         if (bottomAnchor) {
-          bottomAnchor.scrollIntoView({ behavior: "smooth" }); // Smooth scrolling
+          bottomAnchor.scrollIntoView({ behavior: "smooth" });
         }
       });
+    },
+
+    async handleStartChat() {
+      try {
+        await this.createFriend(this.id);
+        await this.checkIfFriend();
+        if (this.isFriend) {
+          await this.loadChats({ id: this.id, type: this.page });
+          await this.subscribeToChats();
+        }
+        console.log("Friend Created successfully");
+      } catch (error) {
+        console.log("Error creating friend", error);
+      }
+    },
+
+    async checkIfFriend() {
+      this.isCheckingFriend = true;
+      try {
+        const result = await getFriendById(this.id);
+        if (!result) {
+          this.isFriend = false;
+        } else {
+          this.isFriend = true;
+        }
+      } catch (error) {
+        console.log("Error checking friend status:", error);
+        this.isFriend = false;
+      } finally {
+        this.isCheckingFriend = false;
+      }
+    },
+
+    async getSenderName(senderId) {
+      if (this.userCache[senderId]) {
+        return this.userCache[senderId];
+      }
+
+      try {
+        const user = await getUserById(senderId);
+        const userName = user?.name || "Unknown User";
+        this.userCache[senderId] = userName;
+        return userName;
+      } catch (error) {
+        console.error("Error fetching user:", error);
+        return "Unknown User";
+      }
+    },
+
+    async loadSenderNames() {
+      if (this.page === "groups" && this.chats?.length) {
+        const senderIds = [...new Set(this.chats.map((msg) => msg.senderId))];
+        await Promise.all(senderIds.map((id) => this.getSenderName(id)));
+      }
+    },
+
+    goToSender(id) {
+      this.$router.push({ name: "Chats", params: { id } });
     },
   },
 
   async mounted() {
-    this._previousBodyOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-
-    await this.loadChats(this.groupId);
-
+    if (this.page === "friends") await this.checkIfFriend();
     this.$nextTick(() => {
       setTimeout(() => {
         this.scrollToBottom({ instant: true });
-        // console.log("mounted timeout");
       }, 30);
     });
-
-    this.subscribeToChats(this.groupId);
   },
 
   beforeUnmount() {
-    document.body.style.overflow = this._previousBodyOverflow || "";
     this.stopSubscription();
   },
 };

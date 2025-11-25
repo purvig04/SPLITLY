@@ -223,7 +223,8 @@ export default {
         ).length;
 
         if (includedCount < 2) {
-          this.splitError = "At least two members must be included in the split";
+          this.splitError =
+            "At least two members must be included in the split";
           return;
         }
       }
@@ -349,13 +350,47 @@ export default {
     handleSubmit() {
       if (!this.isFormValid) return;
 
+      const shared_amounts = this.allParticipants.map((participant) => {
+        let amount = 0;
+
+        if (this.formData.splitMethod === "equal") {
+          amount = this.splits[participant.id] || 0;
+        } else if (this.formData.splitMethod === "unequal") {
+          amount = parseFloat(this.splits[participant.id]) || 0;
+        } else if (this.formData.splitMethod === "percentage") {
+          const percentage = parseFloat(this.splits[participant.id]) || 0;
+          amount = (parseFloat(this.formData.amount) * percentage) / 100;
+        } else if (this.formData.splitMethod === "shares") {
+          const totalShares = Object.values(this.splits).reduce(
+            (sum, shares) => {
+              return sum + (parseInt(shares) || 1);
+            }
+          );
+          const amountPerShare = parseFloat(this.formData.amount) / totalShares;
+          const participantShares = parseInt(this.splits[participant.id]) || 1;
+          amount = amountPerShare * participantShares;
+        }
+
+        return {
+          userId: participant.id,
+          amount: parseFloat(amount.toFixed(2)),
+        };
+      });
+
+      const paid_by = Object.keys(this.paidBy)
+        .filter((participantId) => this.selectedPaidBy.has(participantId))
+        .map((participantId) => ({
+          userId: participantId,
+          amount: parseFloat(this.paidBy[participantId]) || 0,
+        }));
+
       const expenseData = {
         title: this.formData.title,
         description: this.formData.description,
         totalAmount: parseFloat(this.formData.amount),
         categoryId: this.formData.category,
-        paid_by: { ...this.paidBy },
-        shared_amounts: { ...this.splits },
+        paid_by,
+        shared_amounts,
       };
 
       this.$emit("submit", expenseData);

@@ -1,15 +1,22 @@
+import { getFriendById } from "@/services/friends.service";
+import { mapActions } from "vuex";
+
 export default {
   name: "ExpenseTab",
 
-  props: ["friendId"],
+  props: ["friendId", "page"],
 
   data() {
     return {
       expenses: [],
+      isFriend: false,
+      isCheckingFriend: true,
     };
   },
 
   methods: {
+    ...mapActions("friends", ["createFriend"]),
+
     formatDate(date) {
       return new Date(date).toLocaleDateString("en-US", {
         month: "short",
@@ -47,20 +54,35 @@ export default {
     setExpenses() {
       this.expenses = this.getMockExpenses();
     },
-    goToAddExpense() {
-      // console.log("Expense tab Fid:", this.friendId);
-      this.$router.push({ name: "AddExpense", query: { source: "friend", friendId: this.friendId } });
+    async goToAddExpense() {
+      await this.checkIfFriend();
+
+      if (!this.isFriend) {
+        await this.createFriend(this.friendId);
+      }
+
+      this.$router.push({
+        name: "AddExpense",
+        query: { source: "friend", friendId: this.friendId },
+      });
+    },
+
+    async checkIfFriend() {
+      try {
+        const result = await getFriendById(this.friendId);
+        if (!result) {
+          this.isFriend = false;
+        } else {
+          this.isFriend = true;
+        }
+      } catch (error) {
+        console.log("Error checking friend status:", error);
+        this.isFriend = false;
+      }
     },
   },
 
   mounted() {
-    this._previousBodyOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    
     this.setExpenses();
-  },
-
-  beforeUnmount() {
-    document.body.style.overflow = this._previousBodyOverflow || "";
   },
 };

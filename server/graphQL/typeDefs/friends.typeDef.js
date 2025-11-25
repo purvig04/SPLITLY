@@ -1,6 +1,7 @@
 export const friendsTypeDefs = `#graphql
     type Query {
-        getFriends: [Friend!]!
+        getAllFriends: [Friend!]!
+        getFriendById(friendId: ID!): PersonalFriend
     }
 
     type Friend {
@@ -13,5 +14,10 @@ export const friendsTypeDefs = `#graphql
         groupType: String
         owedToYou: Float
         youOwe: Float
+    }
+
+    type PersonalFriend {
+        groupId: ID
+        name: String
     }
 `;

@@ -34,10 +34,22 @@
   background-color: #225750;
 }
 
-.close-button{
+.close-button {
   background-color: gray;
 }
 
-.close-button:hover{
+.close-button:hover {
   background-color: rgb(180, 180, 180);
+}
+
+/*Chat Panel Adjustments*/
+
+.main.has-chat-panel {
+  margin-right: 20rem;
+}
+
+@media (max-width: 768px) {
+  .main.has-chat-panel {
+    margin-right: 0;
+  }
 }

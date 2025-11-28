@@ -4,6 +4,7 @@ import { userResolvers } from "./user.resolver.js";
 import { chatResolvers } from "./chats.resolver.js";
 import { categoriesResolvers } from "./categories.resolver.js";
 import { expensesResolvers } from "./expenses.resolver.js";
+import { settlementsResolvers } from "./settlements.resolver.js";
 
 export const resolvers = [
   userResolvers,
@@ -11,5 +12,6 @@ export const resolvers = [
   friendsResolvers,
   chatResolvers,
   categoriesResolvers,
-  expensesResolvers
+  expensesResolvers,
+  settlementsResolvers
 ];

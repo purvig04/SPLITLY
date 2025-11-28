@@ -4,7 +4,8 @@
     "@apollo/subgraph": "^2.11.3",
     "@as-integrations/express4": "^1.1.2",
     "@graphql-tools/schema": "^10.0.25",
-    "@prisma/client": "^6.16.3",
+    "@prisma/adapter-pg": "^7.0.0",
+    "@prisma/client": "^7.0.0",
     "bcrypt": "^6.0.0",
     "body-parser": "^2.2.0",
     "cookie-parser": "^1.4.7",
@@ -17,16 +18,15 @@
     "graphql-type-json": "^0.3.2",
     "graphql-ws": "^6.0.6",
     "jsonwebtoken": "^9.0.2",
+    "pg": "^8.16.3",
     "ws": "^8.18.3"
   },
   "name": "server",
   "version": "1.0.0",
-  "prisma": {
-    "seed": "node prisma/seed.js"
-  },
   "main": "app.js",
   "scripts": {
-    "start": "nodemon app.js"
+    "start": "nodemon app.js",
+    "seed": "node prisma/seed.js"
   },
   "type": "module",
   "keywords": [],
@@ -34,6 +34,7 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
-    "prisma": "^6.16.3"
+    "nodemon": "^3.1.11",
+    "prisma": "^7.0.0"
   }
 }

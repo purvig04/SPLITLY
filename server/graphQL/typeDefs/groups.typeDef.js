@@ -32,6 +32,7 @@ export const groupTypeDefs = `#graphql
         type:GroupType!
         createdById : String!
         members : [GroupMember!]!
+        currentCycleId:Int!
     }
 
     type GroupMember {

@@ -37,7 +37,7 @@
           <!-- Step 2: Group Members Selection -->
           <div v-else-if="currentStep === 2" key="step-2" class="modal-content">
             <MemberSelection
-              :group-id="selectedGroupId"
+              :groupId="selectedGroupId"
               :selected-members="selectedMembers"
               @update:selected-members="updateSelectedMembers"
             />

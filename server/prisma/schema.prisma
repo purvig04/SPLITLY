@@ -4,7 +4,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -15,6 +14,7 @@ model User {
   contact   String   @map("phone_no")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt
+  profilePic String?
 
     createdGroups Group[] @relation("UserToGroup") //since user can create many groups
     memberOf GroupMember[] @relation("UserToMembers") //since user can be in more than one group
@@ -23,6 +23,7 @@ model User {
     payer Settlement[] @relation("Payer")
     receiver Settlement[] @relation("Receiver")
       Chats         Chats[]
+      settlementCreator Settlement[] @relation("Creator")
 
 
   @@map("users")
@@ -32,6 +33,7 @@ model Group {
   id          String    @id @default(uuid())
   title       String
   type        GroupType
+  currentCycleId Int @default(1)
   createdById String
   createdBy   User      @relation("UserToGroup", fields: [createdById], references: [id])
 
@@ -84,6 +86,7 @@ model Expense{
   id String @id @default(uuid()) 
   title String
   description String?
+  cycleId Int
 
   group Group? @relation("GroupExpenses",fields: [groupId], references: [id])
   groupId String?
@@ -115,6 +118,8 @@ model Settlement{
     group Group @relation("GroupSettlement",fields: [group_id], references: [id])
     group_id String
 
+    cycleId     Int 
+
     payer User @relation("Payer",fields: [payer_id], references: [id])
     payer_id String
 
@@ -122,6 +127,10 @@ model Settlement{
     receiver_id String
 
     amount Float
+
+     settlementCreator User @relation("Creator",fields: [created_by], references: [id])
+    created_by String
+
     created_at DateTime @default(now())
 
     @@map("settlement")

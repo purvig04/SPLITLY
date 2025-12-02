@@ -154,6 +154,8 @@ async function main() {
 
 main()
   .then(() => console.log("Categories seeded"))
-  .catch(console.error())
+  .catch((err) => {
+    console.error(err);
+  })
   .finally(() => prisma.$disconnect());
 

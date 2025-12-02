@@ -13,10 +13,11 @@ scalar DateTime
         paid_by:JSON
         shared_amounts:JSON
         created_by: String!
-        updated_by:String!
-        is_settled:Boolean
+        updated_by:String
+        is_Settled:Boolean
         createdAt: DateTime!
         updatedAt: DateTime!
+        cycleId:Int!
 
         category: Category!
         group: Group
@@ -48,9 +49,21 @@ scalar DateTime
         getExpensesByGroup(groupId: String!): [Expense!]!
         getExpenseById(id: String!): Expense!
     }
+    type BalanceEntry{
+        userId:String!
+        amount:Float!
+    }
+
+    type SettleGroupPayload{
+        message:String!
+        balanceArray:[BalanceEntry]!
+    }
+
     type Mutation {
         createExpense(input: CreateExpenseInput!): Expense!
         updateExpense(id: String!, input: UpdateExpenseInput!): Expense!
         deleteExpense(id: String!): Boolean!
+        settleGroup(groupId:String!):SettleGroupPayload!
+
     }
 `;

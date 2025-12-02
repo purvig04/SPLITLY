@@ -233,3 +233,24 @@
   flex-direction: column;
   gap: 3px;
 }
+
+.settle-up-btn {
+  background-color: #225750;
+  color: white;
+  border-radius: 25px;
+  padding: 5px 12px;
+  font-size: 16px;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+}
+.settle-up-btn:hover {
+  background-color: rgba(34, 87, 80,0.9);
+}
+.settle-up-btn:disabled {
+  opacity: 0.8;
+  cursor: not-allowed;
+
+}

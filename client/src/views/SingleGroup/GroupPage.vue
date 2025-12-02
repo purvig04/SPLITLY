@@ -4,18 +4,19 @@
       <div class="whole-section mt-4 pt-3 border-top">
         <!-- Group Header Card -->
         <div class="group-header-card">
-          <div class="d-flex justify-content-between align-items-start mb-3">
+          <div class="d-flex justify-content-between align-items-start">
             <div class="flex-grow-1">
               <!-- Back Button -->
               <button
-                class="btn btn-link text-muted p-0 mb-3"
+                class="btn btn-link text-muted p-0 mb-2"
                 @click="goBack"
                 title="Groups"
               >
                 <i class="fa-solid fa-arrow-left"></i>
               </button>
-              <h2 class="mb-2">{{ group?.title }}</h2>
-              <p class="text-muted mb-2" v-if="group?.description">
+
+              <h2 class="">{{ group?.title }}</h2>
+              <p class="text-muted" v-if="group?.description">
                 {{ group.description }}
               </p>
             </div>
@@ -46,25 +47,65 @@
             </div>
           </div>
           <!-- Balances Section -->
-          <div class="balances-section mb-4">
-            <div v-if="totalOwed > 0" class="text-success fw-bold">
-              <div v-for="balance in owedToYou" :key="balance.userId">
+          <div
+            class="d-flex justify-content-between align-items-center mt-3 mb-3"
+          >
+            <div class="balances-section">
+              <div
+                v-for="item in topThreeBalances"
+                :key="item.person + '-' + item.type"
+                class="mb-1"
+              >
                 <span
-                  >{{ balance.userName }} owes you ₹{{ balance.amount }}</span
+                  v-if="item.type === 'owe'"
+                  class="text-danger fw-semibold"
                 >
+                  You owe ₹{{ item.amount.toFixed(2) }} to
+                  {{ getUserNamesById(item.person) }}
+                </span>
+
+                <span v-else class="text-success fw-semibold">
+                  {{ getUserNamesById(item.person) }} owes you ₹{{
+                    item.amount.toFixed(2)
+                  }}
+                </span>
+              </div>
+
+              <div
+                v-if="remainingBalanceCount > 0"
+                class="text-muted small mt-1"
+                @click="showSettleUpModal"
+                style="cursor: pointer"
+              >
+                + {{ remainingBalanceCount }} more…
+              </div>
+
+              <div v-if="isAllSettled" class="text-muted">
+                 🎉You are all settled up in this group.
               </div>
             </div>
-            <div v-if="totalYouOwe > 0" class="text-danger fw-bold">
-              <div v-for="balance in youOwe" :key="balance.userId">
-                <span
-                  >You owe {{ balance.userName }} ₹{{ balance.amount }}</span
-                >
-              </div>
-            </div>
-            <div v-if="totalOwed === 0 && totalYouOwe === 0" class="text-muted">
-              You are all settled up in this group.
+
+            <!-- Settle up -->
+            <div>
+              <button
+                @click="showSettleUpModal"
+                class="settle-up-btn fw-semibold"
+                :disabled="!userBalances || userBalances.length === 0"
+                title="Settle your balances"
+              >
+                Settle up
+              </button>
+
+              <GroupSettlement
+                v-if="isShowSettleUpModal"
+                :group="group"
+                :userBalances="userBalances"
+                @close="closeSettleUpModal"
+                @settlement="handleSettlement"
+              />
             </div>
           </div>
+
           <!-- Expenses Section -->
           <div class="d-flex justify-content-between align-items-center mb-3">
             <h5 class="mb-0">Expenses</h5>
@@ -156,11 +197,7 @@
       <div class="custom-modal large">
         <div class="modal-header">
           <h5 class="modal-title">Add Members</h5>
-          <button
-            type="button"
-            class="btn-close"
-            @click="toggleModal"
-          ></button>
+          <button type="button" class="btn-close" @click="toggleModal"></button>
         </div>
         <div class="modal-body">
           <!-- Search/Add by Email -->

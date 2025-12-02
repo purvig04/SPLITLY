@@ -3,9 +3,16 @@ import { groupService } from "@/services/groups.service";
 import { userService } from "@/services/user.service";
 import { expenseService } from "@/services/expenses.service";
 import ExpenseDetail from "../ExpenseDetailModal/ExpenseDetail.vue";
+import GroupSettlement from "../Settlements/GroupSettlement/GroupSettlement.vue";
+// import { checkAndSettleGroup } from "@/utils/settlements";
+import {
+  calculateUserBalanceList,
+  computeSettlements,
+} from "@/utils/settlements";
 export default {
   name: "GroupPage",
-  components: { ExpenseDetail },
+  components: { ExpenseDetail, GroupSettlement },
+  props: ["id"],
   data() {
     return {
       group: null,
@@ -14,11 +21,6 @@ export default {
       showExpenseModal: false,
       isModalOpen: false, // Add Member Modal
       isShowMembersOpen: false, // Show Members Modal
-      owedToYou: [
-        { userId: "1", userName: "John Doe", amount: 500 },
-        { userId: "2", userName: "Jane Smith", amount: 250 },
-      ],
-      youOwe: [{ userId: "3", userName: "Bob Wilson", amount: 300 }],
       selectedFriends: [],
       emailInput: "",
       userExists: null,
@@ -27,10 +29,13 @@ export default {
       addMemberResult: "",
       addMemberResultClass: "",
       checkUserTimeout: null,
+      isShowSettleUpModal: false,
+      userBalances: [],
     };
   },
+
   computed: {
-    ...mapGetters("groups", ["getGroupById", "isLoading"]),
+    ...mapGetters("group", ["getGroupById", "isLoading"]),
     ...mapGetters("friends", ["getFriends", "isLoading"]),
     ...mapGetters("auth", ["getUser"]),
     user() {
@@ -71,16 +76,20 @@ export default {
 
       return diff;
     },
-    totalOwed() {
-      return this.owedToYou.reduce((sum, item) => sum + item.amount, 0);
+
+    topThreeBalances() {
+      return this.userBalances.slice(0, 3);
     },
-    totalYouOwe() {
-      return this.youOwe.reduce((sum, item) => sum + item.amount, 0);
+    remainingBalanceCount() {
+      return Math.max(0, this.userBalances.length - 3);
+    },
+    isAllSettled() {
+      return this.userBalances.length === 0;
     },
   },
   methods: {
     ...mapActions("friends", ["loadFriends"]),
-    ...mapActions("groups", ["addMembers"]),
+    ...mapActions("group", ["addMembers", "fetchGroups"]),
 
     getUserNamesById(userId) {
       const member = this.group.members.find((m) => m.user.id === userId);
@@ -103,14 +112,18 @@ export default {
     },
 
     getAmountShared(expense) {
-      const userId = this.user.id;
-      const payer = expense.paid_by.find((p) => p.userId === userId);
-      const sharer = expense.shared_amounts.find((s) => s.userId === userId);
+      try {
+        const userId = this.user.id;
+        const payer = expense.paid_by.find((p) => p.userId === userId);
+        const sharer = expense.shared_amounts.find((s) => s.userId === userId);
 
-      const payerAmount = Number(payer?.amount || 0);
-      const sharerAmount = Number(sharer?.amount || 0);
+        const payerAmount = Number(payer?.amount || 0);
+        const sharerAmount = Number(sharer?.amount || 0);
 
-      return payerAmount - sharerAmount;
+        return payerAmount - sharerAmount;
+      } catch (e) {
+        console.error("user not found", e);
+      }
     },
 
     async openExpenseModal(expenseId) {
@@ -130,15 +143,13 @@ export default {
         );
         this.group = getGroupDetails;
         await this.loadExpenses();
-        await this.loadSuggestedFriends();
-        await this.calculateBalances();
       } catch (error) {
         console.error("Error loading group:", error);
         this.$router.push("/groups");
       }
     },
 
-    async refreshGroup(){
+    async refreshGroup() {
       await this.fetchGroupDetail();
     },
     async loadExpenses() {
@@ -147,7 +158,6 @@ export default {
         const { getExpensesByGroup } = await expenseService.getExpensesByGroup(
           this.groupId
         );
-        console.log(getExpensesByGroup);
 
         this.expenses = getExpensesByGroup;
       } catch (error) {
@@ -156,20 +166,7 @@ export default {
         this.loadingExpenses = false;
       }
     },
-    async loadSuggestedFriends() {
-      try {
-        // API call placeholder
-      } catch (error) {
-        console.error("Error loading suggested friends:", error);
-      }
-    },
-    async calculateBalances() {
-      try {
-        // Placeholder for real balance logic
-      } catch (error) {
-        console.error("Error calculating balances:", error);
-      }
-    },
+
     async checkUserExists() {
       if (this.checkUserTimeout) clearTimeout(this.checkUserTimeout);
       if (!this.isValidEmail(this.emailInput)) {
@@ -264,13 +261,13 @@ export default {
     goToAddExpense() {
       this.$router.push({
         name: "AddExpense",
-        query: { source: "group", groupId: this.groupId },
+        query: { source: "group", groupId: this.id },
       });
     },
     toggleModal() {
       this.isModalOpen = !this.isModalOpen;
-      if(this.isModalOpen===false){
-        this.selectedFriends = []
+      if (this.isModalOpen === false) {
+        this.selectedFriends = [];
       }
     },
     openShowMembers() {
@@ -279,17 +276,39 @@ export default {
     closeShowMembers() {
       this.isShowMembersOpen = false;
     },
+    showSettleUpModal() {
+      this.isShowSettleUpModal = true;
+    },
+    closeSettleUpModal() {
+      this.isShowSettleUpModal = false;
+    },
+    async fetchData() {
+      await this.fetchGroupDetail();
+      if (!this.user) {
+        await this.$store.dispatch("auth/fetchUser");
+      }
+      this.userBalances = await calculateUserBalanceList(
+        this.user.id,
+        this.group.id
+      );
+    },
+    async handleSettlement(payload) {
+      await this.fetchData();
+      console.log("payload from group js", payload);
+    },
   },
   async created() {
     await this.loadFriends();
   },
   async mounted() {
-    await this.fetchGroupDetail();
-    if (!this.user) {
-      await this.$store.dispatch("auth/fetchUser");
-    }
-    
+    await this.fetchData();
+    await computeSettlements(this.group.id);
+    await this.fetchGroups("GROUP");
   },
+  // async updated(){
+  //   await this.fetchGroups("GROUP");
+
+  // },
   watch: {
     groupId(newId) {
       this.fetchGroupDetail(newId);

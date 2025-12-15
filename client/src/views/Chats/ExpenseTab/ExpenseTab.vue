@@ -25,14 +25,23 @@
     </div>
   </div>
   <!-- Footer Actions -->
-    <div class="panel-footer">
-      <button class="btn btn-settle" @click="settleUp">
-        <i class="fa-solid fa-handshake"></i> Settle Up
-      </button>
-      <button class="btn btn-add-expense" @click="goToAddExpense">
-        <i class="fa-solid fa-plus"></i> Add Expense
-      </button>
-    </div>
+  <div class="panel-footer">
+    <button
+      class="btn btn-settle"
+      @click="showSettleUpModal"
+      title="Settle your balances"
+    >
+      <i class="fa-solid fa-handshake"></i> Settle Up
+    </button>
+    <PersonalSettlement
+      v-if="isShowSettleUpModal"
+      :friendId="friendId"
+      @close="closeSettleUpModal"
+    />
+    <button class="btn btn-add-expense" @click="goToAddExpense">
+      <i class="fa-solid fa-plus"></i> Add Expense
+    </button>
+  </div>
 </template>
 
 <script src="./ExpenseTab.js" />

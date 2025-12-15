@@ -2,6 +2,7 @@ import { mapActions, mapGetters } from "vuex";
 import ChatTab from "./ChatTab/ChatTab.vue";
 import ExpenseTab from "./ExpenseTab/ExpenseTab.vue";
 import { getInitials } from "@/utils/stringHelpers";
+import { calaculateNetWithFriend } from "@/utils/settlements";
 
 export default {
   name: "ChatsPage",
@@ -24,12 +25,17 @@ export default {
       friend: null,
       loading: false,
       group: null,
+      net: 0,
     };
   },
 
   computed: {
     ...mapGetters("friends", ["getFriends"]),
     ...mapGetters("group", ["getGroups"]),
+    ...mapGetters("auth", ["getUser"]),
+    user() {
+      return this.getUser;
+    },
     friendsData() {
       return this.getFriends;
     },
@@ -118,5 +124,10 @@ export default {
     getInitial(name) {
       return getInitials(name);
     },
+  },
+  async updated() {
+    if (this.friend) {
+      this.net = await calaculateNetWithFriend(this.user.id, this.friend.id);
+    }
   },
 };

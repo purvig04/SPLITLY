@@ -11,11 +11,11 @@
             {{ friend ? friend.name : group ? group.title : "N A" }}
           </h4>
           <div class="balance-summary">
-            <span v-if="friend?.owedToYou > 0" class="text-success-custom">
-              you are owed ₹{{ friend?.owedToYou.toFixed(2) }}
+            <span v-if="net > 0" class="text-success-custom">
+              you are owed ₹{{ Math.abs(net).toFixed(2) }}
             </span>
-            <span v-else-if="friend?.youOwe > 0" class="text-danger-custom">
-              you owe ₹{{ friend?.youOwe.toFixed(2) }}
+            <span v-else-if="net < 0" class="text-danger-custom">
+              you owe ₹{{  Math.abs(net).toFixed(2) }}
             </span>
             <span v-else class="text-muted">settled up</span>
           </div>

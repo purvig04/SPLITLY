@@ -1,4 +1,5 @@
 import { getFriendById } from "@/services/friends.service";
+import PersonalSettlement from "@/views/Settlements/PersonalSettlement/PersonalSettlement.vue";
 import { mapActions } from "vuex";
 
 export default {
@@ -6,11 +7,14 @@ export default {
 
   props: ["friendId", "page"],
 
+  components: { PersonalSettlement },
+
   data() {
     return {
       expenses: [],
       isFriend: false,
       isCheckingFriend: true,
+      isShowSettleUpModal: false,
     };
   },
 
@@ -49,6 +53,12 @@ export default {
           type: "owe",
         },
       ];
+    },
+    showSettleUpModal() {
+      this.isShowSettleUpModal = true;
+    },
+    closeSettleUpModal() {
+      this.isShowSettleUpModal = false;
     },
 
     setExpenses() {

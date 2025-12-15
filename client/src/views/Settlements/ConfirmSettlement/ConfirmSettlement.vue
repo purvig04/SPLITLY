@@ -1,25 +1,39 @@
 <template>
   <div class="modal-backdrop" @click.self="$emit('close')">
-    <div class="modal-content ">
+    <div class="modal-content">
       <!-- Close button -->
-       <div class="d-flex justify-content-end">
-      <button
-        type="button"
-        class="btn-close "
-        aria-label="Close"
-        @click="$emit('close')"
-      ></button></div>
+      <div class="d-flex justify-content-end">
+        <button
+          type="button"
+          class="btn-close"
+          aria-label="Close"
+          @click="$emit('close')"
+        ></button>
+      </div>
 
       <!-- Main message -->
-      <p class="fw-bold text-center fs-5 mb-2">
+      <p v-if="isOverall" class="fw-bold text-center fs-5 mb-2">
+        {{
+          selectedUser.net > 0
+            ? `You are settling ₹${Math.abs(selectedUser.net).toFixed(2)} ${
+                selectedUser.friendName
+              } owes you`
+            : selectedUser.net < 0
+            ? `You are settling ₹${Math.abs(selectedUser.net).toFixed(2)} you owe to ${
+                selectedUser.friendName
+              }`
+            : `You are already settled up with ${selectedUser.friendName}`
+        }}
+      </p>
+      <p v-else class="fw-bold text-center fs-5 mb-2">
         {{
           selectedUser.type === "owe"
             ? `You are settling ₹${selectedUser.amount.toFixed(
                 2
-              )} you owe to ${getUserName(selectedUser.person)}`
-            : `You are settling ₹${selectedUser.amount.toFixed(2)} ${getUserName(
-                selectedUser.person
-              )}  owe you`
+              )} you owe to ${getUserName(selectedUser.person)} in ${selectedUser.groupTitle}`
+            : `You are settling ₹${selectedUser.amount.toFixed(
+                2
+              )} ${getUserName(selectedUser.person)}  owe you in ${selectedUser.groupTitle}`
         }}
       </p>
 

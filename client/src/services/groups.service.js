@@ -6,6 +6,7 @@ const GET_GROUPS = gql`
     getGroups(type: $type) {
       title
       id
+      type
       members {
         user {
           id

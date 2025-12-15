@@ -1,18 +1,19 @@
 import { expenseService } from "@/services/expenses.service";
+import { groupService } from "@/services/groups.service";
 
 export const computeSettlements = async (groupId) => {
   try {
-    const {settleGroup} =await  expenseService.settleGroup(groupId)
+    const { settleGroup } = await expenseService.settleGroup(groupId);
     const balanceArray = settleGroup.balanceArray;
-    const balances = Object.fromEntries(balanceArray.map((b) => [b.userId, b.amount]));
-    console.log(" baalnces", balances);
+    const balances = Object.fromEntries(
+      balanceArray.map((b) => [b.userId, b.amount])
+    );
 
     if (settleGroup.message === "Group Settled") {
-      return []
+      return [];
     }
 
     const { owed, owes } = splitBalances(balances);
-    console.log(" owedowes", owed, owes);
 
     return settleUp(owed, owes);
   } catch (e) {
@@ -63,10 +64,7 @@ const settleUp = (owed, owes) => {
   return transactions;
 };
 
-export const calculateUserBalanceList = async (
-  currentUser,
-  groupId,
-) => {
+export const calculateUserBalanceList = async (currentUser, groupId) => {
   const userId = currentUser;
   const transactions = await computeSettlements(groupId);
 
@@ -82,4 +80,50 @@ export const calculateUserBalanceList = async (
     }));
 };
 
+const userAllGroups = async () => {
+  //user id is going from context
+  const arr1 = await groupService.getGroups("PERSONAL");
+  const arr2 = await groupService.getGroups("GROUP");
 
+  return [...arr1, ...arr2];
+};
+
+const userAllBalances = async (userId) => {
+  const allGroups = await userAllGroups();
+  const allTransactions = [];
+
+  for (const group of allGroups) {
+    const transaction = await calculateUserBalanceList(userId, group.id);
+
+    const groupTransactions = transaction.map((t) => ({
+      ...t,
+      groupId: group.id,
+      groupType: group.type,
+      groupTitle: group.title,
+    }));
+    allTransactions.push(...groupTransactions);
+  }
+
+  return allTransactions;
+};
+
+export const userFriendBalance = async (userId, friendId) => {
+  const allTransactions = await userAllBalances(userId);
+  const friendTransaction = allTransactions.filter(
+    (t) => t.person === friendId
+  );
+  return friendTransaction;
+};
+
+export const calaculateNetWithFriend = async (userId, friendId) => {
+  const friendTransaction = await userFriendBalance(userId, friendId);
+  let net = 0;
+  friendTransaction.forEach((t) => {
+    if (t.type === "owed") {
+      net += t.amount; // friend owes YOU
+    } else if (t.type === "owe") {
+      net -= t.amount; // YOU owe friend
+    }
+  });
+  return net;
+};

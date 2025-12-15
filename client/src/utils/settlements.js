@@ -88,7 +88,7 @@ const userAllGroups = async () => {
   return [...arr1, ...arr2];
 };
 
-const userAllBalances = async (userId) => {
+export const userAllBalances = async (userId) => {
   const allGroups = await userAllGroups();
   const allTransactions = [];
 

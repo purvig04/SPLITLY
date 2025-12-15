@@ -24,7 +24,7 @@
               <div class="card balance-card-owed h-100 shadow-sm">
                 <div class="card-body py-4">
                   <h5 class="balance-title-owed mb-3">You are owed</h5>
-                  <h3 class="balance-amount-owed fw-bold">₹{{ balances.owedToYou }}</h3>
+                  <h3 class="balance-amount-owed fw-bold">₹ {{ balances.owedToYou }}</h3>
                 </div>
               </div>
             </div>
@@ -34,7 +34,7 @@
               <div class="card balance-card-owe h-100 shadow-sm">
                 <div class="card-body py-4">
                   <h5 class="balance-title-owe mb-3">You owe</h5>
-                  <h3 class="balance-amount-owe fw-bold">₹{{ balances.youOwe }}</h3>
+                  <h3 class="balance-amount-owe fw-bold">₹ {{ balances.youOwe }}</h3>
                 </div>
               </div>
             </div>

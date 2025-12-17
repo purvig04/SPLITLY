@@ -1,6 +1,6 @@
 import apolloClient from "@/apollo";
 import { authService } from "@/services/auth.service";
-import { userService } from "@/services/user.service";
+import { updateUserDetails, userService } from "@/services/user.service";
 const state = () => ({
   userLoggedIn: !!sessionStorage.getItem("userLoggedIn"),
   userId: sessionStorage.getItem("userId") || null,
@@ -104,6 +104,25 @@ const actions = {
     } catch (err) {
       commit("SET_ERROR", err);
       console.error("Failed to fetch user data:", err);
+    }
+  },
+
+  async updateUserProfile({ dispatch /*getters*/ }, input) {
+    try {
+      console.log("Store Input:", input);
+
+      const user = await updateUserDetails(input);
+
+      // console.log("User Details Updated:", user);
+      // console.log("Before Fetch:", getters.getUser);
+
+      await dispatch("fetchUser");
+      // console.log("After Fetch:", getters.getUser);
+
+      return user;
+    } catch (error) {
+      console.log("Updating user unsuccessful:", error);
+      throw error;
     }
   },
 };

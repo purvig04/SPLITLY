@@ -6,7 +6,6 @@ export const expensesResolvers = {
 
   Query: {
     async getExpensesByGroup(_, { groupId }, { prisma }) {
-      
       return await prisma.expense.findMany({
         where: { groupId },
         orderBy: { createdAt: "desc" },
@@ -19,8 +18,6 @@ export const expensesResolvers = {
     },
 
     async getExpenseById(_, { id }, { prisma }) {
-      console.log("E Rsolver Eid:", id);
-      
       return await prisma.expense.findUnique({
         where: { id },
         include: {

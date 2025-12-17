@@ -1,5 +1,5 @@
 export const getInitials = (name) => {
-  const words = name.split(" ");
+  const words = name.trim().split(" ");
 
   if (words.length === 0) {
     return "";

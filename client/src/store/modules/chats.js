@@ -117,10 +117,7 @@ const actions = {
 };
 
 const getters = {
-  getChats: (state) => {
-    console.log("Chats store:", state.chats);
-    return state.chats;
-  },
+  getChats: (state) => state.chats,
   getSubscription: (state) => state.subscription,
 };
 

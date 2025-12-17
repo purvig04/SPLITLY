@@ -56,10 +56,15 @@ export default {
           contact: this.contact,
         });
         if (data && data.register && data.register.id) {
-          console.info(`Registration successful for user: ${data.register.email}`);
+          console.info(
+            `Registration successful for user: ${data.register.email}`
+          );
           this.$router.push("/login");
         } else {
-          console.warn("Registration failed: Invalid response from server.", data);
+          console.warn(
+            "Registration failed: Invalid response from server.",
+            data
+          );
         }
       } catch (err) {
         console.error("Registration error:", err);

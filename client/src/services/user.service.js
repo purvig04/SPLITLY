@@ -7,8 +7,10 @@ const GET_USER = gql`
       id
       name
       contact
-      createdAt
       email
+      profilePic
+      profilePicVersion
+      createdAt
       updatedAt
     }
   }
@@ -25,6 +27,23 @@ const GET_USER_BY_ID = gql`
       name
       id
       email
+      profilePic
+      profilePicVersion
+    }
+  }
+`;
+
+const UPDATE_USER_DETAILS = gql`
+  mutation UpdateUserDetails($input: UserInput!) {
+    updateUserDetails(input: $input) {
+      id
+      name
+      contact
+      email
+      profilePic
+      profilePicVersion
+      createdAt
+      updatedAt
     }
   }
 `;
@@ -33,6 +52,7 @@ export const userService = {
   async getUser() {
     const resp = await apolloClient.query({
       query: GET_USER,
+      fetchPolicy: "no-cache",
     });
     return resp.data;
   },
@@ -57,5 +77,24 @@ export const getUserById = async (userId) => {
     return data.getUserById;
   } catch (error) {
     console.log("Error getting User", error);
+  }
+};
+
+export const updateUserDetails = async (input) => {
+  try {
+    // console.log("Service Input:", input);
+
+    const { data } = await apolloClient.mutate({
+      mutation: UPDATE_USER_DETAILS,
+      variables: { input },
+      fetchPolicy: "no-cache",
+    });
+
+    console.log("Updated User:", data.updateUserDetails);
+
+    return data.updateUserDetails;
+  } catch (error) {
+    console.log("Error updating user:", error);
+    throw error;
   }
 };

@@ -6,7 +6,7 @@ export default {
   props: {
     expense: Object,
   },
-  data() {},
+  // data() {},
   computed: {
     ...mapGetters("auth", ["getUser"]),
     user() {
@@ -64,8 +64,7 @@ export default {
         if (success) {
           console.log("expense deleted");
           console.log("groupid", this.expense.groupId);
-          this.$emit('deleted')
-          
+          this.$emit("deleted");
         } else {
           console.error("Error deleting expense");
         }

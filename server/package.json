@@ -8,6 +8,7 @@
     "@prisma/client": "^7.0.0",
     "bcrypt": "^6.0.0",
     "body-parser": "^2.2.0",
+    "cloudinary": "^2.8.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^17.2.2",
@@ -26,6 +27,9 @@
   "main": "app.js",
   "scripts": {
     "start": "nodemon app.js",
+    "seed": "prisma db seed"
+  },
+  "prisma": {
     "seed": "node prisma/seed.js"
   },
   "type": "module",

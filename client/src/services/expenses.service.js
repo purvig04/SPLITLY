@@ -15,6 +15,7 @@ const GET_EXPENSES_BY_GROUP = gql`
         icon
       }
       shared_amounts
+      createdAt
     }
   }
 `;

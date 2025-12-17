@@ -109,7 +109,7 @@ export default {
       const { source, groupId, friendId } = this.$route.query;
 
       if (source === "group" && groupId) {
-        this.$router.push({ name: "Group", params: { id: groupId } });
+        this.$router.back();
       } else if (source === "friend" && friendId) {
         this.$router.push({ name: "Chats", params: { id: friendId } });
       } else if (source === "friends") {

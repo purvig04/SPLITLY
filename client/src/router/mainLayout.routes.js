@@ -7,6 +7,7 @@ import AllGroups from "@/views/AllGroups/AllGroups.vue";
 import GroupPage from "@/views/SingleGroup/GroupPage.vue";
 import EditGroup from "@/views/EditGroup/EditGroup.vue";
 import AddExpenseModal from "@/views/AddExpense/AddExpenseModal/AddExpenseModal.vue";
+import ProfilePage from "@/views/ProfilePage/ProfilePage.vue";
 
 export default {
   path: "/home",
@@ -50,6 +51,11 @@ export default {
       path: "/group/:id/edit",
       component: EditGroup,
       props: true,
+    },
+    {
+      name: "ProfilePage",
+      path: "/user-profile",
+      component: ProfilePage,
     },
   ],
 };

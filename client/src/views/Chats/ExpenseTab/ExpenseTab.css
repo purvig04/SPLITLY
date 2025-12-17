@@ -16,20 +16,29 @@
   border-radius: 10px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
   transition: all 0.2s ease;
+  position: relative;
 }
 .expense-item:hover {
   box-shadow: 0 2px 8px rgba(34, 87, 80, 0.15);
   transform: translateX(2px);
+  cursor: pointer;
 }
 .expense-icon {
   width: 36px;
   height: 36px;
-  border-radius: 8px;
-  background: #225750;
-  color: white;
+  border-radius: 100%;
+  /* background: #225750;
+  color: white; */
+  background: #f0f0f0;
+  color: #225750;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
+}
+.expense-info {
+  flex: 1;
+  min-width: 0;
 }
 .expense-info h6 {
   font-size: 0.9rem;
@@ -41,17 +50,42 @@
   font-size: 0.75rem;
   color: #9ca3af;
 }
-.expense-amount {
-  position: absolute;
-  right: 1rem;
-  font-size: 0.95rem;
-  font-weight: 700;
+.expense-amounts-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.25rem;
+  margin-left: auto;
+  flex-shrink: 0;
 }
+
+.expense-total-amount h6 {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #2d3748;
+  text-align: right;
+}
+
+.expense-amount {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding-top: 0.2rem;
+  text-align: right;
+}
+
 .expense-amount.owed {
   color: #10b981;
 }
+
 .expense-amount.owe {
   color: #ef4444;
+}
+
+.expense-amount.not-involved {
+  margin: 0;
+  color: #9ca3af;
+  font-size: 0.5 rem;
 }
 .btn-settle {
   background: #f3f4f6;
@@ -94,4 +128,26 @@
   align-items: center;
   justify-content: center;
   gap: 0.4rem;
+}
+
+/* Empty State */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  text-align: center;
+}
+.empty-state img {
+  width: 64px;
+  height: 64px;
+}
+.empty-state p {
+  margin: 0;
+  color: #9ca3af;
+  font-size: 0.9rem;
+}
+.text-muted {
+  color: rgba(255, 255, 255, 0.7);
 }

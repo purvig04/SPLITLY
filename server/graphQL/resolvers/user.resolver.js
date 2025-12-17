@@ -67,5 +67,46 @@ export const userResolvers = {
       res.clearCookie("jwt", { httpOnly: true });
       return true;
     },
+
+    async updateUserDetails(_, { input }, { prisma, user }) {
+      if (!user?.id) {
+        throw new Error("Authentication required.");
+      }
+
+      const data = {};
+
+      if (input.name !== undefined) {
+        if (input.name === null) {
+          throw new Error("Name cannot be null");
+        }
+        data.name = input.name;
+      }
+
+      if (input.contact !== undefined) {
+        if (input.contact === null) {
+          throw new Error("Contact cannot be null");
+        }
+        data.contact = input.contact;
+      }
+
+      if (input.profilePic !== undefined) {
+        data.profilePic = input.profilePic;
+      }
+
+      if (input.profilePicVersion !== undefined) {
+        data.profilePicVersion = input.profilePicVersion;
+      }
+
+      if (Object.keys(data).length === 0) {
+        throw new Error("No fields provided to update");
+      }
+
+      const updatedUser = await prisma.user.update({
+        where: { id: user.id },
+        data,
+      });
+
+      return updatedUser;
+    },
   },
 };

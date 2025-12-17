@@ -5,6 +5,7 @@ import { chatTypeDefs } from "./chats.typeDef.js";
 import { expensesTypeDefs } from "./expenses.typeDef.js";
 import { categoriesTypeDefs } from "./categories.typeDef.js";
 import { settlementsTypeDefs } from "./settlements.typeDef.js";
+import { cloudinaryTypeDefs } from "./cloudinary.typeDef.js";
 
 export const typeDefs = [
   userTypeDefs,
@@ -13,5 +14,6 @@ export const typeDefs = [
   chatTypeDefs,
   expensesTypeDefs,
   categoriesTypeDefs,
-  settlementsTypeDefs
+  settlementsTypeDefs,
+  cloudinaryTypeDefs,
 ];

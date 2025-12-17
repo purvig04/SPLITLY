@@ -15,7 +15,7 @@
               you are owed ₹{{ Math.abs(net).toFixed(2) }}
             </span>
             <span v-else-if="net < 0" class="text-danger-custom">
-              you owe ₹{{  Math.abs(net).toFixed(2) }}
+              you owe ₹{{ Math.abs(net).toFixed(2) }}
             </span>
             <span v-else class="text-muted">settled up</span>
           </div>
@@ -46,10 +46,10 @@
     <div class="panel-content">
       <ExpenseTab
         v-if="activeTab === 'expenses'"
-        :friendId="id"
-        :page="group ? 'groups' : 'friends'"
+        :id="id"
+        :page="currentPage"
       />
-      <ChatTab v-else :id="id" :page="group ? 'groups' : 'friends'" />
+      <ChatTab v-else :id="id" :page="currentPage" />
     </div>
   </div>
 </template>

@@ -36,11 +36,19 @@ export default {
     user() {
       return this.getUser;
     },
+    ...mapGetters("expenses", ["getTotal"]),
     friendsData() {
       return this.getFriends;
     },
     groupsData() {
       return this.getGroups;
+    },
+    total() {
+      return this.getTotal;
+    },
+
+    currentPage() {
+      return this.$route.path.includes("/groups") ? "groups" : "friends";
     },
   },
 
@@ -86,7 +94,6 @@ export default {
       try {
         const friend = this.friendsData.find((f) => f.id === this.id);
         this.friend = friend ? { ...friend } : null;
-        // console.log("Friend Chat:", this.friend);
       } catch (error) {
         console.error("Error loading friend data:", error);
       } finally {
@@ -99,7 +106,6 @@ export default {
       try {
         const group = this.groupsData.find((g) => g.id === this.id);
         this.group = group ? { ...group } : null;
-        // console.log("Group Chat:", this.group);
       } catch (error) {
         console.error("Error loading group data:", error);
       } finally {

@@ -6,7 +6,7 @@ export const settlementsTypeDefs = `#graphql
         payer_id:String!
         receiver_id:String!
         amount:Float!
-        created_at:DateTime!
+        createdAt:DateTime!
         created_by:String!
         cycleId:Int!
 

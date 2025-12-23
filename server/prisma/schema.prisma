@@ -129,7 +129,7 @@ model Settlement {
   settlementCreator User   @relation("Creator", fields: [created_by], references: [id])
   created_by        String
 
-  created_at DateTime @default(now())
+    createdAt DateTime @default(now()) @map("created_at")
 
   @@map("settlement")
 }

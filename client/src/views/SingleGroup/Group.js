@@ -9,6 +9,7 @@ import {
   calculateUserBalanceList,
   computeSettlements,
 } from "@/utils/settlements";
+import { settlementService } from "@/services/settlements.service";
 export default {
   name: "GroupPage",
   components: { ExpenseDetail, GroupSettlement },
@@ -16,7 +17,13 @@ export default {
   data() {
     return {
       group: null,
+
       expenses: [],
+      settlements: [],
+      userBalances: [],
+
+      showPast: false,
+
       selectedExpense: null,
       showExpenseModal: false,
       isModalOpen: false, // Add Member Modal
@@ -30,7 +37,10 @@ export default {
       addMemberResultClass: "",
       checkUserTimeout: null,
       isShowSettleUpModal: false,
-      userBalances: [],
+
+      page: 1,
+      pastPage: 1,
+      pageSize: 12,
     };
   },
 
@@ -49,6 +59,9 @@ export default {
     },
     groupId() {
       return this.$route.params.id;
+    },
+    currentCycleId() {
+      return this.group?.currentCycleId;
     },
     suggestedFriends() {
       if (!this.friends || this.friends.length === 0) {
@@ -85,6 +98,48 @@ export default {
     },
     isAllSettled() {
       return this.userBalances.length === 0;
+    },
+
+    currentActivities() {
+      return [...this.currentExpenses, ...this.currentSettlements].sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+      );
+    },
+
+    pastActivities() {
+      return [...this.pastExpenses, ...this.pastSettlements].sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+      );
+    },
+
+    visibleCurrentActivities() {
+      return this.currentActivities.slice(0, this.page * this.pageSize);
+    },
+
+    visiblePastActivities() {
+      return this.pastActivities.slice(0, this.pastPage * this.pageSize);
+    },
+
+    currentExpenses() {
+      return this.expenses.filter((e) => e.cycleId === this.currentCycleId);
+    },
+
+    pastExpenses() {
+      return this.expenses.filter((e) => e.cycleId < this.currentCycleId);
+    },
+
+    currentSettlements() {
+      return this.settlements.filter((s) => s.cycleId === this.currentCycleId);
+    },
+
+    pastSettlements() {
+      return this.settlements.filter((s) => s.cycleId < this.currentCycleId);
+    },
+    showSettledSeparator() {
+      return (
+        this.pastActivities.length > 0 &&
+        this.visibleCurrentActivities.length === this.currentActivities.length
+      );
     },
   },
   methods: {
@@ -142,31 +197,34 @@ export default {
           this.groupId
         );
         this.group = getGroupDetails;
-        await this.loadExpenses();
       } catch (error) {
         console.error("Error loading group:", error);
         this.$router.push("/groups");
       }
     },
 
-    async refreshGroup() {
+    async fetchAll() {
       await this.fetchGroupDetail();
-    },
-    async loadExpenses() {
-      this.loadingExpenses = true;
-      try {
-        const { getExpensesByGroup } = await expenseService.getExpensesByGroup(
-          this.groupId
-        );
 
-        this.expenses = getExpensesByGroup;
-      } catch (error) {
-        console.error("Error loading expenses:", error);
-      } finally {
-        this.loadingExpenses = false;
-      }
-    },
+      const expRes = await expenseService.getExpensesByGroup(this.groupId);
+      this.expenses = expRes.getExpensesByGroup.map((e) => ({
+        ...e,
+        type: "EXPENSE",
+      }));
 
+      const setRes = await settlementService.getSettlementsByGroup(
+        this.groupId
+      );
+      this.settlements = setRes.getSettlementsByGroup.map((s) => ({
+        ...s,
+        type: "SETTLEMENT",
+      }));
+
+      this.userBalances = await calculateUserBalanceList(
+        this.user.id,
+        this.group.id
+      );
+    },
     async checkUserExists() {
       if (this.checkUserTimeout) clearTimeout(this.checkUserTimeout);
       if (!this.isValidEmail(this.emailInput)) {
@@ -282,6 +340,11 @@ export default {
     closeSettleUpModal() {
       this.isShowSettleUpModal = false;
     },
+    async onSettlementSuccess() {
+      this.isShowSettleUpModal = false;
+      this.showPast = false;
+      await this.fetchAll();
+    },
     async fetchData() {
       await this.fetchGroupDetail();
       if (!this.user) {
@@ -295,6 +358,10 @@ export default {
     async handleSettlement(payload) {
       await this.fetchData();
       console.log("payload from group js", payload);
+      if (payload) {
+        return true;
+      }
+      return false;
     },
   },
   async created() {
@@ -304,14 +371,20 @@ export default {
     await this.fetchData();
     await computeSettlements(this.group.id);
     await this.fetchGroups("GROUP");
+    await this.fetchAll();
+    document.body.style.overflow = "";
+    console.log("pastExpenses", this.pastExpenses);
+    console.log("currentExpenses", this.currentExpenses);
+    console.log("[pastSettlements]", this.pastSettlements);
+    console.log("currentSettlements", this.currentSettlements);
   },
-  // async updated(){
-  //   await this.fetchGroups("GROUP");
 
-  // },
   watch: {
     groupId(newId) {
       this.fetchGroupDetail(newId);
+    },
+    groupActivities() {
+      this.page = 1;
     },
   },
 };

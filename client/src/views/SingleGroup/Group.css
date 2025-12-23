@@ -254,3 +254,8 @@
   cursor: not-allowed;
 
 }
+.settlement-card { 
+  padding-top: 4px;
+  border-radius: 8px;
+  font-size: 15px;
+}

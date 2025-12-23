@@ -8,7 +8,7 @@ const GET_EXPENSES_BY_GROUP = gql`
       title
       description
       paid_by
-      is_Settled
+      cycleId
       totalAmount
       category {
         name
@@ -89,12 +89,10 @@ const SETTLE_GROUP = gql`
 export const expenseService = {
   async getExpensesByGroup(groupId) {
     try {
-  
-      
       const resp = await apolloClient.query({
         query: GET_EXPENSES_BY_GROUP,
         variables: { groupId },
-        fetchPolicy: "network-only", 
+        fetchPolicy: "network-only",
       });
       return resp.data;
     } catch (error) {
@@ -117,15 +115,15 @@ export const expenseService = {
     });
     return resp.data;
   },
-  
-  async settleGroup(groupId){
+
+  async settleGroup(groupId) {
     const resp = await apolloClient.mutate({
       mutation: SETTLE_GROUP,
       variables: { groupId },
       fetchPolicy: "no-cache",
     });
     return resp.data;
-  }
+  },
 };
 
 export const createExpense = async (input) => {

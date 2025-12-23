@@ -7,6 +7,7 @@ const GET_GROUPS = gql`
       title
       id
       type
+      currentCycleId
       members {
         user {
           id
@@ -34,6 +35,7 @@ const GET_GROUP_DETAILS = gql`
       createdById
       title
       type
+      currentCycleId
       members {
         user {
           name

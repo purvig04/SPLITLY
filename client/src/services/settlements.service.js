@@ -5,7 +5,7 @@ const CREATE_SETTLEMENT = gql`
   mutation CreateSettlement($input: CreateSettlementInput!) {
     createSettlement(input: $input) {
       amount
-      created_at
+      createdAt
       group {
         title
       }
@@ -35,7 +35,8 @@ const GET_SETTLEMENTS_BY_GROUP = gql`
       payer_id
       receiver_id
       amount
-      created_at
+      cycleId
+      createdAt
       created_by
     }
   }

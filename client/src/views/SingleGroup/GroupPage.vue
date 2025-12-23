@@ -81,7 +81,7 @@
               </div>
 
               <div v-if="isAllSettled" class="text-muted">
-                 🎉You are all settled up in this group.
+                🎉You are all settled up in this group.
               </div>
             </div>
 
@@ -101,7 +101,7 @@
                 :group="group"
                 :userBalances="userBalances"
                 @close="closeSettleUpModal"
-                @settlement="handleSettlement"
+                @settlement="onSettlementSuccess"
               />
             </div>
           </div>
@@ -116,38 +116,74 @@
               <i class="fa-solid fa-plus"></i> Add Expense
             </button>
           </div>
-          <!-- Expenses List -->
-          <div v-if="expenses.length > 0" class="expenses-list">
+          <!-- group activity List -->
+          <div
+            v-if="currentActivities.length > 0 || pastActivities.length > 0"
+            class="expenses-list"
+          >
             <div
-              v-for="expense in expenses"
-              :key="expense.id"
-              class="expense-card mb-3"
-              @click="openExpenseModal(expense.id)"
+              v-for="activity in visibleCurrentActivities"
+              :key="'current-' + activity.id"
+              class="mb-3"
             >
-              <div class="d-flex justify-content-between align-items-start">
-                <div class="flex-grow-1">
-                  <div class="d-flex align-items-center mb-2">
-                    <div class="expense-icon me-3">
-                      <i :class="expense.category.icon"></i>
-                    </div>
-                    <div>
-                      <h6 class="mb-1 expense-title">{{ expense.title }}</h6>
-                      <small class="text-muted">
-                        {{ getPaidBySummary(expense) }}
-                      </small>
+              <div
+                v-if="activity.type === 'EXPENSE'"
+                class="expense-card"
+                @click="openExpenseModal(activity.id)"
+              >
+                <div class="d-flex justify-content-between align-items-start">
+                  <div class="flex-grow-1">
+                    <div class="d-flex align-items-center mb-2">
+                      <div class="expense-icon me-3">
+                        <i :class="activity.category.icon"></i>
+                      </div>
+                      <div>
+                        <h6 class="mb-1 expense-title">{{ activity.title }}</h6>
+                        <small class="text-muted">
+                          {{ getPaidBySummary(activity) }}
+                        </small>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div class="text-end">
-                  <div class="expense-amount">₹{{ expense.totalAmount }}</div>
-                  <div
-                    class="expense-share mt-1"
-                    :class="getShareClass(expense)"
-                  >
-                    {{ getYourShareText(expense) }}
+                  <div class="text-end">
+                    <div class="expense-amount">
+                      ₹{{ activity.totalAmount.toFixed(2) }}
+                    </div>
+                    <div
+                      class="expense-share mt-1"
+                      :class="getShareClass(activity)"
+                    >
+                      {{ getYourShareText(activity) }}
+                    </div>
                   </div>
                 </div>
               </div>
+              <div
+                v-else-if="activity.type === 'SETTLEMENT'"
+                class="settlement-card"
+              >
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <strong>{{ getUserNamesById(activity.payer_id) }}</strong>
+                    paid
+                    <strong
+                      >{{ getUserNamesById(activity.receiver_id) }}
+                    </strong>
+                    <strong> ₹{{ activity.amount.toFixed(2) }}</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              v-if="currentActivities.length > visibleCurrentActivities.length"
+              class="text-center mt-3"
+            >
+              <button
+                class="btn btn-outline-secondary rounded-pill"
+                @click="page++"
+              >
+                Load more
+              </button>
             </div>
             <ExpenseDetail
               v-if="showExpenseModal"
@@ -155,15 +191,104 @@
               @close="closeExpenseModal"
               @deleted="refreshGroup"
             />
+
+            <div
+              v-if="showSettledSeparator"
+              class="text-center text-muted my-4"
+            >
+             
+              <p class="fw-semibold mb-1">Expenses before this are settled</p>
+              <span
+                class="text-primary"
+                style="cursor: pointer"
+                @click="showPast = !showPast"
+              >
+                {{ showPast ? "Hide past activity" : "View past activity" }}
+              </span>
+            </div>
+
+            <!-- PAST ACTIVITIES -->
+            <div v-if="showPast">
+              <div
+                v-for="activity in visiblePastActivities"
+                :key="'past-' + activity.id"
+                class="mb-3"
+              >
+                <div
+                  v-if="activity.type === 'EXPENSE'"
+                  class="expense-card opacity-75"
+                >
+                  <div class="d-flex justify-content-between align-items-start">
+                    <div class="flex-grow-1">
+                      <div class="d-flex align-items-center mb-2">
+                        <div class="expense-icon me-3">
+                          <i :class="activity.category.icon"></i>
+                        </div>
+                        <div>
+                          <h6 class="mb-1 expense-title">
+                            {{ activity.title }}
+                          </h6>
+                          <small class="text-muted">
+                            {{ getPaidBySummary(activity) }}
+                          </small>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="text-end">
+                      <div class="expense-amount">
+                        ₹{{ activity.totalAmount.toFixed(2) }}
+                      </div>
+                      <div
+                        class="expense-share mt-1"
+                        :class="getShareClass(activity)"
+                      >
+                        {{ getYourShareText(activity) }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div
+                  v-else-if="activity.type === 'SETTLEMENT'"
+                  class="settlement-card opacity-75"
+                >
+                  <div
+                    class="d-flex justify-content-between align-items-center"
+                  >
+                    <div>
+                      <strong>{{ getUserNamesById(activity.payer_id) }}</strong>
+                      paid
+                      <strong
+                        >{{ getUserNamesById(activity.receiver_id) }}
+                      </strong>
+                      <strong> ₹{{ activity.amount.toFixed(2) }}</strong>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                v-if="pastActivities.length > visiblePastActivities.length"
+                class="text-center mt-3"
+              >
+                <button
+                  class="btn btn-outline-secondary rounded-pill"
+                  @click="pastPage++"
+                >
+                  Load more
+                </button>
+              </div>
+            </div>
           </div>
+
           <!-- if no expenses -->
           <div v-else class="text-center text-muted py-4">
             <i class="fa-solid fa-receipt fa-2x mb-2"></i>
-            <div>No expenses added yet</div>
+            <div>All settled up</div>
           </div>
         </div>
       </div>
     </div>
+
     <!-- Show Members Modal -->
     <div
       v-if="isShowMembersOpen"

@@ -36,6 +36,33 @@
         </div>
       </div>
     </div>
+    <div v-if="groupExpenses && groupExpenses.length > 0">
+      <div
+        v-for="groupExpense in groupExpenses"
+        :key="groupExpense.groupId"
+        class="expense-item"
+        @click="goToGroup(groupExpense.groupId)"
+      >
+        <div class="expense-icon">
+          <i class="fa-solid fa-users"></i>
+        </div>
+        <div class="expense-info">
+          <h6 class="mb-1">{{ groupExpense.groupTitle }}</h6>
+          <span class="expense-date">Shared Group</span>
+        </div>
+        <div class="expense-amount-wrapper">
+          <div class="expense-amount" :class="groupExpense.type">
+            <span v-if="groupExpense.type === 'owed'">
+              + ₹{{ groupExpense.amount.toFixed(2) }}
+            </span>
+            <span v-else-if="groupExpense.type === 'owe'"
+              >- ₹{{ Math.abs(groupExpense.amount).toFixed(2) }}
+            </span>
+            <span v-else>Not Involved</span>
+          </div>
+        </div>
+      </div>
+    </div>
     <ExpenseDetail
       v-if="showExpenseModal"
       :expense="selectedExpense"

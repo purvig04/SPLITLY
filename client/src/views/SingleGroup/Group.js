@@ -311,7 +311,7 @@ export default {
       return "text-muted";
     },
     goBack() {
-      this.$router.push("/groups");
+      this.$router.back();
     },
     editGroup() {
       this.$router.push(`/group/${this.groupId}/edit`);
@@ -385,6 +385,13 @@ export default {
     },
     groupActivities() {
       this.page = 1;
+    },
+
+    "$route.query.settleUp": {
+      immediate: true,
+      handler(val) {
+        this.isShowSettleUpModal = val === "true";
+      },
     },
   },
 };

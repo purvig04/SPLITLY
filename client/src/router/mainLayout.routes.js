@@ -8,6 +8,7 @@ import GroupPage from "@/views/SingleGroup/GroupPage.vue";
 import EditGroup from "@/views/EditGroup/EditGroup.vue";
 import AddExpenseModal from "@/views/AddExpense/AddExpenseModal/AddExpenseModal.vue";
 import ProfilePage from "@/views/ProfilePage/ProfilePage.vue";
+import SharedProfile from "@/views/SharedProfile/SharedProfile.vue";
 
 export default {
   path: "/home",
@@ -54,8 +55,16 @@ export default {
     },
     {
       name: "ProfilePage",
-      path: "/user-profile",
+      path: "/my-profile",
       component: ProfilePage,
+      children: [
+        {
+          name: "SharedProfile",
+          path: "/add-friend/:shareCode",
+          component: SharedProfile,
+          props: true,
+        },
+      ],
     },
   ],
 };

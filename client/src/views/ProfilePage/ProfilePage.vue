@@ -146,7 +146,6 @@
             <i class="fa-solid fa-rotate-left"></i>
             Reset Changes
           </button>
-          <!-- Replace src with your real QR image path -->
           <button
             class="btn btn-primary"
             :disabled="!hasChanges || saving"
@@ -161,14 +160,10 @@
 
       <!-- RIGHT COLUMN -->
       <div class="share-qr">
-        <h3>Share Splitwise</h3>
+        <h3>Share Account</h3>
         <div class="qr-card">
-          <img
-            src="@/assets/images/QR Code.png"
-            alt="Splitwise QR"
-            class="qr-image"
-          />
-          <div class="qr-code-text">{{ splitwiseCode }}</div>
+          <QRcodeVue :value="shareUrl" :size="220" level="M" />
+          <div class="qr-code-text">{{ profileData.shareCode }}</div>
           <button
             :class="['btn-copy-code', { copied: codeCopied }]"
             @click="copyCode"
@@ -179,10 +174,16 @@
             {{ codeCopied ? "Copied!" : "Copy Code" }}
           </button>
           <p class="qr-hint">Scan QR or share code with friends</p>
+          <input type="text" class="qr-code-text" v-model="friendShareCode" />
+          <button class="btn-copy-code" @click="openAddFriendModal">
+            Continue
+          </button>
+          <!-- <span>{{ friendShareCode }}</span> -->
         </div>
       </div>
     </div>
   </div>
+  <router-view></router-view>
 </template>
 
 <script src="./ProfilePage.js"></script>

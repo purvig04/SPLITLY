@@ -57,6 +57,24 @@ const GET_EXPENSE_BY_ID = gql`
   }
 `;
 
+const GET_EXPENSE_BY_FRIEND_ID = gql`
+  query GetExpenseByFriendId($friendId: String!) {
+    getExpenseByFriendId(friendId: $friendId) {
+      id
+      title
+      description
+      totalAmount
+      paid_by
+      shared_amounts
+      category {
+        name
+        icon
+      }
+      createdAt
+    }
+  }
+`;
+
 const CREATE_EXPENSE = gql`
   mutation CreateExpense($input: CreateExpenseInput!) {
     createExpense(input: $input) {
@@ -136,5 +154,20 @@ export const createExpense = async (input) => {
     return data.createExpense;
   } catch (error) {
     console.log("Error Adding Expense:", error);
+  }
+};
+
+export const getExpenseByFriendId = async (friendId) => {
+  try {
+    const { data } = await apolloClient.query({
+      query: GET_EXPENSE_BY_FRIEND_ID,
+      variables: { friendId },
+      fetchPolicy: "no-cache",
+    });
+
+    // console.log("Friend Expenses:", data.getExpenseByFriendId);
+    return data.getExpenseByFriendId;
+  } catch (error) {
+    console.log("Error fetching friend Expenses:", error);
   }
 };

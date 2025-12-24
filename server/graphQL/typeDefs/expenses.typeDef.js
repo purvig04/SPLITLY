@@ -48,6 +48,7 @@ scalar DateTime
     type Query {
         getExpensesByGroup(groupId: String!): [Expense!]!
         getExpenseById(id: String!): Expense!
+        getExpenseByFriendId(friendId: String!): [Expense!]!
     }
     type BalanceEntry{
         userId:String!

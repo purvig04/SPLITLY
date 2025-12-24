@@ -1,6 +1,10 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import prisma from "../../src/loaders/prisma.js";
+import {
+  generateShareCode,
+  verifyShareCode,
+} from "../../src/utils/shareCode.js";
 import "dotenv/config";
 
 export const userResolvers = {
@@ -32,13 +36,27 @@ export const userResolvers = {
 
       return !!user;
     },
+
+    async getUserByShareCode(_, { shareCode }, { prisma, user }) {
+      if (!user) {
+        throw new Error("Not Authenticated!");
+      }
+
+      const isValid = verifyShareCode(shareCode);
+      if (!isValid) throw new Error("Invalid share code");
+
+      return await prisma.user.findFirst({
+        where: { shareCode },
+      });
+    },
   },
 
   Mutation: {
     async register(_, { name, email, password, contact }) {
       const hashedPassword = await bcrypt.hash(password, 10);
+      const shareCode = generateShareCode();
       const user = await prisma.user.create({
-        data: { name, email, password: hashedPassword, contact },
+        data: { name, email, password: hashedPassword, contact, shareCode },
       });
 
       return user;

@@ -4,6 +4,7 @@ export const groupTypeDefs = `#graphql
         getGroupDetails(id:ID!):Group!
         getGroups(type: String): [Group!]!
         getPersonalGroupId(otherUserId: ID!): ID
+        getCommonGroups(friendId: String!): [Group!]!
     }
 
     type Mutation{

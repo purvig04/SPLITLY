@@ -3,6 +3,7 @@ import ChatTab from "./ChatTab/ChatTab.vue";
 import ExpenseTab from "./ExpenseTab/ExpenseTab.vue";
 import { getInitials } from "@/utils/stringHelpers";
 import { calaculateNetWithFriend } from "@/utils/settlements";
+import { CLOUDINARY_BASE_URL } from "@/services/cloudinary.service";
 
 export default {
   name: "ChatsPage",
@@ -26,6 +27,7 @@ export default {
       loading: false,
       group: null,
       net: 0,
+      loadingNet: false,
     };
   },
 
@@ -57,6 +59,7 @@ export default {
       async handler(newVal) {
         if (newVal?.length && this.id) {
           await this.loadFriendData();
+          await this.calculateNet();
         }
       },
       deep: true,
@@ -67,6 +70,7 @@ export default {
         if (this.id) {
           await this.loadFriendData();
           await this.loadGroupData();
+          await this.calculateNet();
         }
       },
     },
@@ -130,10 +134,24 @@ export default {
     getInitial(name) {
       return getInitials(name);
     },
-  },
-  async updated() {
-    if (this.friend) {
-      this.net = await calaculateNetWithFriend(this.user.id, this.friend.id);
-    }
+
+    async calculateNet() {
+      if (this.currentPage !== "friends" || !this.id || !this.user?.id) {
+        return;
+      }
+      this.loadingNet = true;
+      this.net = await calaculateNetWithFriend(this.user.id, this.id);
+      this.loadingNet = false;
+    },
+
+    profileUrl(friend) {
+      if (friend.profilePic) {
+        return (
+          CLOUDINARY_BASE_URL +
+          ("v" + friend.profilePicVersion + "/") +
+          friend.profilePic
+        );
+      }
+    },
   },
 };

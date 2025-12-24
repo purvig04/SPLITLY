@@ -8,12 +8,14 @@ export const friendsTypeDefs = `#graphql
         id: ID
         name: String
         email: String
-        phone: String
+        contact: String
         groupId: String
         groupTitle: String
         groupType: String
         owedToYou: Float
         youOwe: Float
+        profilePic: String
+        profilePicVersion: String
     }
 
     type PersonalFriend {

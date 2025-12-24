@@ -101,6 +101,7 @@ const actions = {
       if (state.userId && getUser) {
         commit("SET_USER_DATA", getUser);
       }
+      // console.log("User Store:", getUser);
     } catch (err) {
       commit("SET_ERROR", err);
       console.error("Failed to fetch user data:", err);
@@ -109,7 +110,7 @@ const actions = {
 
   async updateUserProfile({ dispatch /*getters*/ }, input) {
     try {
-      console.log("Store Input:", input);
+      // console.log("Store Input:", input);
 
       const user = await updateUserDetails(input);
 

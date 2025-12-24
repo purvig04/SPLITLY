@@ -8,12 +8,14 @@ export const userTypeDefs = `#graphql
         updatedAt:String!
         profilePic: String
         profilePicVersion: String
+        shareCode: String!
     }
     
     type Query {
         getUser:User
         checkUserExists(email:String!):Boolean!
         getUserById(userId: ID!): User
+        getUserByShareCode(shareCode: String!): User!
     }
 
 

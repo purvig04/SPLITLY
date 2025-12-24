@@ -15,7 +15,7 @@ export default {
 
     peopleSummary() {
       const summary = [];
-      this.expense.group.members.forEach((member) => {
+      this.expense.group?.members.forEach((member) => {
         const paid =
           this.expense.paid_by.find((p) => p.userId === member.user.id)
             ?.amount || 0;

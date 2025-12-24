@@ -48,7 +48,12 @@
                 >
                   <div class="friend-info">
                     <div class="friend-avatar">
-                      {{ getInitial(friend.name) }}
+                      <div v-if="friend.profilePic">
+                        <img :src="profileUrl(friend)" alt="Profile" />
+                      </div>
+                      <div v-else>
+                        {{ getInitial(friend.name) }}
+                      </div>
                     </div>
                     <div class="friend-name">
                       <h5 class="mb-0">{{ friend.name }}</h5>

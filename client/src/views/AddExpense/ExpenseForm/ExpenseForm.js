@@ -83,6 +83,27 @@ export default {
   methods: {
     ...mapActions("categories", ["loadCategories"]),
 
+    /**
+     * Helper function to distribute amount exactly among participants
+     * Distributes remainder to the first participant to ensure total matches exactly
+     */
+    distributeExactly(totalAmount, participantCount) {
+      const amountInCents = Math.round(totalAmount * 100);
+      const baseAmountInCents = Math.floor(amountInCents / participantCount);
+      const remainderInCents =
+        amountInCents - baseAmountInCents * participantCount;
+
+      const amounts = [];
+      for (let i = 0; i < participantCount; i++) {
+        // Add remainder to first participant
+        const amount =
+          (baseAmountInCents + (i === 0 ? remainderInCents : 0)) / 100;
+        amounts.push(amount);
+      }
+
+      return amounts;
+    },
+
     initializeSplits() {
       const totalAmount = parseFloat(this.formData.amount) || 0;
 
@@ -93,26 +114,42 @@ export default {
             )
           : this.allParticipants;
 
-      const perPerson =
-        includedParticipants.length > 0
-          ? totalAmount / includedParticipants.length
-          : 0;
-
       this.manuallyEditedSplits.clear();
 
-      this.allParticipants.forEach((p) => {
-        if (this.formData.splitMethod === "equal") {
-          this.splits[p.id] = this.excludedMembersFromSplit.has(p.id)
-            ? 0
-            : perPerson;
-        } else if (this.formData.splitMethod === "shares") {
+      if (this.formData.splitMethod === "equal") {
+        // Use exact distribution for equal splits
+        const amounts = this.distributeExactly(
+          totalAmount,
+          includedParticipants.length
+        );
+        let amountIndex = 0;
+
+        this.allParticipants.forEach((p) => {
+          if (this.excludedMembersFromSplit.has(p.id)) {
+            this.splits[p.id] = 0;
+          } else {
+            this.splits[p.id] = amounts[amountIndex];
+            amountIndex++;
+          }
+        });
+      } else if (this.formData.splitMethod === "shares") {
+        this.allParticipants.forEach((p) => {
           this.splits[p.id] = 1;
-        } else if (this.formData.splitMethod === "percentage") {
-          this.splits[p.id] = 100 / this.allParticipants.length;
-        } else if (this.formData.splitMethod === "unequal") {
+        });
+      } else if (this.formData.splitMethod === "percentage") {
+        // Use exact distribution for percentage splits
+        const amounts = this.distributeExactly(
+          100,
+          this.allParticipants.length
+        );
+        this.allParticipants.forEach((p, index) => {
+          this.splits[p.id] = amounts[index];
+        });
+      } else if (this.formData.splitMethod === "unequal") {
+        this.allParticipants.forEach((p) => {
           this.splits[p.id] = null;
-        }
-      });
+        });
+      }
 
       this.splits = { ...this.splits };
       this.initializePaidBy();
@@ -161,18 +198,20 @@ export default {
       });
 
       const manualTotal = manuallyEdited.reduce((sum, p) => sum + p.value, 0);
-
       const remaining = totalAmount - manualTotal;
 
       if (autoDistributed.length > 0) {
-        const perPerson = Math.max(0, remaining / autoDistributed.length);
-        autoDistributed.forEach((p) => {
-          this.splits[p.id] = perPerson;
+        // Use exact distribution for auto-distributed participants
+        const amounts = this.distributeExactly(
+          remaining,
+          autoDistributed.length
+        );
+        autoDistributed.forEach((p, index) => {
+          this.splits[p.id] = amounts[index];
         });
       }
 
       this.splits = { ...this.splits };
-
       this.validateSplitTotals();
     },
 
@@ -194,18 +233,20 @@ export default {
       });
 
       const manualTotal = manuallyEdited.reduce((sum, p) => sum + p.value, 0);
-
       const remaining = 100 - manualTotal;
 
       if (autoDistributed.length > 0) {
-        const perPerson = Math.max(0, remaining / autoDistributed.length);
-        autoDistributed.forEach((p) => {
-          this.splits[p.id] = perPerson;
+        // Use exact distribution for auto-distributed percentages
+        const amounts = this.distributeExactly(
+          remaining,
+          autoDistributed.length
+        );
+        autoDistributed.forEach((p, index) => {
+          this.splits[p.id] = amounts[index];
         });
       }
 
       this.splits = { ...this.splits };
-
       this.validateSplitTotals();
     },
 
@@ -285,9 +326,13 @@ export default {
         const remaining = totalAmount - manualTotal;
 
         if (autoDistributed.length > 0) {
-          const perPerson = Math.max(0, remaining / autoDistributed.length);
-          autoDistributed.forEach((p) => {
-            this.splits[p.id] = perPerson;
+          // Use exact distribution
+          const amounts = this.distributeExactly(
+            remaining,
+            autoDistributed.length
+          );
+          autoDistributed.forEach((p, index) => {
+            this.splits[p.id] = amounts[index];
           });
         }
 
@@ -365,7 +410,8 @@ export default {
             const totalShares = Object.values(this.splits).reduce(
               (sum, shares) => {
                 return sum + (parseInt(shares) || 1);
-              }
+              },
+              0
             );
             const amountPerShare =
               parseFloat(this.formData.amount) / totalShares;

@@ -1,5 +1,5 @@
 <template>
-  <div class="main" >
+  <div class="main">
     <div class="container">
       <!-- Top Row: Welcome Card and Balance Cards -->
       <div class="row mb-4 g-4">
@@ -8,9 +8,11 @@
           <div class="card welcome-card h-100 shadow-sm">
             <div class="card-body text-center py-5">
               <div v-if="loading">
-      <p>Loading user data...</p>
-    </div>
-              <h2 v-else class="mb-2"> <div v-if="user">Welcome, {{ user.name }}  👋</div></h2>
+                <p>Loading user data...</p>
+              </div>
+              <h2 v-else class="mb-2">
+                <div v-if="user">Welcome, {{ user.name }} 👋</div>
+              </h2>
               <p class="text-muted">Here's a quick look at your balances</p>
             </div>
           </div>
@@ -24,7 +26,9 @@
               <div class="card balance-card-owed h-100 shadow-sm">
                 <div class="card-body py-4">
                   <h5 class="balance-title-owed mb-3">You are owed</h5>
-                  <h3 class="balance-amount-owed fw-bold">₹ {{ balances.owedToYou }}</h3>
+                  <h3 class="balance-amount-owed fw-bold">
+                    ₹ {{ balances.owedToYou }}
+                  </h3>
                 </div>
               </div>
             </div>
@@ -34,7 +38,9 @@
               <div class="card balance-card-owe h-100 shadow-sm">
                 <div class="card-body py-4">
                   <h5 class="balance-title-owe mb-3">You owe</h5>
-                  <h3 class="balance-amount-owe fw-bold">₹ {{ balances.youOwe }}</h3>
+                  <h3 class="balance-amount-owe fw-bold">
+                    ₹ {{ balances.youOwe }}
+                  </h3>
                 </div>
               </div>
             </div>
@@ -59,17 +65,17 @@
           </div>
         </div>
 
-        <!-- Non-group Expenses Card -->
+        <!-- Friend Expenses Card -->
         <div class="col-lg-4 col-md-6">
-          <div class="card h-100 shadow-sm hover-card" @click="goToNonGroup">
+          <div class="card h-100 shadow-sm hover-card" @click="goToFriend">
             <div class="card-body text-center py-5">
               <img
-                src="https://img.icons8.com/color/80/money.png"
+                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTrmePccdE_3r-_qc1foXu1QsFD7n9C3ssXbg&s"
                 alt="Expenses"
                 class="mb-3"
               />
-              <h5 class="card-title">Non-group Expenses</h5>
-              <p class="card-text">Track expenses outside groups.</p>
+              <h5 class="card-title">Friends</h5>
+              <p class="card-text">Track expenses between friends.</p>
             </div>
           </div>
         </div>

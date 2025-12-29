@@ -5,7 +5,7 @@ import { mapActions, mapGetters } from "vuex";
 export default {
   name: "HomePage",
   computed: {
-    ...mapGetters("auth", ["getUser", "isLoading"]),
+    ...mapGetters("auth", ["getUser", "isLoading", "getUserId"]),
     user() {
       return this.getUser;
     },
@@ -29,8 +29,8 @@ export default {
       this.$router.push("/groups");
       this.fetchGroups();
     },
-    goToNonGroup() {
-      this.$router.push("/non-group");
+    goToFriend() {
+      this.$router.push("/friends");
     },
     goToGeneral() {
       this.$router.push("/general");
@@ -58,7 +58,7 @@ export default {
     },
   },
   async mounted() {
-    const storedUser = JSON.parse(sessionStorage.getItem("userLoggedIn"));
+    const storedUser = this.getUserId;
     console.log("mounting home");
 
     if (!storedUser) {

@@ -12,6 +12,7 @@ const GET_USER = gql`
       profilePicVersion
       createdAt
       updatedAt
+      shareCode
     }
   }
 `;
@@ -27,8 +28,25 @@ const GET_USER_BY_ID = gql`
       name
       id
       email
+      contact
       profilePic
       profilePicVersion
+    }
+  }
+`;
+
+const GET_USER_BY_SHARE_CODE = gql`
+  query GetUserByShareCode($shareCode: String!) {
+    getUserByShareCode(shareCode: $shareCode) {
+      id
+      name
+      email
+      contact
+      shareCode
+      profilePic
+      profilePicVersion
+      createdAt
+      updatedAt
     }
   }
 `;
@@ -95,6 +113,22 @@ export const updateUserDetails = async (input) => {
     return data.updateUserDetails;
   } catch (error) {
     console.log("Error updating user:", error);
+    throw error;
+  }
+};
+
+export const getUserByShareCode = async (shareCode) => {
+  try {
+    const { data } = await apolloClient.query({
+      query: GET_USER_BY_SHARE_CODE,
+      variables: { shareCode },
+      fetchPolicy: "no-cache",
+    });
+
+    // console.log("data:", data.getUserByShareCode);
+    return data.getUserByShareCode;
+  } catch (error) {
+    console.error("Error fetching user:\n", error);
     throw error;
   }
 };

@@ -61,6 +61,27 @@ export const groupResolvers = {
 
       return result && result.length ? result[0].id : null;
     },
+
+    async getCommonGroups(_, { friendId }, { prisma, user }) {
+      const groups = await prisma.group.findMany({
+        where: {
+          type: "GROUP",
+          AND: [
+            {
+              members: {
+                some: { userId: user.id },
+              },
+            },
+            {
+              members: {
+                some: { userId: friendId },
+              },
+            },
+          ],
+        },
+      });
+      return groups;
+    },
   },
   Mutation: {
     async createGroup(_, { title, type, members = [] }, { prisma, user }) {

@@ -1,3 +1,4 @@
+import { CLOUDINARY_BASE_URL } from "@/services/cloudinary.service";
 import { getInitials } from "@/utils/stringHelpers";
 import { mapGetters, mapActions } from "vuex";
 
@@ -33,9 +34,25 @@ export default {
     getInitial(name) {
       return getInitials(name);
     },
+    profileUrl(friend) {
+      if (friend.profilePic) {
+        return (
+          CLOUDINARY_BASE_URL +
+          ("v" + friend.profilePicVersion + "/") +
+          friend.profilePic
+        );
+      }
+    },
   },
 
   async created() {
     await this.loadFriends();
+    // console.log("Friend:", this.friends);
   },
+
+  // async updated() {
+  //   if (this.friends) {
+  //     this.friends.map();
+  //   }
+  // },
 };

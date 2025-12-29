@@ -25,6 +25,10 @@ export default {
     expenses() {
       return this.getExpenses;
     },
+
+    groupExpenses() {
+      return this.expenses.groupExpenses || [];
+    },
   },
 
   watch: {
@@ -51,16 +55,17 @@ export default {
       });
     },
     showSettleUpModal() {
-      this.isShowSettleUpModal = true;
+      if (this.page === "friends") this.isShowSettleUpModal = true;
+      else if (this.page === "groups") {
+        this.$router.push({
+          name: "Group",
+          params: { id: this.id },
+          query: { settleUp: "true" },
+        });
+      }
     },
     closeSettleUpModal() {
       this.isShowSettleUpModal = false;
-    },
-
-    setExpenses() {
-      console.log("GroupId", this.id);
-
-      return this.expenses;
     },
     async goToAddExpense() {
       if (this.page === "friends") {
@@ -106,5 +111,13 @@ export default {
       this.selectedExpense = null;
       this.showExpenseModal = false;
     },
+
+    goToGroup(id) {
+      this.$router.push({ name: "Group", params: { id } });
+    },
+  },
+
+  async updated() {
+    console.log("Expenses:", this.groupExpenses);
   },
 };

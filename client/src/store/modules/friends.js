@@ -1,6 +1,7 @@
 import { fetchFriends } from "@/services/friends.service";
 import { groupService } from "@/services/groups.service";
 import { getUserById } from "@/services/user.service";
+import { calaculateNetWithFriend } from "@/utils/settlements";
 
 const state = () => ({
   friends: [],
@@ -17,12 +18,27 @@ const mutations = {
 };
 
 const actions = {
-  async loadFriends({ commit }) {
+  async loadFriends({ commit, rootGetters }) {
     commit("SET_LOADING", true);
 
     try {
+      const userId = rootGetters["auth/getUserId"];
       const friends = await fetchFriends();
-      commit("SET_FRIENDS", friends);
+
+      const friendsWithNet = await Promise.all(
+        friends.map(async (friend) => {
+          const net = await calaculateNetWithFriend(userId, friend.id);
+
+          return {
+            ...friend,
+            owedToYou: net > 0 ? net : 0,
+            youOwe: net < 0 ? Math.abs(net) : 0,
+          };
+        })
+      );
+
+      commit("SET_FRIENDS", friendsWithNet);
+      // commit("SET_FRIENDS", friends);
     } catch (error) {
       console.error("Error loading friends: ", error);
       commit("SET_FRIENDS", []);
@@ -31,10 +47,10 @@ const actions = {
     }
   },
 
-  async createFriend(_, friendId) {
+  async createFriend({ rootGetters }, friendId) {
     try {
       const { name: friendName, email } = await getUserById(friendId);
-      const { name } = await getUserById(sessionStorage.getItem("userId"));
+      const { name } = await getUserById(rootGetters["auth/getUserId"]);
 
       const title = `${name.split(" ")[0]}_${friendName.split(" ")[0]}`;
       const { createGroup } = await groupService.createGroup(title, "PERSONAL");
@@ -42,7 +58,7 @@ const actions = {
 
       await groupService.addMemberToGroup(groupId, [email]);
 
-      return groupId
+      return groupId;
     } catch (error) {
       console.log("Error creating Friend", error);
     }

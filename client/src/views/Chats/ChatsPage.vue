@@ -4,14 +4,20 @@
     <div class="panel-header">
       <div class="friend-info-header">
         <div class="avatar-large" @click="goToDetails">
-          {{ getInitial(friend ? friend.name : group ? group.title : "N A") }}
+          <div v-if="friend && friend.profilePic">
+            <img :src="profileUrl(friend)" alt="Profile" />
+          </div>
+          <div v-else>
+            {{ getInitial(friend ? friend.name : group ? group.title : "N A") }}
+          </div>
         </div>
         <div>
           <h4 class="mb-1">
             {{ friend ? friend.name : group ? group.title : "N A" }}
           </h4>
           <div class="balance-summary">
-            <span v-if="net > 0" class="text-success-custom">
+            <span v-if="loadingNet" class="text-muted">loading net...</span>
+            <span v-else-if="net > 0" class="text-success-custom">
               you are owed ₹{{ Math.abs(net).toFixed(2) }}
             </span>
             <span v-else-if="net < 0" class="text-danger-custom">

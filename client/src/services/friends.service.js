@@ -7,10 +7,12 @@ const GET_ALL_FRIENDS = gql`
       id
       name
       email
-      phone
+      contact
       groupId
       groupTitle
       groupType
+      profilePic
+      profilePicVersion
     }
   }
 `;
@@ -44,6 +46,8 @@ export const fetchFriends = async () => {
       name: friend.name,
       email: friend.email,
       groupId: friend.groupId,
+      profilePic: friend.profilePic,
+      profilePicVersion: friend.profilePicVersion,
       owedToYou: 102, //Later fetched from expense query
       youOwe: 20, //Later fetched from expense query
     }));

@@ -37,8 +37,8 @@
   flex: 1;
 }
 .avatar-large {
-  width: 48px;
-  height: 48px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.2);
   color: white;
@@ -50,7 +50,15 @@
   flex-shrink: 0;
   border: 2px solid rgba(255, 255, 255, 0.3);
   cursor: pointer;
+  overflow: hidden;
 }
+
+.avatar-large img {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+}
+
 .panel-header h4 {
   color: white;
   font-size: 1.1rem;
@@ -121,7 +129,7 @@
   left: 0;
   right: 0;
   height: 2px;
-  background: linear-gradient(135deg, #B0E7E0 0%, #225750 100%);
+  background: linear-gradient(135deg, #b0e7e0 0%, #225750 100%);
 }
 .tab-btn:hover:not(.active) {
   background: #ffffff;
@@ -333,6 +341,7 @@
   display: flex;
   gap: 0.5rem;
   flex-shrink: 0;
+  z-index: 1000;
 }
 .panel-footer .btn {
   flex: 1;

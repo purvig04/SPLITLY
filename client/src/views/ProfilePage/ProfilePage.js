@@ -4,9 +4,14 @@ import {
 } from "@/services/cloudinary.service";
 import { getInitials } from "@/utils/stringHelpers";
 import { mapActions, mapGetters } from "vuex";
+import QRcodeVue from "qrcode.vue";
+
+const BASE_URL = process.env.VUE_APP_BASE_URL;
 
 export default {
   name: "ProfilePage",
+
+  components: { QRcodeVue },
 
   data() {
     return {
@@ -16,6 +21,7 @@ export default {
         contact: "",
         profilePic: "",
         profilePicVersion: "",
+        shareCode: "",
         createdAt: "",
         updatedAt: "",
       },
@@ -39,8 +45,8 @@ export default {
       photoFile: null,
       version: null,
 
-      splitwiseCode: "SPLIT-XYZ-12345",
       codeCopied: false,
+      friendShareCode: "",
     };
   },
 
@@ -88,6 +94,10 @@ export default {
         this.profileData.profilePic
       );
     },
+
+    shareUrl() {
+      return `${BASE_URL}/add-friend/${this.profileData.shareCode}`;
+    },
   },
 
   methods: {
@@ -104,6 +114,7 @@ export default {
         contact = "",
         profilePic = "",
         profilePicVersion = "",
+        shareCode = "",
         createdAt = new Date().toISOString(),
         updatedAt = "",
       } = this.user;
@@ -114,6 +125,7 @@ export default {
         contact,
         profilePic,
         profilePicVersion,
+        shareCode,
         createdAt,
         updatedAt,
       };
@@ -244,13 +256,28 @@ export default {
     },
 
     async copyCode() {
-      await navigator.clipboard.writeText(this.splitwiseCode);
+      await navigator.clipboard.writeText(this.profileData.shareCode);
       this.codeCopied = true;
       setTimeout(() => (this.codeCopied = false), 2000);
     },
 
     goBack() {
       this.$router.go(-1);
+    },
+
+    openAddFriendModal() {
+      console.log("Share code entered:", this.friendShareCode);
+      if (!this.friendShareCode) return;
+      else if (this.friendShareCode === this.profileData.shareCode) {
+        this.$router.push({ name: "ProfilePage" });
+        this.friendShareCode = "";
+      } else {
+        this.$router.push({
+          name: "SharedProfile",
+          params: { shareCode: this.friendShareCode },
+        });
+        this.friendShareCode = "";
+      }
     },
   },
 

@@ -100,6 +100,16 @@ const GET_PERSONAL_GROUP_ID = gql`
   }
 `;
 
+const GET_COMMON_GROUPS = gql`
+  query GetCommonGroups($friendId: String!) {
+    getCommonGroups(friendId: $friendId) {
+      id
+      title
+      type
+    }
+  }
+`;
+
 export const groupService = {
   async getGroups(type) {
     const resp = await apolloClient.query({
@@ -163,6 +173,21 @@ export const groupService = {
       fetchPolicy: "no-cache",
     });
 
-    return resp.data.getPersonalGroupId
+    return resp.data.getPersonalGroupId;
   },
+};
+
+export const getCommonGroups = async (friendId) => {
+  try {
+    const { data } = await apolloClient.query({
+      query: GET_COMMON_GROUPS,
+      variables: { friendId },
+      fetchPolicy: "no-cache",
+    });
+
+    // console.log("Common groups", data.getCommonGroups);
+    return data.getCommonGroups;
+  } catch (error) {
+    console.log("Error getting common groups:", error);
+  }
 };

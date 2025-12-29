@@ -16,6 +16,7 @@ model User {
   updatedAt         DateTime @updatedAt
   profilePic        String?
   profilePicVersion String?
+  shareCode         String   @unique @map("share_code")
 
   createdGroups     Group[]       @relation("UserToGroup") //since user can create many groups
   memberOf          GroupMember[] @relation("UserToMembers") //since user can be in more than one group
@@ -129,7 +130,7 @@ model Settlement {
   settlementCreator User   @relation("Creator", fields: [created_by], references: [id])
   created_by        String
 
-    createdAt DateTime @default(now()) @map("created_at")
+  createdAt DateTime @default(now()) @map("created_at")
 
   @@map("settlement")
 }

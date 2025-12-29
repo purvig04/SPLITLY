@@ -13,6 +13,8 @@ export const computeSettlements = async (groupId) => {
       return [];
     }
 
+    // console.log("Balances Array:", balanceArray);
+    // console.log("Balances:", balances);
     const { owed, owes } = splitBalances(balances);
 
     return settleUp(owed, owes);
@@ -103,6 +105,7 @@ export const userAllBalances = async (userId) => {
     }));
     allTransactions.push(...groupTransactions);
   }
+  // console.log("All transactions:", allTransactions);
 
   return allTransactions;
 };

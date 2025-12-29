@@ -36,6 +36,81 @@ export const expensesResolvers = {
         },
       });
     },
+
+    async getExpenseByFriendId(_, { friendId }, { prisma, user }) {
+      const personalGroup = await prisma.group.findFirst({
+        where: {
+          type: "PERSONAL",
+          members: {
+            every: {
+              userId: { in: [user.id, friendId] },
+            },
+          },
+        },
+      });
+
+      const personalExpenses = personalGroup
+        ? await prisma.expense.findMany({
+            where: {
+              groupId: personalGroup.id,
+            },
+
+            include: {
+              category: true,
+              group: true,
+              createdByUser: true,
+            },
+          })
+        : [];
+
+      const nonGroupExpenseIds = await prisma.$queryRaw`
+        SELECT e.id
+        FROM expense e
+        WHERE e."groupId" IS NULL
+
+        AND (
+          EXISTS (
+            SELECT 1
+            FROM unnest(e.paid_by) pb
+            WHERE pb->>'userId' =  ${user.id}
+          )
+          OR
+          EXISTS (
+            SELECT 1
+            FROM unnest(e.shared_amounts) sa
+            WHERE sa->>'userId' =  ${user.id}
+          )
+        )
+        AND (
+          EXISTS (
+            SELECT 1
+            FROM unnest(e.paid_by) pb
+            WHERE pb->>'userId' =  ${friendId}
+          )
+          OR
+          EXISTS (
+            SELECT 1
+            FROM unnest(e.shared_amounts) sa
+            WHERE sa->>'userId' = ${friendId}
+          )
+        )
+
+        ORDER BY e."createdAt" DESC;
+      `;
+
+      const nonGroupExpenses = await prisma.expense.findMany({
+        where: {
+          id: { in: nonGroupExpenseIds.map((e) => e.id) },
+        },
+        include: {
+          category: true,
+          group: true,
+          createdByUser: true,
+        },
+      });
+
+      return [...personalExpenses, ...nonGroupExpenses];
+    },
   },
   Mutation: {
     async createExpense(_, { input }, { prisma, user }) {
@@ -171,16 +246,21 @@ export const expensesResolvers = {
         expenses.forEach((e) => {
           (e.paid_by || []).forEach((p) => {
             balances[p.userId] = (balances[p.userId] || 0) + Number(p.amount);
+            // console.log("P amount:", Number(p.amount));
           });
           (e.shared_amounts || []).forEach((s) => {
             balances[s.userId] = (balances[s.userId] || 0) - Number(s.amount);
+            // console.log("S amount:", Number(s.amount));
           });
         });
+        // console.log("Balances Before:", balances);
 
         (settlements || []).forEach((s) => {
           balances[s.payer_id] = (balances[s.payer_id] || 0) + s.amount;
           balances[s.receiver_id] = (balances[s.receiver_id] || 0) - s.amount;
+          // console.log("Set amount:", Number(s.amount));
         });
+        // console.log("Balances After:", balances);
 
         const allZero = Object.values(balances).every(
           (b) => Math.abs(b) <= 0.01
@@ -192,6 +272,7 @@ export const expensesResolvers = {
             amount,
           })
         );
+        // console.log("Balances Array:", balanceArray);
 
         if (!allZero) {
           return {

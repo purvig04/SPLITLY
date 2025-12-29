@@ -8,8 +8,8 @@ export const findUser = async (token) => {
   }
 
   try {
-    const { userId } = jwt.verify(token, process.env.JWT_SECRET);
-    return await prisma.user.findUnique({ where: { id: userId } });
+    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    return payload;
   } catch (error) {
     console.error("Error verifying the user from jwt:", error);
     return null;

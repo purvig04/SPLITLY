@@ -62,6 +62,7 @@ const UPDATE_USER_DETAILS = gql`
       profilePicVersion
       createdAt
       updatedAt
+      shareCode
     }
   }
 `;

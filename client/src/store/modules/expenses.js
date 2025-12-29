@@ -24,13 +24,13 @@ const actions = {
     try {
       const { type, id } = payload;
 
+      const userId = rootGetters["auth/getUserId"];
       if (type === "friends") {
         // const groupId = await groupService.getPersonalGroupId(id);
         // console.log("Personal GID:", groupId);
-        const userId = rootGetters["auth/getUserId"];
         const commonGroups = await getCommonGroups(id);
         const data = await getExpenseByFriendId(id);
-        const expenses = SimplifyExpenses(data);
+        const expenses = SimplifyExpenses(data, userId);
         const sum = expenses.reduce((acc, exp) => exp.amount + acc, 0);
 
         expenses.groupExpenses = [];
@@ -61,7 +61,7 @@ const actions = {
         // }
       } else if (type === "groups") {
         const data = await expenseService.getExpensesByGroup(id);
-        const expenses = SimplifyExpenses(data.getExpensesByGroup);
+        const expenses = SimplifyExpenses(data.getExpensesByGroup, userId);
         const sum = expenses.reduce((acc, exp) => exp.amount + acc, 0);
         // console.log("Sum:", sum);
         commit("SET_TOTAL", sum);
@@ -88,12 +88,11 @@ export default {
   getters,
 };
 
-function SimplifyExpenses(data) {
+function SimplifyExpenses(data, userId) {
   const expenses = [];
 
   data.forEach((e) => {
     const expense = {};
-    const userId = sessionStorage.getItem("userId");
     expense.id = e.id;
     expense.title = e.title;
     expense.date = e.createdAt;

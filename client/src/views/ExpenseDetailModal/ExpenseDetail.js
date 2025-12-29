@@ -14,26 +14,33 @@ export default {
     },
 
     peopleSummary() {
-      const summary = [];
-      this.expense.group?.members.forEach((member) => {
-        const paid =
-          this.expense.paid_by.find((p) => p.userId === member.user.id)
-            ?.amount || 0;
-        const shared =
-          this.expense.shared_amounts.find((s) => s.userId === member.user.id)
-            ?.amount || 0;
-        const net = paid - shared;
-        if (paid !== 0 || net !== 0) {
-          summary.push({
-            id: member.user.id,
-            name: member.user.name,
-            paid: Number(paid).toFixed(2),
-            shared: Number(shared).toFixed(2),
-            net: Number(net).toFixed(2),
+      const summaryMap = new Map();
+
+      this.expense.paid_by.forEach((p) => {
+        summaryMap.set(p.userId, {
+          id: p.userId,
+          name: p.user?.name ?? "Unknown",
+          paid: Number(p.amount),
+          shared: 0,
+        });
+      });
+
+      this.expense.shared_amounts.forEach((s) => {
+        if (!summaryMap.has(s.userId)) {
+          summaryMap.set(s.userId, {
+            id: s.userId,
+            name: s.user?.name ?? "Unknown",
+            paid: 0,
+            shared: Number(s.amount),
           });
+        } else {
+          summaryMap.get(s.userId).shared = Number(s.amount);
         }
       });
-      return summary;
+
+      // console.log("SM:", summaryMap);
+
+      return Array.from(summaryMap.values());
     },
 
     sortedPeople() {

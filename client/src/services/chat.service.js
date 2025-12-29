@@ -1,5 +1,6 @@
 import gql from "graphql-tag";
 import apolloClient from "@/apollo";
+import store from "@/store";
 
 const GET_CHATS = gql`
   query GetChats($group_id: ID!) {
@@ -50,7 +51,7 @@ export const getChats = async (group_id) => {
       senderId: chat.senderId,
       createdAt: chat.createdAt,
       sentByYou:
-        chat.senderId === sessionStorage.getItem("userId") ? true : false,
+        chat.senderId === store.getters["auth/getUserId"] ? true : false,
     }));
 
     // console.log("CHatss::", chats);

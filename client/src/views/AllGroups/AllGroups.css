@@ -4,16 +4,12 @@
   padding-top: 5rem;
   padding-bottom: 3rem;
 }
+.container{
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
 
-.group-card {
-  transition: all 0.25s ease-in-out;
-}
-.group-card:hover {
-  cursor: pointer;
-  transform: translateY(-5px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
-  background-color: #f8f9fa;
-}
 .create-group-button {
   background-color: #225750;
   color: white;
@@ -40,6 +36,70 @@
 
 .close-button:hover {
   background-color: rgb(180, 180, 180);
+}
+.whole-section {
+  background: #ffffff;
+  padding: 1.5rem;
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  
+
+}
+
+.group-list {
+  display: flex;
+  flex-direction: column;
+}
+.group-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  border-radius: 12px;
+  background: #f8f9fa;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.group-row + .group-row {
+  margin-top: 12px;
+}
+
+.group-row:hover {
+  border-color: #225750;
+  transform: translateX(5px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
+}
+
+.group-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.group-right {
+  min-width: 120px;
+}
+.group-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  /* background: linear-gradient(135deg, #B0E7E0 0%, #225750 100%); */
+  background: #225750;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.group-avatar img {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
 }
 
 /*Chat Panel Adjustments*/

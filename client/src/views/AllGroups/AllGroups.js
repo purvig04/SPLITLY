@@ -1,10 +1,16 @@
 import { mapGetters, mapActions } from "vuex";
 import * as bootstrap from "bootstrap";
+import { calculateUserBalanceList } from "@/utils/settlements";
+import { getInitials } from "@/utils/stringHelpers";
 
 export default {
   name: "AllGroups",
   computed: {
     ...mapGetters("group", ["getGroups", "isLoading"]),
+    ...mapGetters("auth", ["getUser"]),
+    user() {
+      return this.getUser;
+    },
     groups() {
       return this.getGroups;
     },
@@ -16,11 +22,14 @@ export default {
     return {
       newGroupTitle: "",
       modalInstance: null,
+      localGroups: [],
     };
   },
   methods: {
     ...mapActions("group", ["fetchGroups", "createGroup"]),
-
+    getInitial(name) {
+      return getInitials(name);
+    },
     openModal() {
       const modalEl = document.getElementById("createGroupModal");
       this.modalInstance = new bootstrap.Modal(modalEl);
@@ -52,8 +61,34 @@ export default {
     goBack() {
       this.$router.push("/home");
     },
+    async allGroupsWithBalances() {
+      if (!this.groups || !this.groups.length) return;
+
+      this.localGroups = await Promise.all(
+        this.groups.map(async (group) => {
+          const transactions = await calculateUserBalanceList(
+            this.user.id,
+            group.id
+          );
+
+          let netBalance = 0;
+          transactions.forEach((t) => {
+            if (t.type === "owed") netBalance += t.amount;
+            if (t.type === "owe") netBalance -= t.amount;
+          });
+
+          return {
+            ...group,
+            netBalance,
+          };
+        })
+      );
+    },
   },
   async created() {
     await this.fetchGroups("GROUP");
+    console.log("groupsss before", this.groups);
+    await this.allGroupsWithBalances();
+    console.log("groupsss", this.localGroups);
   },
 };

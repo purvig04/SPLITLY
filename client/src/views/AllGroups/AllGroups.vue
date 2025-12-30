@@ -8,8 +8,8 @@
       >
         <i class="fa-solid fa-arrow-left"></i>
       </button>
-      <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>Your Groups</h2>
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-semibold">Your Groups</h2>
         <button @click="openModal" class="btn create-group-button">
           Create Group
         </button>
@@ -20,24 +20,49 @@
         <p class="mt-2">Loading groups...</p>
       </div>
       <!-- Groups List -->
-      <div
-        v-else-if="groups && groups.length"
-        class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4"
-      >
-        <div
-          class="col"
-          v-for="group in groups"
-          :key="group.id"
-          @click="goToGroup(group.id)"
-        >
-          <div class="card h-100 shadow-sm border-0 rounded-3 group-card">
-            <div class="card-body d-flex align-items-center gap-3">
-              <!-- Group Icon -->
-              <i class="bi bi-people-fill text fs-4"></i>
-              <!-- Group Title -->
-              <h5 class="card-title mb-0 text-dark fw-semibold">
+
+      <div v-else-if="groups && groups.length" class="group-list">
+        <div class="whole-section mt-4 p-4 border-top">
+          <div
+            v-for="group in localGroups"
+            :key="group.id"
+            class="group-row"
+            @click="goToGroup(group.id)"
+          >
+            <div class="group-left">
+               <div class="group-avatar">
+                      <div v-if="group.profilePic">
+                        <img :src="profileUrl(group)" alt="Profile" />
+                      </div>
+                      <div v-else>
+                        {{ getInitial(group.title) }}
+                      </div>
+                    </div>
+              <h5 class="mb-0 text-dark fw-semibold">
                 {{ group.title }}
               </h5>
+            </div>
+            <!-- right -->
+            <div class="group-right">
+              <div
+                v-if="group.netBalance > 0"
+                class="text-success fw-semibold text-end"
+              >
+                you are owed
+
+                <div>₹{{ group.netBalance.toFixed(2) }}</div>
+              </div>
+
+              <div
+                v-else-if="group.netBalance < 0"
+                class="text-danger fw-semibold text-end"
+              >
+                you owe
+
+                <div>₹{{ Math.abs(group.netBalance).toFixed(2) }}</div>
+              </div>
+
+              <div v-else class="text-muted small text-end">Settled</div>
             </div>
           </div>
         </div>
@@ -55,9 +80,7 @@
           <div class="modal-content">
             <form @submit.prevent="handleCreateGroup">
               <div class="modal-header">
-                <h5 class="modal-title">
-                  Create New Group
-                </h5>
+                <h5 class="modal-title">Create New Group</h5>
                 <button
                   type="button"
                   class="btn-close"

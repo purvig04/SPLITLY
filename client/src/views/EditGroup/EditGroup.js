@@ -36,7 +36,7 @@ export default {
       }
     },
     async renameGroup() {
-      if(!this.newGroupName){
+      if (!this.newGroupName) {
         this.errorMessage = "Please enter a valid group name.";
         return;
       }
@@ -69,14 +69,11 @@ export default {
         "will Implement. can only leave after all expenses paid. make next person admin"
       );
     },
-    goBack(){
-      this.$router.push(`/group/${this.groupId}`)
-    }
+    goBack() {
+      this.$router.push(`/group/${this.groupId}`);
+    },
   },
   async mounted() {
     await this.fetchGroupDetails();
-    if (!this.user) {
-      await this.$store.dispatch("auth/fetchUser");
-    }
   },
 };

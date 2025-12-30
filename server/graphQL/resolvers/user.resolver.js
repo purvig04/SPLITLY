@@ -10,11 +10,8 @@ import "dotenv/config";
 export const userResolvers = {
   Query: {
     //to get single user from backend
-    getUser(_, __, context) {
-      if (!context.user) {
-        throw new Error("Not authenticated");
-      }
-      return context.user;
+    getUser(_, __, { user }) {
+      return user || null;
     },
 
     async getUserById(_, { userId }, __) {
@@ -75,14 +72,22 @@ export const userResolvers = {
       const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET);
       res.cookie("jwt", token, {
         httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        path: "/",
         maxAge: 1000 * 60 * 60 * 24 * 2,
       });
-      return { token, user };
+      return { user };
     },
 
     async logout(_, __, context) {
       const { res } = context;
-      res.clearCookie("jwt", { httpOnly: true });
+      res.clearCookie("jwt", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        path: "/",
+      });
       return true;
     },
 

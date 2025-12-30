@@ -1,22 +1,27 @@
+import { mapActions, mapGetters } from "vuex";
+
 export default {
   name: "NavBar",
   computed: {
+    ...mapGetters("auth", ["isLoggedIn", "getUserId", "getError"]),
     userLoggedIn() {
-      return this.$store.getters["auth/isLoggedIn"];
+      return this.isLoggedIn;
     },
     userId() {
-      return this.$store.getters["auth/getUserId"];
+      return this.getUserId;
     },
     error() {
-      return this.$store.getters["auth/getError"];
+      return this.getError;
     },
   },
   methods: {
-    async logout() {
+    ...mapActions("auth", ["logout"]),
+
+    async Logout() {
       try {
-        await this.$store.dispatch("auth/logout");
-        console.log("Logout successful");
-        this.$router.push("/");
+        await this.logout();
+        // console.log("Logout successful");
+        this.$router.push("/login");
       } catch (err) {
         console.error("Logout failed", err);
       }

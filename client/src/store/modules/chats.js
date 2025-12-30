@@ -76,7 +76,7 @@ const actions = {
     }
   },
 
-  async subscribeToChats({ commit, state }) {
+  async subscribeToChats({ commit, state, rootGetters }) {
     if (state.groupId) {
       if (state.subscription) return;
 
@@ -84,7 +84,7 @@ const actions = {
         commit("ADD_CHAT", {
           ...newMessage,
           sentByYou:
-            newMessage.senderId === sessionStorage.getItem("userId")
+            newMessage.senderId === rootGetters["auth/getUserId"]
               ? true
               : false,
         });

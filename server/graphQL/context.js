@@ -4,6 +4,9 @@ import { pubsub } from "../src/pubsub.js";
 
 export const context = async ({ req, res }) => {
   const token = req.cookies.jwt;
-  const user = await findUser(token);
+  const payload = await findUser(token);
+  const user = payload
+    ? await prisma.user.findUnique({ where: { id: payload.userId } })
+    : null;
   return { prisma, user, res, pubsub };
 };

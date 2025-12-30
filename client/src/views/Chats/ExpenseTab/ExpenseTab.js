@@ -116,8 +116,4 @@ export default {
       this.$router.push({ name: "Group", params: { id } });
     },
   },
-
-  async updated() {
-    console.log("Expenses:", this.groupExpenses);
-  },
 };

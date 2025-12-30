@@ -18,23 +18,57 @@ export const expensesResolvers = {
     },
 
     async getExpenseById(_, { id }, { prisma }) {
-      return await prisma.expense.findUnique({
+      // 1️⃣ Fetch expense (unchanged includes)
+      const expense = await prisma.expense.findUnique({
         where: { id },
         include: {
           category: true,
-
-          createdByUser: true,
+          createdByUser: {
+            select: { id: true, name: true },
+          },
           group: {
             include: {
               members: {
                 include: {
-                  user: true,
+                  user: {
+                    select: { id: true, name: true },
+                  },
                 },
               },
             },
           },
         },
       });
+
+      if (!expense) return null;
+
+      // 2️⃣ Collect ALL userIds from JSON + creator
+      const userIds = new Set();
+
+      (expense.paid_by || []).forEach((p) => userIds.add(p.userId));
+      (expense.shared_amounts || []).forEach((s) => userIds.add(s.userId));
+      if (expense.created_by) userIds.add(expense.created_by);
+
+      // 3️⃣ Fetch users in ONE query
+      const users = await prisma.user.findMany({
+        where: { id: { in: [...userIds] } },
+        select: { id: true, name: true },
+      });
+
+      const userMap = Object.fromEntries(users.map((u) => [u.id, u]));
+
+      // 4️⃣ Enrich JSON fields
+      const enrich = (arr = []) =>
+        arr.map((item) => ({
+          ...item,
+          user: userMap[item.userId] || null,
+        }));
+
+      return {
+        ...expense,
+        paid_by: enrich(expense.paid_by),
+        shared_amounts: enrich(expense.shared_amounts),
+      };
     },
 
     async getExpenseByFriendId(_, { friendId }, { prisma, user }) {

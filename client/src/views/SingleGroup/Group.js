@@ -347,9 +347,6 @@ export default {
     },
     async fetchData() {
       await this.fetchGroupDetail();
-      if (!this.user) {
-        await this.$store.dispatch("auth/fetchUser");
-      }
       this.userBalances = await calculateUserBalanceList(
         this.user.id,
         this.group.id

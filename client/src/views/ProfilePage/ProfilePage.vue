@@ -1,5 +1,6 @@
 <template>
   <div class="profile-page">
+    <!-- Loading Overlay -->
     <div v-if="saving" class="loading-overlay">
       <div class="loading-content">
         <div class="loading-spinner"></div>
@@ -7,23 +8,17 @@
       </div>
     </div>
 
-    <div
-      v-else
-      class="profile-container"
-      :class="{ 'pointer-events-none': saving }"
-    >
-      <!-- LEFT COLUMN -->
+    <!-- Main Container -->
+    <div class="profile-container" :class="{ 'pointer-events-none': saving }">
+      <!-- LEFT COLUMN: Profile Photo & Actions -->
       <div class="profile-wrapper">
-        <!-- Header -->
         <div class="profile-header">
           <button class="btn-back" @click="goBack">
             <i class="fa-solid fa-arrow-left"></i>
           </button>
           <h2>Profile</h2>
-          <div class="spacer"></div>
         </div>
 
-        <!-- Profile Photo -->
         <div class="profile-photo-section">
           <div class="photo-wrapper">
             <div class="profile-photo" @click="triggerFileInput">
@@ -54,7 +49,6 @@
           </p>
         </div>
 
-        <!-- Delete Account -->
         <div class="delete-account-section">
           <button class="btn-delete" @click="confirmDeleteAccount">
             <i class="fa-solid fa-trash"></i>
@@ -63,7 +57,7 @@
         </div>
       </div>
 
-      <!-- CENTER COLUMN -->
+      <!-- CENTER COLUMN: Form -->
       <div class="profile-form">
         <div class="form-group">
           <label class="form-label">
@@ -158,11 +152,13 @@
         </div>
       </div>
 
-      <!-- RIGHT COLUMN -->
+      <!-- RIGHT COLUMN: Share QR -->
       <div class="share-qr">
         <h3>Share Account</h3>
         <div class="qr-card">
-          <QRcodeVue :value="shareUrl" :size="220" level="M" />
+          <div class="qr-image-wrapper">
+            <QRcodeVue :value="shareUrl" :size="140" level="M" />
+          </div>
           <div class="qr-code-text">{{ profileData.shareCode }}</div>
           <button
             :class="['btn-copy-code', { copied: codeCopied }]"
@@ -174,16 +170,22 @@
             {{ codeCopied ? "Copied!" : "Copy Code" }}
           </button>
           <p class="qr-hint">Scan QR or share code with friends</p>
-          <input type="text" class="qr-code-text" v-model="friendShareCode" />
+          <input
+            type="text"
+            class="qr-code-text input-field"
+            v-model="friendShareCode"
+            placeholder="Enter friend's code"
+          />
           <button class="btn-copy-code" @click="openAddFriendModal">
-            Continue
+            <i class="fa-solid fa-user-plus"></i>
+            Add Friend
           </button>
-          <!-- <span>{{ friendShareCode }}</span> -->
         </div>
       </div>
     </div>
+
+    <router-view></router-view>
   </div>
-  <router-view></router-view>
 </template>
 
 <script src="./ProfilePage.js"></script>

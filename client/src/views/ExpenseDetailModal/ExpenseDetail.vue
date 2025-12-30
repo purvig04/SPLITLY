@@ -15,7 +15,8 @@
           <div class="d-flex align-items-center">
             <i
               :class="expense.category.icon"
-              class="fs-2 me-3 " style="color: #225750;"
+              class="fs-2 me-3"
+              style="color: #225750"
             ></i>
             <div>
               <h4 class="mb-0">{{ expense.title }}</h4>

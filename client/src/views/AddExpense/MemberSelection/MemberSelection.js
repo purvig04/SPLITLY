@@ -22,6 +22,7 @@ export default {
 
   computed: {
     ...mapGetters("group", ["getGroupById"]),
+    ...mapGetters("auth", ["getUserId"]),
 
     groupData() {
       const group = this.getGroupById(this.groupId);
@@ -41,11 +42,15 @@ export default {
         this.selectedMembers.length === this.groupData.members.length - 1
       );
     },
+
+    userId() {
+      return this.getUserId;
+    },
   },
 
   methods: {
     isSelected(memberId) {
-      if (memberId === sessionStorage.getItem("userId")) return true;
+      if (memberId === this.userId) return true;
       return this.selectedMembers.some((m) => m.id === memberId);
     },
 
@@ -70,7 +75,7 @@ export default {
         this.$emit("update:selectedMembers", []);
       } else {
         const filteredMembers = this.groupData.members.filter((member) => {
-          return member.id !== sessionStorage.getItem("userId");
+          return member.id !== this.userId;
         });
         this.$emit("update:selectedMembers", filteredMembers);
       }

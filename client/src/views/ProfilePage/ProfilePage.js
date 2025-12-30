@@ -23,34 +23,25 @@ export default {
         profilePicVersion: "",
         shareCode: "",
         createdAt: "",
-        updatedAt: "",
       },
       originalData: {},
-
       previewProfileUrl: null,
-
       isEditing: {
         name: false,
         contact: false,
       },
-
       loadingText: "Updating profile...",
-
       errors: {
         name: "",
         contact: "",
       },
-
       saving: false,
       photoFile: null,
-      version: null,
-
       codeCopied: false,
       friendShareCode: "",
     };
   },
 
-  /* -------------------- COMPUTED -------------------- */
   computed: {
     ...mapGetters("auth", ["getUser"]),
 
@@ -81,18 +72,14 @@ export default {
 
     profileUrl() {
       if (this.previewProfileUrl) {
-        return this.previewProfileUrl; // 👈 temporary preview
+        return this.previewProfileUrl;
       }
 
       if (!this.profileData.profilePic) {
-        return null; // or default avatar
+        return null;
       }
 
-      return (
-        CLOUDINARY_BASE_URL +
-        ("v" + this.profileData.profilePicVersion + "/") +
-        this.profileData.profilePic
-      );
+      return `${CLOUDINARY_BASE_URL}v${this.profileData.profilePicVersion}/${this.profileData.profilePic}`;
     },
 
     shareUrl() {
@@ -101,7 +88,7 @@ export default {
   },
 
   methods: {
-    ...mapActions("auth", ["updateUserProfile", "fetchUser"]),
+    ...mapActions("auth", ["updateUserProfile"]),
 
     getInitials,
 
@@ -116,7 +103,6 @@ export default {
         profilePicVersion = "",
         shareCode = "",
         createdAt = new Date().toISOString(),
-        updatedAt = "",
       } = this.user;
 
       this.profileData = {
@@ -127,7 +113,6 @@ export default {
         profilePicVersion,
         shareCode,
         createdAt,
-        updatedAt,
       };
       this.originalData = { ...this.profileData };
     },
@@ -138,16 +123,15 @@ export default {
       this.previewProfileUrl = null;
       this.isEditing = { name: false, contact: false };
       this.errors = { name: "", contact: "" };
-      this.$refs.fileInput && (this.$refs.fileInput.value = "");
+      if (this.$refs.fileInput) this.$refs.fileInput.value = "";
     },
 
     enableEdit(field) {
       this.isEditing[field] = true;
       this.$nextTick(() => {
-        const input = this.$el.querySelector(
-          `input[type="${field === "contact" ? "tel" : "text"}"]`
-        );
-        input && !input.disabled && input.focus();
+        const inputType = field === "contact" ? "tel" : "text";
+        const input = this.$el.querySelector(`input[type="${inputType}"]`);
+        if (input && !input.disabled) input.focus();
       });
     },
 
@@ -156,28 +140,31 @@ export default {
 
       if (field === "name") {
         const value = this.profileData.name?.trim();
-        if (!value) return (this.errors.name = "Name is required"), false;
-        if (value.length < 2)
-          return (
-            (this.errors.name = "Name must be at least 2 characters"), false
-          );
+        if (!value) {
+          this.errors.name = "Name is required";
+          return false;
+        }
+        if (value.length < 2) {
+          this.errors.name = "Name must be at least 2 characters";
+          return false;
+        }
       }
 
       if (field === "contact" && this.profileData.contact?.trim()) {
         const regex = /^[6-9]\d{9}$/;
-        if (!regex.test(this.profileData.contact))
-          return (
-            (this.errors.contact =
-              "Please enter a valid 10-digit contact number"),
-            false
-          );
+        if (!regex.test(this.profileData.contact)) {
+          this.errors.contact = "Please enter a valid 10-digit contact number";
+          return false;
+        }
       }
 
       return true;
     },
 
     saveField(field) {
-      this.validateField(field) && (this.isEditing[field] = false);
+      if (this.validateField(field)) {
+        this.isEditing[field] = false;
+      }
     },
 
     triggerFileInput() {
@@ -188,10 +175,15 @@ export default {
       const file = e.target.files[0];
       if (!file) return;
 
-      if (!file.type.startsWith("image/"))
-        return alert("Please select an image file");
-      if (file.size > 5 * 1024 * 1024)
-        return alert("File size should not exceed 5MB");
+      if (!file.type.startsWith("image/")) {
+        alert("Please select an image file");
+        return;
+      }
+
+      if (file.size > 5 * 1024 * 1024) {
+        alert("File size should not exceed 5MB");
+        return;
+      }
 
       this.photoFile = file;
 
@@ -218,8 +210,6 @@ export default {
       if (this.photoFile) {
         const { public_id, version } = await uploadAvatar(this.photoFile);
         payload.profilePic = public_id;
-        // console.log("secure:", secure_url);
-        // console.log("version:", version, typeof version);
         payload.profilePicVersion = version.toString();
       }
 
@@ -229,7 +219,9 @@ export default {
     async saveProfile() {
       if (!this.hasChanges) return;
 
-      if (!this.validateField("name") || !this.validateField("contact")) return;
+      if (!this.validateField("name") || !this.validateField("contact")) {
+        return;
+      }
 
       this.saving = true;
 
@@ -237,15 +229,10 @@ export default {
         const payload = await this.buildUpdatePayload();
         if (!Object.keys(payload).length) return;
 
-        // console.log("PP User Before:", this.profileUrl);
-
         this.loadingText = "Saving Changes...";
         await this.updateUserProfile(payload);
         this.previewProfileUrl = null;
-
         this.loadProfileData();
-        // console.log("PP User After:", this.profileUrl);
-
         this.photoFile = null;
       } catch (err) {
         console.error(err);
@@ -256,34 +243,52 @@ export default {
     },
 
     async copyCode() {
-      await navigator.clipboard.writeText(this.profileData.shareCode);
-      this.codeCopied = true;
-      setTimeout(() => (this.codeCopied = false), 2000);
+      try {
+        await navigator.clipboard.writeText(this.profileData.shareCode);
+        this.codeCopied = true;
+        setTimeout(() => (this.codeCopied = false), 2000);
+      } catch (err) {
+        console.error("Failed to copy code:", err);
+      }
     },
 
     goBack() {
       this.$router.go(-1);
     },
 
-    openAddFriendModal() {
-      console.log("Share code entered:", this.friendShareCode);
-      if (!this.friendShareCode) return;
-      else if (this.friendShareCode === this.profileData.shareCode) {
-        this.$router.push({ name: "ProfilePage" });
-        this.friendShareCode = "";
-      } else {
-        this.$router.push({
-          name: "SharedProfile",
-          params: { shareCode: this.friendShareCode },
-        });
-        this.friendShareCode = "";
+    confirmDeleteAccount() {
+      if (
+        confirm(
+          "Are you sure you want to delete your account? This action cannot be undone."
+        )
+      ) {
+        console.log("Account deleted!!");
       }
+    },
+
+    openAddFriendModal() {
+      const code = this.friendShareCode.trim();
+
+      if (!code) {
+        alert("Please enter a friend's share code");
+        return;
+      }
+
+      if (code === this.profileData.shareCode) {
+        alert("You cannot add yourself as a friend");
+        this.friendShareCode = "";
+        return;
+      }
+
+      this.$router.push({
+        name: "SharedProfile",
+        params: { shareCode: code },
+      });
+      this.friendShareCode = "";
     },
   },
 
   async mounted() {
-    await this.fetchUser();
     this.loadProfileData();
-    // console.log(this.profileUrl);
   },
 };

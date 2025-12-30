@@ -1,16 +1,17 @@
+import { mapGetters } from "vuex";
 
 export default {
   name: "LandingPage",
+  computed: {
+    ...mapGetters("auth", ["isLoggedIn"]),
+  },
   methods: {
     addExpense() {
-     const storedUser =JSON.parse(sessionStorage.getItem("userLoggedIn"))
-     if(storedUser){
-      this.$router.push("/home");
-     }else{
-      this.$router.push("/login");
-     }
-      
-  
+      if (this.isLoggedIn) {
+        this.$router.push("/home");
+      } else {
+        this.$router.push("/login");
+      }
     },
   },
 };

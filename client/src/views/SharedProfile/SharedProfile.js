@@ -46,7 +46,7 @@ export default {
   methods: {
     ...mapActions("friends", ["createFriend"]),
 
-    async fetchUser() {
+    async fetchUserDetail() {
       try {
         this.loading = true;
         this.error = null;
@@ -75,6 +75,6 @@ export default {
   },
 
   async mounted() {
-    await this.fetchUser();
+    await this.fetchUserDetail();
   },
 };

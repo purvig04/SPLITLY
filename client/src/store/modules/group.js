@@ -54,15 +54,14 @@ const getters = {
     return Groups;
   },
 
-  getGroupById: (state) => (id) => {
+  getGroupById: (state, rootGetters) => (id) => {
     const group = state.groups.find((group) => group.id === id);
     const selectedGroup = {
       id: group.id,
       name: group.title,
       members: group.members.map((m) => ({
         id: m.user.id,
-        name:
-          m.user.id === sessionStorage.getItem("userId") ? "You" : m.user.name,
+        name: m.user.id === rootGetters["auth/getUserId"] ? "You" : m.user.name,
       })),
     };
     return selectedGroup;

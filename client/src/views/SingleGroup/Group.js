@@ -199,7 +199,7 @@ export default {
         this.group = getGroupDetails;
       } catch (error) {
         console.error("Error loading group:", error);
-        this.$router.push("/groups");
+        this.$router.push({ name: "Groups" });
       }
     },
 

@@ -21,7 +21,7 @@ export default {
       try {
         await this.logout();
         // console.log("Logout successful");
-        this.$router.push("/login");
+        this.$router.push({ name: "Login" });
       } catch (err) {
         console.error("Logout failed", err);
       }

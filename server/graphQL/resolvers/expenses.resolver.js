@@ -1,4 +1,5 @@
 import { DateTimeResolver, JSONResolver } from "graphql-scalars";
+import { simplifyExpensesByFriendId } from "../../src/utils/expenseHelper.js";
 
 export const expensesResolvers = {
   JSON: JSONResolver,
@@ -72,78 +73,43 @@ export const expensesResolvers = {
     },
 
     async getExpenseByFriendId(_, { friendId }, { prisma, user }) {
-      const personalGroup = await prisma.group.findFirst({
+      const sharedGroups = await prisma.group.findMany({
         where: {
-          type: "PERSONAL",
+          type: { in: ["PERSONAL", "NON_GROUP"] },
           members: {
-            every: {
-              userId: { in: [user.id, friendId] },
+            some: { userId: user.id },
+          },
+          AND: {
+            members: {
+              some: { userId: friendId },
             },
           },
         },
+        select: {
+          id: true,
+        },
       });
 
-      const personalExpenses = personalGroup
-        ? await prisma.expense.findMany({
-            where: {
-              groupId: personalGroup.id,
-            },
+      if (sharedGroups.length === 0) return [];
 
-            include: {
-              category: true,
-              group: true,
-              createdByUser: true,
-            },
-          })
-        : [];
+      const groupIds = sharedGroups.map((g) => g.id);
 
-      const nonGroupExpenseIds = await prisma.$queryRaw`
-        SELECT e.id
-        FROM expense e
-        WHERE e."groupId" IS NULL
-
-        AND (
-          EXISTS (
-            SELECT 1
-            FROM unnest(e.paid_by) pb
-            WHERE pb->>'userId' =  ${user.id}
-          )
-          OR
-          EXISTS (
-            SELECT 1
-            FROM unnest(e.shared_amounts) sa
-            WHERE sa->>'userId' =  ${user.id}
-          )
-        )
-        AND (
-          EXISTS (
-            SELECT 1
-            FROM unnest(e.paid_by) pb
-            WHERE pb->>'userId' =  ${friendId}
-          )
-          OR
-          EXISTS (
-            SELECT 1
-            FROM unnest(e.shared_amounts) sa
-            WHERE sa->>'userId' = ${friendId}
-          )
-        )
-
-        ORDER BY e."createdAt" DESC;
-      `;
-
-      const nonGroupExpenses = await prisma.expense.findMany({
+      const expenses = await prisma.expense.findMany({
         where: {
-          id: { in: nonGroupExpenseIds.map((e) => e.id) },
+          groupId: { in: groupIds },
         },
         include: {
           category: true,
           group: true,
           createdByUser: true,
         },
+        orderBy: {
+          createdAt: "desc",
+        },
       });
+      // console.log("E:", expenses);
 
-      return [...personalExpenses, ...nonGroupExpenses];
+      return simplifyExpensesByFriendId(expenses, user.id, friendId);
     },
   },
   Mutation: {

@@ -13,7 +13,7 @@
         Which balance do you want to settle?
       </h5>
       <div
-        class="d-flex justify-content-between fw-bold alert py-1 "
+        class="d-flex justify-content-between fw-bold alert py-1"
         v-if="overallSettlementItem"
       >
         <span :class="overallSettlementItem.class">
@@ -22,7 +22,14 @@
 
         <button
           class="btn btn-sm btn-primary rounded-pill"
-          @click="openConfirmationModal({overall:true,transactions: friendTransaction , net:net , friendName:friendName})"
+          @click="
+            openConfirmationModal({
+              overall: true,
+              transactions: friendTransaction,
+              net: net,
+              friendName: friendName,
+            })
+          "
         >
           Settle
         </button>
@@ -52,6 +59,21 @@
               </span>
             </div>
 
+            <!--NON GROUP TYPE -->
+            <div v-else-if="item.groupType === 'NON_GROUP'">
+              <!-- You OWE -->
+              <span v-if="item.type === 'owe'" class="text-danger">
+                You owe ₹{{ item.amount.toFixed(2) }} to {{ friendName }} in
+                non-group expenses
+              </span>
+
+              <!-- You are OWED -->
+              <span v-else class="text-success">
+                {{ friendName }} owes you ₹{{ item.amount.toFixed(2) }}
+                in non-group expenses
+              </span>
+            </div>
+
             <!--PERSONAL TYPE -->
             <div v-else>
               <!-- You OWE -->
@@ -71,7 +93,6 @@
           <button
             class="btn btn-sm btn-primary rounded-pill"
             @click="openConfirmationModal(item)"
-            
           >
             Settle
           </button>

@@ -1,5 +1,11 @@
 <template>
-  <div v-if="!expenses.length" class="empty-state">
+  <div
+    v-if="
+      (!expenses || expenses.length < 1) &&
+      (!groupExpenses || groupExpenses.length < 1)
+    "
+    class="empty-state"
+  >
     <img
       src="https://img.icons8.com/color/64/receipt.png"
       alt="No Expenses"
@@ -22,17 +28,23 @@
         <span class="expense-date">{{ formatDate(expense.date) }}</span>
       </div>
       <div class="expense-amount-wrapper">
-        <div class="expense-total-amount">
-          <h6>₹{{ expense.totalAmount.toFixed(2) }}</h6>
-        </div>
         <div class="expense-amount" :class="expense.type">
           <span v-if="expense.type === 'owed'">
-            + ₹{{ expense.amount.toFixed(2) }}
+            <div class="expense-amount-text">
+              <h6>you lent</h6>
+            </div>
+            ₹{{ expense.amount.toFixed(2) }}
           </span>
-          <span v-else-if="expense.type === 'owe'"
-            >- ₹{{ Math.abs(expense.amount).toFixed(2) }}
+          <span v-else-if="expense.type === 'owe'">
+            <div class="expense-amount-text">
+              <h6>you borrowed</h6>
+            </div>
+            ₹{{ Math.abs(expense.amount).toFixed(2) }}
           </span>
-          <span v-else>Not Involved</span>
+          <span v-else-if="expense.type === 'no-balance'"
+            ><i>no balance</i></span
+          >
+          <span v-else><i>not involved</i></span>
         </div>
       </div>
     </div>
@@ -53,12 +65,17 @@
         <div class="expense-amount-wrapper">
           <div class="expense-amount" :class="groupExpense.type">
             <span v-if="groupExpense.type === 'owed'">
-              + ₹{{ groupExpense.amount.toFixed(2) }}
+              <div class="expense-amount-text">
+                <h6>you lent</h6>
+              </div>
+              ₹{{ groupExpense.amount.toFixed(2) }}
             </span>
-            <span v-else-if="groupExpense.type === 'owe'"
-              >- ₹{{ Math.abs(groupExpense.amount).toFixed(2) }}
+            <span v-else-if="groupExpense.type === 'owe'">
+              <div class="expense-amount-text">
+                <h6>you borrowed</h6>
+              </div>
+              ₹{{ Math.abs(groupExpense.amount).toFixed(2) }}
             </span>
-            <span v-else>Not Involved</span>
           </div>
         </div>
       </div>

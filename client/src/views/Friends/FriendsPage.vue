@@ -76,7 +76,7 @@
                       v-if="friend.owedToYou === 0 && friend.youOwe === 0"
                       class="balance-item settled"
                     >
-                      <span class="balance-label">settled up</span>
+                      <span class="balance-label">settled</span>
                     </div>
                   </div>
                 </div>

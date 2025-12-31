@@ -60,8 +60,5 @@
   </div>
 </template>
 
-import group from '@/store/modules/group.js'; import group from
-'@/store/modules/group.js';
-
 <script src="./Chats.js" />
 <style src="./Chats.css" scoped />

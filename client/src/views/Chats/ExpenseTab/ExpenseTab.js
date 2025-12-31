@@ -21,13 +21,13 @@ export default {
   },
 
   computed: {
-    ...mapGetters("expenses", ["getExpenses"]),
+    ...mapGetters("expenses", ["getExpenses", "getGroupExpensesByFriend"]),
     expenses() {
       return this.getExpenses;
     },
 
     groupExpenses() {
-      return this.expenses.groupExpenses || [];
+      return this.getGroupExpensesByFriend;
     },
   },
 
@@ -36,7 +36,10 @@ export default {
       immediate: true,
       async handler(newVal) {
         await this.loadExpenses({ type: this.page, id: newVal });
-        // console.log("ETab", this.expenses);
+        console.log("NeeVal:", newVal);
+
+        console.log("ETab", this.groupExpenses);
+        console.log("ETab2", this.expenses);
         // console.log("ETab page", this.page);
         // console.log("ETab id", newVal);
       },

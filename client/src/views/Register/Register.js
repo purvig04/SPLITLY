@@ -59,7 +59,7 @@ export default {
           console.info(
             `Registration successful for user: ${data.register.email}`
           );
-          this.$router.push("/login");
+          this.$router.push({ name: "Login" });
         } else {
           console.warn(
             "Registration failed: Invalid response from server.",

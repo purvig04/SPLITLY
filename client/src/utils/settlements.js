@@ -86,8 +86,9 @@ const userAllGroups = async () => {
   //user id is going from context
   const arr1 = await groupService.getGroups("PERSONAL");
   const arr2 = await groupService.getGroups("GROUP");
+  const arr3 = await groupService.getGroups("NON_GROUP");
 
-  return [...arr1, ...arr2];
+  return [...arr1, ...arr2, ...arr3];
 };
 
 export const userAllBalances = async (userId) => {

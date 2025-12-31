@@ -59,7 +59,7 @@ export default {
       this.$router.push({ name: "GroupChats", params: { id } });
     },
     goBack() {
-      this.$router.push("/home");
+      this.$router.push({ name: "Home" });
     },
     async allGroupsWithBalances() {
       if (!this.groups || !this.groups.length) return;

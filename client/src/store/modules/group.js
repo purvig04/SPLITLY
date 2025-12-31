@@ -1,4 +1,4 @@
-import { groupService } from "@/services/groups.service";
+import { groupService, getOrCreateNonGroup } from "@/services/groups.service";
 
 const state = () => ({
   groups: [],
@@ -37,6 +37,16 @@ const actions = {
       return created;
     } catch (e) {
       console.log("failed to create group", e);
+    }
+  },
+
+  async getNonGroupId(_, friendIdsArray) {
+    try {
+      const { id } = await getOrCreateNonGroup(friendIdsArray);
+      console.log(id);
+      return id;
+    } catch (error) {
+      console.log("Error creating non group", error);
     }
   },
 };

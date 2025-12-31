@@ -8,9 +8,9 @@ export default {
   methods: {
     addExpense() {
       if (this.isLoggedIn) {
-        this.$router.push("/home");
+        this.$router.push({ name: "Home" });
       } else {
-        this.$router.push("/login");
+        this.$router.push({ name: "Login" });
       }
     },
   },

@@ -7,76 +7,77 @@ import { calculateUserBalanceList } from "@/utils/settlements";
 
 const state = () => ({
   expenses: [],
-  total: 0,
+  groupExpensesByFriend: [],
 });
 
 const mutations = {
   SET_EXPENSES(state, expenses) {
     state.expenses = expenses;
   },
-  SET_TOTAL(state, total) {
-    state.total = total;
+
+  SET_GROUP_EXPENSES_BY_FRIEND(state, payload) {
+    state.groupExpensesByFriend = payload;
   },
+  // SET_TOTAL(state, total) {
+  //   state.total = total;
+  // },
 };
 
 const actions = {
   async loadExpenses({ commit, rootGetters }, payload) {
     try {
       const { type, id } = payload;
-
       const userId = rootGetters["auth/getUserId"];
+
       if (type === "friends") {
-        // const groupId = await groupService.getPersonalGroupId(id);
-        // console.log("Personal GID:", groupId);
-        const commonGroups = await getCommonGroups(id);
-        const data = await getExpenseByFriendId(id);
-        const expenses = SimplifyExpenses(data, userId);
-        const sum = expenses.reduce((acc, exp) => exp.amount + acc, 0);
+        const [commonGroups, data] = await Promise.all([
+          getCommonGroups(id),
+          getExpenseByFriendId(id),
+        ]);
 
-        expenses.groupExpenses = [];
+        // const expenses = SimplifyExpenses(data, userId);
+        const expenses = data || [];
 
-        for (const group of commonGroups) {
-          const transaction = await calculateUserBalanceList(userId, group.id);
+        const groupTransactionsList = await Promise.all(
+          commonGroups.map(async (group) => {
+            const transactions = await calculateUserBalanceList(
+              userId,
+              group.id
+            );
 
-          const groupTransactions = transaction.map((t) => ({
-            ...t,
-            groupId: group.id,
-            groupType: group.type,
-            groupTitle: group.title,
-          }));
+            return transactions
+              .filter((t) => t.person === id)
+              .map((t) => ({
+                ...t,
+                groupId: group.id,
+                groupType: group.type,
+                groupTitle: group.title,
+              }));
+          })
+        );
+        const groupExpenses = groupTransactionsList.flat() || [];
 
-          const filteredTransactions = groupTransactions.filter(
-            (t) => t.person === id
-          );
-          expenses.groupExpenses.push(...filteredTransactions);
-        }
-        // console.log("store expenses:", expenses);
-
-        commit("SET_TOTAL", sum);
         commit("SET_EXPENSES", expenses);
-
-        // if (!groupId) {
-        //   commit("SET_EXPENSES", []);
-        //   return;
-        // }
-      } else if (type === "groups") {
-        const data = await expenseService.getExpensesByGroup(id);
-        const expenses = SimplifyExpenses(data.getExpensesByGroup, userId);
-        const sum = expenses.reduce((acc, exp) => exp.amount + acc, 0);
-        // console.log("Sum:", sum);
-        commit("SET_TOTAL", sum);
-        commit("SET_EXPENSES", expenses);
-        // if (!groupId) throw new Error("No Group Id Found!!");
+        commit("SET_GROUP_EXPENSES_BY_FRIEND", groupExpenses);
+        return;
       }
-      // console.log("Expense store GID:", groupId);
+
+      if (type === "groups") {
+        const { getExpensesByGroup } = await expenseService.getExpensesByGroup(
+          id
+        );
+        const expenses = SimplifyExpenses(getExpensesByGroup, userId);
+        commit("SET_EXPENSES", expenses);
+      }
     } catch (error) {
-      console.log(error);
+      console.error("loadExpenses error:", error);
     }
   },
 };
 
 const getters = {
   getExpenses: (state) => state.expenses,
+  getGroupExpensesByFriend: (state) => state.groupExpensesByFriend,
   getTotal: (state) => state.total,
 };
 
@@ -89,36 +90,47 @@ export default {
 };
 
 function SimplifyExpenses(data, userId) {
-  const expenses = [];
+  return data.map((e) => {
+    const paidEntry = e.paid_by.find((paid) => paid.userId === userId);
+    const sharedEntry = e.shared_amounts.find(
+      (shared) => shared.userId === userId
+    );
 
-  data.forEach((e) => {
-    const expense = {};
-    expense.id = e.id;
-    expense.title = e.title;
-    expense.date = e.createdAt;
-    expense.category = e.category;
-    expense.totalAmount = e.totalAmount;
-    const amountOwed =
-      e.shared_amounts.find((shared) => shared.userId === userId)?.amount || 0;
-    const amountPaid =
-      e.paid_by.find((paid) => paid.userId === userId)?.amount || 0;
+    const isPaidByUser = !!paidEntry;
+    const isSharedByUser = !!sharedEntry;
+
+    const amountPaid = paidEntry?.amount || 0;
+    const amountOwed = sharedEntry?.amount || 0;
+
     const amount = amountPaid - amountOwed;
 
-    expense.amount = amount;
-    if (amount === 0) {
-      expense.type = "not-involved";
-    } else if (amount < 0) {
-      expense.type = "owe";
-    } else {
-      expense.type = "owed";
+    let type;
+
+    // ✅ Case 1: User not involved at all
+    if (!isPaidByUser && !isSharedByUser) {
+      type = "not-involved";
+    }
+    // ✅ Case 2: User involved but net zero
+    else if (amount === 0) {
+      type = "no-balance";
+    }
+    // ✅ Case 3: User owes money
+    else if (amount < 0) {
+      type = "owe";
+    }
+    // ✅ Case 4: User is owed money
+    else {
+      type = "owed";
     }
 
-    expenses.push(expense);
+    return {
+      id: e.id,
+      title: e.title,
+      date: e.createdAt,
+      category: e.category,
+      totalAmount: e.totalAmount,
+      amount,
+      type,
+    };
   });
-
-  return expenses;
 }
-
-// async function calculateAllExpensesWithFriend(friendId) {
-//   const personalExpenses = await getExpensesByGroup();
-// }

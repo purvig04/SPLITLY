@@ -1,5 +1,6 @@
 import { DateTimeResolver, JSONResolver } from "graphql-scalars";
 import { simplifyExpensesByFriendId } from "../../src/utils/expenseHelper.js";
+import { settleGroupService } from "../../src/services/expense.service.js";
 
 export const expensesResolvers = {
   JSON: JSONResolver,
@@ -220,79 +221,7 @@ export const expensesResolvers = {
     async settleGroup(_, { groupId }, { prisma, user }) {
       if (!user) throw new Error("User not authenticated");
 
-      return await prisma.$transaction(async (tx) => {
-        const group = await tx.group.findUnique({
-          where: { id: groupId },
-          select: { currentCycleId: true },
-        });
-        if (!group) throw new Error("Group not found");
-
-        const cycleId = group.currentCycleId;
-
-        // expenses and settlements for active cycle
-        const [expenses, settlements] = await Promise.all([
-          tx.expense.findMany({ where: { groupId, cycleId } }),
-          tx.settlement.findMany({ where: { group_id: groupId, cycleId } }),
-        ]);
-
-        // compute balances
-        const balances = {};
-        const groupMembers = await tx.groupMember.findMany({
-          where: { groupId },
-          select: { userId: true },
-        });
-        groupMembers.forEach((m) => (balances[m.userId] = 0));
-
-        expenses.forEach((e) => {
-          (e.paid_by || []).forEach((p) => {
-            balances[p.userId] = (balances[p.userId] || 0) + Number(p.amount);
-            // console.log("P amount:", Number(p.amount));
-          });
-          (e.shared_amounts || []).forEach((s) => {
-            balances[s.userId] = (balances[s.userId] || 0) - Number(s.amount);
-            // console.log("S amount:", Number(s.amount));
-          });
-        });
-        // console.log("Balances Before:", balances);
-
-        (settlements || []).forEach((s) => {
-          balances[s.payer_id] = (balances[s.payer_id] || 0) + s.amount;
-          balances[s.receiver_id] = (balances[s.receiver_id] || 0) - s.amount;
-          // console.log("Set amount:", Number(s.amount));
-        });
-        // console.log("Balances After:", balances);
-
-        const allZero = Object.values(balances).every(
-          (b) => Math.abs(b) <= 0.01
-        );
-
-        const balanceArray = Object.entries(balances).map(
-          ([userId, amount]) => ({
-            userId,
-            amount,
-          })
-        );
-        // console.log("Balances Array:", balanceArray);
-
-        if (!allZero) {
-          return {
-            message: "Group is not settled",
-            balanceArray: balanceArray,
-          };
-        }
-
-        //group's currentCycleId increase if balances are 0
-        const newCycleId = cycleId + 1;
-        await tx.group.update({
-          where: { id: groupId },
-          data: { currentCycleId: newCycleId },
-        });
-
-        return {
-          message: "Group Settled",
-          balanceArray: balanceArray,
-        };
-      });
+      return settleGroupService(groupId, prisma);
     },
   },
 };

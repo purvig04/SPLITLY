@@ -36,10 +36,10 @@ export default {
       immediate: true,
       async handler(newVal) {
         await this.loadExpenses({ type: this.page, id: newVal });
-        console.log("NeeVal:", newVal);
+        // console.log("NeeVal:", newVal);
 
-        console.log("ETab", this.groupExpenses);
-        console.log("ETab2", this.expenses);
+        // console.log("ETab", this.groupExpenses);
+        // console.log("ETab2", this.expenses);
         // console.log("ETab page", this.page);
         // console.log("ETab id", newVal);
       },

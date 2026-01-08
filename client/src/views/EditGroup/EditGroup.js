@@ -58,7 +58,7 @@ export default {
 
         if (deleteGroup) {
           alert("Group deleted");
-          this.$router.push("/groups");
+          this.$router.push({ name: "Groups" });
         }
       } catch (e) {
         console.log("error in deleteing group", e);

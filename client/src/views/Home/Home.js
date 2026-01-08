@@ -26,11 +26,11 @@ export default {
   methods: {
     ...mapActions("group", ["fetchGroups"]),
     goToGroups() {
-      this.$router.push("/groups");
+      this.$router.push({ name: "Groups" });
       this.fetchGroups();
     },
     goToFriend() {
-      this.$router.push("/friends");
+      this.$router.push({ name: "Friends" });
     },
     goToGeneral() {
       this.$router.push("/general");
@@ -62,7 +62,7 @@ export default {
     console.log("mounting home");
 
     if (!storedUser) {
-      this.$router.push("/login");
+      this.$router.push({ name: "Login" });
     }
   },
   watch: {

@@ -41,6 +41,9 @@ model Group {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  profilePic        String?
+  profilePicVersion String?
+
   members     GroupMember[] @relation("GroupToMembers")
   expenses    Expense[]     @relation("GroupExpenses")
   settlements Settlement[]  @relation("GroupSettlement")

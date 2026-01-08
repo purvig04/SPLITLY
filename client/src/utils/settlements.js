@@ -1,132 +1,107 @@
-import { expenseService } from "@/services/expenses.service";
-import { groupService } from "@/services/groups.service";
+import apolloClient from "@/apollo";
+import gql from "graphql-tag";
+
+/* ----------------------------------
+   GraphQL Queries
+---------------------------------- */
+
+const GROUP_SETTLEMENTS = gql`
+  query GroupSettlements($groupId: ID!) {
+    groupSettlements(groupId: $groupId) {
+      from
+      to
+      amount
+    }
+  }
+`;
+
+const MY_GROUP_BALANCES = gql`
+  query MyGroupBalances($userId: ID!, $groupId: ID!) {
+    myGroupBalances(userId: $userId, groupId: $groupId) {
+      type
+      person
+      amount
+    }
+  }
+`;
+
+const MY_ALL_BALANCES = gql`
+  query MyAllBalances($userId: ID!) {
+    myAllBalances(userId: $userId) {
+      type
+      person
+      amount
+      groupId
+      groupType
+      groupTitle
+    }
+  }
+`;
+
+const MY_FRIEND_BALANCE = gql`
+  query MyFriendBalance($userId: ID!, $friendId: ID!) {
+    myFriendBalance(userId: $userId, friendId: $friendId) {
+      type
+      person
+      amount
+      groupId
+      groupType
+      groupTitle
+    }
+  }
+`;
+
+const MY_NET_WITH_FRIEND = gql`
+  query MyNetWithFriend($userId: ID!, $friendId: ID!) {
+    myNetWithFriend(userId: $userId, friendId: $friendId)
+  }
+`;
+
+/* ----------------------------------
+   API wrappers (UNCHANGED signatures)
+---------------------------------- */
 
 export const computeSettlements = async (groupId) => {
-  try {
-    const { settleGroup } = await expenseService.settleGroup(groupId);
-    const balanceArray = settleGroup.balanceArray;
-    const balances = Object.fromEntries(
-      balanceArray.map((b) => [b.userId, b.amount])
-    );
+  const { data } = await apolloClient.query({
+    query: GROUP_SETTLEMENTS,
+    variables: { groupId },
+  });
 
-    if (settleGroup.message === "Group Settled") {
-      return [];
-    }
-
-    // console.log("Balances Array:", balanceArray);
-    // console.log("Balances:", balances);
-    const { owed, owes } = splitBalances(balances);
-
-    return settleUp(owed, owes);
-  } catch (e) {
-    console.error("Error loading expenses:", e);
-  }
+  return data.groupSettlements;
 };
 
-const splitBalances = (balances) => {
-  const owed = []; // +
-  const owes = []; //-
+export const calculateUserBalanceList = async (userId, groupId) => {
+  const { data } = await apolloClient.query({
+    query: MY_GROUP_BALANCES,
+    variables: { userId, groupId },
+  });
 
-  for (const [userId, balance] of Object.entries(balances)) {
-    if (balance > 0) owed.push({ userId, amount: balance });
-    else if (balance < 0) owes.push({ userId, amount: -balance });
-  }
-
-  owed.sort((a, b) => b.amount - a.amount);
-  owes.sort((a, b) => b.amount - a.amount);
-
-  return { owed, owes };
-};
-
-const settleUp = (owed, owes) => {
-  const transactions = [];
-
-  let i = 0,
-    j = 0;
-
-  while (i < owes.length && j < owed.length) {
-    const debtor = owes[i];
-    const creditor = owed[j];
-
-    const amount = Math.min(debtor.amount, creditor.amount);
-
-    transactions.push({
-      from: debtor.userId,
-      to: creditor.userId,
-      amount,
-    });
-
-    debtor.amount -= amount;
-    creditor.amount -= amount;
-
-    if (debtor.amount === 0) i++;
-    if (creditor.amount === 0) j++;
-  }
-
-  return transactions;
-};
-
-export const calculateUserBalanceList = async (currentUser, groupId) => {
-  const userId = currentUser;
-  const transactions = await computeSettlements(groupId);
-
-  if (!transactions || transactions.length === 0) {
-    return [];
-  }
-  return transactions
-    .filter((t) => t.from === userId || t.to === userId)
-    .map((t) => ({
-      type: t.from === userId ? "owe" : "owed",
-      person: t.from === userId ? t.to : t.from,
-      amount: t.amount,
-    }));
-};
-
-const userAllGroups = async () => {
-  //user id is going from context
-  const arr1 = await groupService.getGroups("PERSONAL");
-  const arr2 = await groupService.getGroups("GROUP");
-
-  return [...arr1, ...arr2];
+  return data.myGroupBalances;
 };
 
 export const userAllBalances = async (userId) => {
-  const allGroups = await userAllGroups();
-  const allTransactions = [];
+  const { data } = await apolloClient.query({
+    query: MY_ALL_BALANCES,
+    variables: { userId },
+  });
 
-  for (const group of allGroups) {
-    const transaction = await calculateUserBalanceList(userId, group.id);
-
-    const groupTransactions = transaction.map((t) => ({
-      ...t,
-      groupId: group.id,
-      groupType: group.type,
-      groupTitle: group.title,
-    }));
-    allTransactions.push(...groupTransactions);
-  }
-  // console.log("All transactions:", allTransactions);
-
-  return allTransactions;
+  return data.myAllBalances;
 };
 
 export const userFriendBalance = async (userId, friendId) => {
-  const allTransactions = await userAllBalances(userId);
-  const friendTransaction = allTransactions.filter(
-    (t) => t.person === friendId
-  );
-  return friendTransaction;
+  const { data } = await apolloClient.query({
+    query: MY_FRIEND_BALANCE,
+    variables: { userId, friendId },
+  });
+
+  return data.myFriendBalance;
 };
 
-export const calaculateNetWithFriend = async (userId, friendId) => {
-  const friendTransaction = await userFriendBalance(userId, friendId);
-  let net = 0;
-  friendTransaction.forEach((t) => {
-    if (t.type === "owed") {
-      net += t.amount; // friend owes YOU
-    } else if (t.type === "owe") {
-      net -= t.amount; // YOU owe friend
-    }
+export const calculateNetWithFriend = async (userId, friendId) => {
+  const { data } = await apolloClient.query({
+    query: MY_NET_WITH_FRIEND,
+    variables: { userId, friendId },
   });
-  return net;
+
+  return data.myNetWithFriend;
 };

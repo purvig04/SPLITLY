@@ -8,6 +8,8 @@ const GET_GROUPS = gql`
       id
       type
       currentCycleId
+      profilePic
+      profilePicVersion
       members {
         user {
           id
@@ -36,6 +38,8 @@ const GET_GROUP_DETAILS = gql`
       title
       type
       currentCycleId
+      profilePic
+      profilePicVersion
       members {
         user {
           name
@@ -106,6 +110,14 @@ const GET_COMMON_GROUPS = gql`
       id
       title
       type
+    }
+  }
+`;
+
+const GET_OR_CREATE_NON_GROUP = gql`
+  mutation GetOrCreateNonGroup($memberIds: [ID!]!) {
+    getOrCreateNonGroup(memberIds: $memberIds) {
+      id
     }
   }
 `;
@@ -190,4 +202,14 @@ export const getCommonGroups = async (friendId) => {
   } catch (error) {
     console.log("Error getting common groups:", error);
   }
+};
+
+export const getOrCreateNonGroup = async (memberIds) => {
+  const { data } = await apolloClient.mutate({
+    mutation: GET_OR_CREATE_NON_GROUP,
+    variables: { memberIds },
+    fetchPolicy: "no-cache",
+  });
+
+  return data.getOrCreateNonGroup;
 };

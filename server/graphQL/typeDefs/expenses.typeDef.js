@@ -48,7 +48,7 @@ scalar DateTime
     type Query {
         getExpensesByGroup(groupId: String!): [Expense!]!
         getExpenseById(id: String!): Expense!
-        getExpenseByFriendId(friendId: String!): [Expense!]!
+        getExpenseByFriendId(friendId: String!): [FriendExpense!]!
     }
     type BalanceEntry{
         userId:String!
@@ -66,5 +66,16 @@ scalar DateTime
         deleteExpense(id: String!): Boolean!
         settleGroup(groupId:String!):SettleGroupPayload!
 
+    }
+    type FriendExpense {
+        id: ID
+        title: String
+        amount: Float
+        type: String
+        date: DateTime 
+        createdByUser: User
+        category: Category
+        groupId: ID
+        groupType: GroupType
     }
 `;

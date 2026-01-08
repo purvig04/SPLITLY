@@ -1,3 +1,5 @@
+import crypto from "crypto";
+
 export const groupResolvers = {
   Query: {
     getGroups(_, { type }, { prisma, user }) {
@@ -163,6 +165,68 @@ export const groupResolvers = {
         where: { id: groupId },
       });
       return !!deletedG;
+    },
+
+    async getOrCreateNonGroup(_, { memberIds }, { prisma, user }) {
+      const normalizedMemberIds = [...new Set(memberIds)].sort();
+      const groups = await prisma.group.findMany({
+        where: {
+          type: "NON_GROUP",
+          members: {
+            every: {
+              userId: { in: normalizedMemberIds },
+            },
+          },
+        },
+        include: {
+          _count: { select: { members: true } },
+        },
+      });
+
+      const exactGroup = groups.find(
+        (g) => g._count.members === normalizedMemberIds.length
+      );
+
+      if (!exactGroup) {
+        const key = normalizedMemberIds.join("|");
+        const title = crypto
+          .createHash("sha256")
+          .update(key)
+          .digest("hex")
+          .slice(0, 10);
+        const newGroup = await prisma.group.create({
+          data: {
+            title,
+            type: "NON_GROUP",
+            createdById: user.id,
+            members: {
+              create: {
+                userId: user.id,
+              },
+            },
+          },
+          include: {
+            members: {
+              include: { user: true },
+            },
+          },
+        });
+
+        const friendIds = normalizedMemberIds.filter((id) => id !== user.id);
+
+        for (const friendId of friendIds) {
+          await prisma.groupMember.create({
+            data: {
+              groupId: newGroup.id,
+              userId: friendId,
+            },
+          });
+        }
+
+        return newGroup;
+      }
+
+      return exactGroup;
     },
   },
 };

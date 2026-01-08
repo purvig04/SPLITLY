@@ -1,7 +1,7 @@
 import { fetchFriends } from "@/services/friends.service";
 import { groupService } from "@/services/groups.service";
 import { getUserById } from "@/services/user.service";
-import { calaculateNetWithFriend } from "@/utils/settlements";
+import { calculateNetWithFriend } from "@/utils/settlements";
 
 const state = () => ({
   friends: [],
@@ -27,7 +27,7 @@ const actions = {
 
       const friendsWithNet = await Promise.all(
         friends.map(async (friend) => {
-          const net = await calaculateNetWithFriend(userId, friend.id);
+          const net = await calculateNetWithFriend(userId, friend.id);
 
           return {
             ...friend,

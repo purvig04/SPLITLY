@@ -1,7 +1,7 @@
 import { mapGetters } from "vuex";
 import ConfirmSettlement from "../ConfirmSettlement/ConfirmSettlement.vue";
 import { groupService } from "@/services/groups.service";
-import { calaculateNetWithFriend, userFriendBalance } from "@/utils/settlements";
+import { calculateNetWithFriend, userFriendBalance } from "@/utils/settlements";
 import { getUserById } from "@/services/user.service";
 
 export default {
@@ -55,7 +55,7 @@ export default {
       this.selectedUserItem = item;
       if (item.overall) {
         this.group = {};
-        
+
         this.showConfirmModal = true;
         return;
       }
@@ -74,12 +74,13 @@ export default {
       this.$emit("settlement", payload);
       this.$emit("close");
     },
-    
-   
   },
   async mounted() {
     await this.getUserName();
-    this.friendTransaction = await userFriendBalance(this.user.id,this.friendId);
-    this.net= await calaculateNetWithFriend(this.user.id,this.friendId)
+    this.friendTransaction = await userFriendBalance(
+      this.user.id,
+      this.friendId
+    );
+    this.net = await calculateNetWithFriend(this.user.id, this.friendId);
   },
 };

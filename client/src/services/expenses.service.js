@@ -62,15 +62,15 @@ const GET_EXPENSE_BY_FRIEND_ID = gql`
     getExpenseByFriendId(friendId: $friendId) {
       id
       title
-      description
-      totalAmount
-      paid_by
-      shared_amounts
+      type
+      groupId
+      groupType
+      date
+      amount
       category {
-        name
         icon
+        id
       }
-      createdAt
     }
   }
 `;

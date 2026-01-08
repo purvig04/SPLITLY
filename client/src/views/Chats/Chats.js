@@ -2,7 +2,7 @@ import { mapActions, mapGetters } from "vuex";
 import ChatTab from "./ChatTab/ChatTab.vue";
 import ExpenseTab from "./ExpenseTab/ExpenseTab.vue";
 import { getInitials } from "@/utils/stringHelpers";
-import { calaculateNetWithFriend } from "@/utils/settlements";
+import { calculateNetWithFriend } from "@/utils/settlements";
 import { CLOUDINARY_BASE_URL } from "@/services/cloudinary.service";
 
 export default {
@@ -140,7 +140,7 @@ export default {
         return;
       }
       this.loadingNet = true;
-      this.net = await calaculateNetWithFriend(this.user.id, this.id);
+      this.net = await calculateNetWithFriend(this.user.id, this.id);
       this.loadingNet = false;
     },
 

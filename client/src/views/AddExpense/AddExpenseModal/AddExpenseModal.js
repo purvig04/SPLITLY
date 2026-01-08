@@ -77,7 +77,7 @@ export default {
   },
 
   methods: {
-    ...mapActions("group", ["fetchGroups"]),
+    ...mapActions("group", ["fetchGroups", "getNonGroupId"]),
     ...mapActions("friends", ["loadFriends"]),
     initialize() {
       this.currentStep = 1;
@@ -154,7 +154,10 @@ export default {
           this.selectedFriendIds[0]
         );
       } else {
-        this.expenseData.groupId = null;
+        this.expenseData.groupId = await this.getNonGroupId([
+          ...this.selectedFriendIds,
+          this.currentUser.id,
+        ]);
       }
 
       console.log("Expense Data:", this.expenseData);

@@ -12,6 +12,7 @@ export const groupTypeDefs = `#graphql
         addMemberToGroup(groupId:String!, emails:[String!]!):AddMemberToGroupResult!
         renameGroup(groupId:String! , title:String!):Group!
         deleteGroup(groupId:String! ):Boolean!
+        getOrCreateNonGroup(memberIds: [ID!]!) : Group!
     }
 
     type AddMemberToGroupResult {
@@ -31,9 +32,11 @@ export const groupTypeDefs = `#graphql
         id:ID!
         title: String!
         type:GroupType!
-        createdById : String!
-        members : [GroupMember!]!
+        createdById: String!
+        members: [GroupMember!]!
         currentCycleId:Int!
+        profilePic: String
+        profilePicVersion: String
     }
 
     type GroupMember {

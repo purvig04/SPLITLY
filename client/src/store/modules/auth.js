@@ -31,10 +31,10 @@ const actions = {
     commit("SET_ERROR", null);
     commit("SET_LOADING", true);
     try {
-      const { user } = await authService.login(email, password);
-      commit("SET_USER", user);
-      commit("SET_CHECKED", true);
-      return user;
+      await authService.login(email, password);
+      commit("SET_CHECKED", false);
+      // await dispatch("fetchUser");
+      return true;
     } catch (err) {
       commit("SET_ERROR", err);
 

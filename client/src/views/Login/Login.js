@@ -22,7 +22,7 @@ export default {
           password: this.password,
         });
         console.log("Login successful");
-        this.$router.push("/home");
+        this.$router.replace("/home");
       } catch (err) {
         console.error("Login failed", err);
       }

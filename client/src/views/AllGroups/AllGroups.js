@@ -49,11 +49,8 @@ export default {
 
         return;
       }
-
-      await this.createGroup({ title: this.newGroupTitle }, "GROUP");
-      // Close modal
+      await this.createGroup({ title: this.newGroupTitle, type: "GROUP" });
       this.closeModal();
-      this.fetchGroups("GROUP");
     },
     goToGroup(id) {
       this.$router.push({ name: "GroupChats", params: { id } });
@@ -85,10 +82,21 @@ export default {
       );
     },
   },
+  watch: {
+    groups: {
+      immediate: true,
+      async handler(newGroups) {
+        if (!newGroups || !newGroups.length) {
+          this.localGroups = [];
+          return;
+        }
+        await this.allGroupsWithBalances();
+      },
+    },
+  },
+
   async created() {
     await this.fetchGroups("GROUP");
-    console.log("groupsss before", this.groups);
     await this.allGroupsWithBalances();
-    console.log("groupsss", this.localGroups);
   },
 };

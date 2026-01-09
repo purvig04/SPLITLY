@@ -311,7 +311,7 @@ export default {
       return "text-muted";
     },
     goBack() {
-      this.$router.back();
+      this.$router.push(`/groups`);
     },
     editGroup() {
       this.$router.push(`/group/${this.groupId}/edit`);

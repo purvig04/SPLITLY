@@ -50,7 +50,9 @@ const actions = {
   async createFriend({ rootGetters }, friendId) {
     try {
       const { name: friendName, email } = await getUserById(friendId);
-      const { name } = await getUserById(rootGetters["auth/getUserId"]);
+      const name = await rootGetters["auth/getUserName"];
+
+      // console.log("Friend Store Username:", name);
 
       const title = `${name.split(" ")[0]}_${friendName.split(" ")[0]}`;
       const { createGroup } = await groupService.createGroup(title, "PERSONAL");

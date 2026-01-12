@@ -1,20 +1,31 @@
 <template>
   <div v-if="isOpen" class="modal-overlay">
-    <div :class="['modal-container', currentStep === 3 ? 'modal-wide' : 'modal-narrow']">
+    <div
+      :class="[
+        'modal-container',
+        currentStep === 3 ? 'modal-wide' : 'modal-narrow',
+      ]"
+    >
       <div class="modal-header">
-        <button v-if="currentStep > 1" class="back-btn" @click="goToPreviousStep">←</button>
+        <button
+          v-if="currentStep > 1"
+          class="back-btn"
+          @click="goToPreviousStep"
+        >
+          ←
+        </button>
         <h2>{{ getHeaderTitle }}</h2>
         <button class="close-btn" @click="closeModal">&times;</button>
       </div>
 
       <div v-if="currentStep === 1" class="tabs">
-        <button 
+        <button
           :class="['tab', { active: activeTab === 'groups' }]"
           @click="activeTab = 'groups'"
         >
           Groups
         </button>
-        <button 
+        <button
           :class="['tab', { active: activeTab === 'friends' }]"
           @click="activeTab = 'friends'"
         >
@@ -44,7 +55,11 @@
           </div>
 
           <!-- Step 3: Expense Form -->
-          <div v-else-if="currentStep === 3" key="step-3" class="modal-content no-padding">
+          <div
+            v-else-if="currentStep === 3"
+            key="step-3"
+            class="modal-content no-padding"
+          >
             <ExpenseForm
               :participants="finalParticipants"
               :current-user="currentUser"
@@ -56,7 +71,7 @@
       </div>
 
       <div v-if="currentStep < 3" class="modal-footer">
-        <button 
+        <button
           class="btn btn-primary btn-block"
           :disabled="!canProceed"
           @click="goToNextStep"
@@ -65,6 +80,7 @@
         </button>
       </div>
     </div>
+    <router-view></router-view>
   </div>
 </template>
 

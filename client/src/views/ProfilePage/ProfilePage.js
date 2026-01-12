@@ -281,8 +281,8 @@ export default {
       }
 
       this.$router.push({
-        name: "SharedProfile",
-        params: { shareCode: code },
+        name: "Profile-AddFriend",
+        query: { type: "shareCode", value: code },
       });
       this.friendShareCode = "";
     },

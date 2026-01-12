@@ -3,7 +3,13 @@ import { getInitials } from "@/utils/stringHelpers";
 import { mapGetters, mapActions } from "vuex";
 
 export default {
-  // name: FriendsPage,
+  name: "FriendsPage",
+
+  data() {
+    return {
+      friendShareCode: "SPLIT-YAM-82470-C",
+    };
+  },
 
   computed: {
     ...mapGetters("friends", ["getFriends", "isLoading"]),
@@ -31,17 +37,17 @@ export default {
     goToAddExpense() {
       this.$router.push({ name: "AddExpense", query: { source: "friends" } });
     },
-    getInitial(name) {
-      return getInitials(name);
-    },
+    getInitials,
     profileUrl(friend) {
       if (friend.profilePic) {
-        return (
-          CLOUDINARY_BASE_URL +
-          ("v" + friend.profilePicVersion + "/") +
-          friend.profilePic
-        );
+        return `${CLOUDINARY_BASE_URL}v${friend.profilePicVersion}/${friend.profilePic}`;
       }
+    },
+
+    openAddFriendModal() {
+      this.$router.push({
+        name: "AddFriend",
+      });
     },
   },
 

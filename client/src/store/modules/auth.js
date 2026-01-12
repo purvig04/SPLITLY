@@ -105,6 +105,7 @@ const getters = {
   isLoggedIn: (state) => !!state.user,
   getUserId: (state) => state.user?.id,
   getUser: (state) => state.user,
+  getUserName: (state) => state.user?.name,
   getError: (state) => state.error,
   isLoading: (state) => state.loading,
 };

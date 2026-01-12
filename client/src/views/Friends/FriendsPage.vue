@@ -8,13 +8,23 @@
             <div class="card-body text-center py-4 friends-header">
               <h2 class="mb-2">Friends</h2>
               <!-- <p class="text-muted">View balances with your friends</p> -->
+              <div class="friends-actions">
+                <button
+                  class="add-friend-btn rounded-pill"
+                  @click="openAddFriendModal"
+                >
+                  <i class="fa-solid fa-user-plus"></i>
+                  <span>Add Friend</span>
+                </button>
 
-              <button
-                class="btn add-expense-btn rounded-pill"
-                @click="goToAddExpense"
-              >
-                <i class="fa-solid fa-plus"></i> Add Expense
-              </button>
+                <button
+                  class="add-expense-btn rounded-pill"
+                  @click="goToAddExpense"
+                >
+                  <i class="fa-solid fa-plus"></i>
+                  <span>Add Expense</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -52,7 +62,7 @@
                         <img :src="profileUrl(friend)" alt="Profile" />
                       </div>
                       <div v-else>
-                        {{ getInitial(friend.name) }}
+                        {{ getInitials(friend.name) }}
                       </div>
                     </div>
                     <div class="friend-name">

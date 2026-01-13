@@ -8,7 +8,9 @@
             <img :src="profileUrl(friend)" alt="Profile" />
           </div>
           <div v-else>
-            {{ getInitial(friend ? friend.name : group ? group.title : "N A") }}
+            {{
+              getInitials(friend ? friend.name : group ? group.title : "N A")
+            }}
           </div>
         </div>
         <div>

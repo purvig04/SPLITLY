@@ -8,7 +8,15 @@ import GroupPage from "@/views/SingleGroup/GroupPage.vue";
 import EditGroup from "@/views/EditGroup/EditGroup.vue";
 import AddExpenseModal from "@/views/AddExpense/AddExpenseModal/AddExpenseModal.vue";
 import ProfilePage from "@/views/ProfilePage/ProfilePage.vue";
-import SharedProfile from "@/views/SharedProfile/SharedProfile.vue";
+// import SharedProfile from "@/views/SharedProfile/SharedProfile.vue";
+import AddFriendModal from "@/modals/AddFriendModal/AddFriendModal.vue";
+
+// const sharedProfileRoute = (name) => ({
+//   name,
+//   path: "/add-friend/:shareCode",
+//   component: SharedProfile,
+//   props: true,
+// });
 
 export default {
   path: "/home",
@@ -19,7 +27,18 @@ export default {
       path: "/home",
       component: HomePage,
     },
-    { name: "AddExpense", path: "/add-expense", component: AddExpenseModal },
+    {
+      name: "AddExpense",
+      path: "/add-expense",
+      component: AddExpenseModal,
+      children: [
+        {
+          name: "AddFriend",
+          path: "add-friend",
+          component: AddFriendModal,
+        },
+      ],
+    },
     {
       name: "Friends",
       path: "/friends",
@@ -30,6 +49,12 @@ export default {
           path: "chats/:id",
           component: ChatsPage,
           props: true,
+        },
+
+        {
+          name: "AddFriend",
+          path: "add-friend",
+          component: AddFriendModal,
         },
       ],
     },
@@ -59,10 +84,9 @@ export default {
       component: ProfilePage,
       children: [
         {
-          name: "SharedProfile",
-          path: "/add-friend/:shareCode",
-          component: SharedProfile,
-          props: true,
+          name: "Profile-AddFriend",
+          path: "add-friend",
+          component: AddFriendModal,
         },
       ],
     },

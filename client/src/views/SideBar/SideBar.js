@@ -19,11 +19,7 @@ export default {
 
     profileUrl() {
       if (this.user && this.user.profilePic) {
-        return (
-          CLOUDINARY_BASE_URL +
-          ("v" + this.user.profilePicVersion + "/") +
-          this.user.profilePic
-        );
+        return `${CLOUDINARY_BASE_URL}v${this.user.profilePicVersion}/${this.user.profilePic}`;
       } else {
         return defaultUserImage;
       }
@@ -51,11 +47,11 @@ export default {
       this.activeItem = val;
     },
     updateActiveItem(path) {
-      if (path === "/home") {
+      if (path.includes("/home")) {
         this.setActive("Home");
-      } else if (path === "/friends") {
+      } else if (path.includes("/friends")) {
         this.setActive("Friends");
-      } else if (path === "/groups") {
+      } else if (path.includes("/groups")) {
         this.setActive("Groups");
       } else {
         this.setActive("");

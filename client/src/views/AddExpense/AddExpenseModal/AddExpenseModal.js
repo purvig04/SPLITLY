@@ -106,22 +106,26 @@ export default {
     },
 
     closeModal() {
-      const { source, groupId, friendId } = this.$route.query;
+      this.$router.back();
+      // const { source, groupId, friendId } = this.$route.query;
 
-      if (source === "group" && groupId) {
-        this.$router.back();
-      } else if (source === "friend" && friendId) {
-        this.$router.push({ name: "Chats", params: { id: friendId } });
-      } else if (source === "friends") {
-        this.$router.push({ name: "Friends" });
-      } else if (source === "groups") {
-        this.$router.push({ name: "Groups" });
-      } else {
-        this.$router.push({ name: "Home" });
-      }
+      // if (source === "group" && groupId) {
+      //   this.$router.back();
+      // } else if (source === "friend" && friendId) {
+      //   this.$router.push({ name: "Chats", params: { id: friendId } });
+      // } else if (source === "friends") {
+      //   this.$router.push({ name: "Friends" });
+      // } else if (source === "groups") {
+      //   this.$router.push({ name: "Groups" });
+      // } else {
+      //   this.$router.push({ name: "Home" });
+      // }
     },
 
     handleAddNew() {
+      if (this.activeTab === "friends") {
+        this.$router.push({ name: "AddFriend" });
+      }
       console.log(
         `Add new ${this.activeTab === "groups" ? "group" : "friend"}`
       );

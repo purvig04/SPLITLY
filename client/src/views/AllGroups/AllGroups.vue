@@ -30,14 +30,14 @@
             @click="goToGroup(group.id)"
           >
             <div class="group-left">
-               <div class="group-avatar">
-                      <div v-if="group.profilePic">
-                        <img :src="profileUrl(group)" alt="Profile" />
-                      </div>
-                      <div v-else>
-                        {{ getInitial(group.title) }}
-                      </div>
-                    </div>
+              <div class="group-avatar">
+                <div v-if="group.profilePic">
+                  <img :src="profileUrl(group)" alt="Profile" />
+                </div>
+                <div v-else>
+                  {{ getInitials(group.title) }}
+                </div>
+              </div>
               <h5 class="mb-0 text-dark fw-semibold">
                 {{ group.title }}
               </h5>

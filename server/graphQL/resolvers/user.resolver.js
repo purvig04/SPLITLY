@@ -34,17 +34,35 @@ export const userResolvers = {
       return !!user;
     },
 
-    async getUserByShareCode(_, { shareCode }, { prisma, user }) {
+    async findUser(_, { input }, { prisma, user }) {
       if (!user) {
         throw new Error("Not Authenticated!");
       }
 
-      const isValid = verifyShareCode(shareCode);
-      if (!isValid) throw new Error("Invalid share code");
+      const { email, contact, shareCode } = input;
 
-      return await prisma.user.findFirst({
-        where: { shareCode },
-      });
+      const provided = [email, contact, shareCode].filter(Boolean);
+
+      if (provided.length < 1 || provided.length > 1) {
+        throw new Error("Only one identifier can be provided at a time");
+      }
+
+      if (shareCode) {
+        const isValid = verifyShareCode(shareCode);
+        if (!isValid) throw new Error("Invalid share code");
+      }
+
+      let where = {};
+
+      if (email) {
+        where.email = email;
+      } else if (contact) {
+        where.contact = contact;
+      } else if (shareCode) {
+        where.shareCode = shareCode;
+      }
+
+      return await prisma.user.findFirst({ where });
     },
   },
 

@@ -131,9 +131,7 @@ export default {
       }
     },
 
-    getInitial(name) {
-      return getInitials(name);
-    },
+    getInitials,
 
     async calculateNet() {
       if (this.currentPage !== "friends" || !this.id || !this.user?.id) {
@@ -146,11 +144,7 @@ export default {
 
     profileUrl(friend) {
       if (friend.profilePic) {
-        return (
-          CLOUDINARY_BASE_URL +
-          ("v" + friend.profilePicVersion + "/") +
-          friend.profilePic
-        );
+        return `${CLOUDINARY_BASE_URL}v${friend.profilePicVersion}/${friend.profilePic}`;
       }
     },
   },

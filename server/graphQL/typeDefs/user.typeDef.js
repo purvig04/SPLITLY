@@ -15,7 +15,7 @@ export const userTypeDefs = `#graphql
         getUser:User
         checkUserExists(email:String!):Boolean!
         getUserById(userId: ID!): User
-        getUserByShareCode(shareCode: String!): User!
+        findUser(input: FindUserInput!): User
     }
 
 
@@ -35,5 +35,11 @@ export const userTypeDefs = `#graphql
         contact: String
         profilePic: String
         profilePicVersion: String
+    }
+
+    input FindUserInput {
+        email: String
+        contact: String
+        shareCode: String
     }
 `;

@@ -35,9 +35,9 @@ const GET_USER_BY_ID = gql`
   }
 `;
 
-const GET_USER_BY_SHARE_CODE = gql`
-  query GetUserByShareCode($shareCode: String!) {
-    getUserByShareCode(shareCode: $shareCode) {
+const FIND_USER = gql`
+  query FindUser($input: FindUserInput!) {
+    findUser(input: $input) {
       id
       name
       email
@@ -118,16 +118,16 @@ export const updateUserDetails = async (input) => {
   }
 };
 
-export const getUserByShareCode = async (shareCode) => {
+export const findUser = async (input) => {
   try {
     const { data } = await apolloClient.query({
-      query: GET_USER_BY_SHARE_CODE,
-      variables: { shareCode },
+      query: FIND_USER,
+      variables: { input },
       fetchPolicy: "no-cache",
     });
 
-    // console.log("data:", data.getUserByShareCode);
-    return data.getUserByShareCode;
+    // console.log("data:", data.findUser);
+    return data.findUser;
   } catch (error) {
     console.error("Error fetching user:\n", error);
     throw error;

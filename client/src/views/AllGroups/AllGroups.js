@@ -27,9 +27,7 @@ export default {
   },
   methods: {
     ...mapActions("group", ["fetchGroups", "createGroup"]),
-    getInitial(name) {
-      return getInitials(name);
-    },
+    getInitials,
     openModal() {
       const modalEl = document.getElementById("createGroupModal");
       this.modalInstance = new bootstrap.Modal(modalEl);

@@ -62,7 +62,7 @@ export default {
     console.log("mounting home");
 
     if (!storedUser) {
-      this.$router.push({ name: "Login" });
+      this.$router.push({ name: "Register" });
     }
   },
   watch: {

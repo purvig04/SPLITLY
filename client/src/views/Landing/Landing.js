@@ -10,7 +10,7 @@ export default {
       if (this.isLoggedIn) {
         this.$router.push({ name: "Home" });
       } else {
-        this.$router.push({ name: "Login" });
+        this.$router.push({ name: "Register" });
       }
     },
   },

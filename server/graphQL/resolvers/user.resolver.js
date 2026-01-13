@@ -1,4 +1,4 @@
-import bcrypt from "bcrypt";
+
 import jwt from "jsonwebtoken";
 import prisma from "../../src/loaders/prisma.js";
 import {
@@ -6,6 +6,8 @@ import {
   verifyShareCode,
 } from "../../src/utils/shareCode.js";
 import "dotenv/config";
+import { verifyGoogleIdToken } from "../../src/utils/googleAuth.js";
+
 
 export const userResolvers = {
   Query: {
@@ -67,39 +69,43 @@ export const userResolvers = {
   },
 
   Mutation: {
-    async register(_, { name, email, password, contact }) {
-      const hashedPassword = await bcrypt.hash(password, 10);
+
+    async loginWithGoogle(_, { idToken }, { prisma, res }) {
+      const payload = await verifyGoogleIdToken(idToken);
+      const { sub, email, name, picture } = payload;
+
       const shareCode = generateShareCode();
-      const user = await prisma.user.create({
-        data: { name, email, password: hashedPassword, contact, shareCode },
+
+      let user = await prisma.user.findUnique({
+        where: { googleSub: sub },
       });
 
-      return user;
-    },
-
-    async login(_, { email, password }, context) {
-      const { res } = context;
-      const user = await prisma.user.findUnique({ where: { email } });
       if (!user) {
-        throw new Error("Invalid email");
+        
+        user = await prisma.user.create({
+          data: {
+            googleSub: sub,
+            email,
+            name,
+            shareCode,
+          },
+        });
       }
-      const valid = await bcrypt.compare(password, user.password);
-      if (!valid) {
-        throw new Error("Inavlid Password");
-      }
-      const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET);
-      res.cookie("jwt", token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-        path: "/",
-        maxAge: 1000 * 60 * 60 * 24 * 2,
+
+      const appToken = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, {
+        expiresIn: "3d",
       });
+
+      res.cookie("jwt", appToken, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "lax",
+      });
+
       return { user };
     },
 
-    async logout(_, __, context) {
-      const { res } = context;
+    async logout(_, __, { res }) {
       res.clearCookie("jwt", {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",

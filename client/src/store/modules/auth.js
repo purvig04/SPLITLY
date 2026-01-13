@@ -27,13 +27,13 @@ const mutations = {
   },
 };
 const actions = {
-  async login({ commit }, { email, password }) {
+  async login({ commit,dispatch }, {idToken}) {
     commit("SET_ERROR", null);
     commit("SET_LOADING", true);
     try {
-      await authService.login(email, password);
+      await authService.loginWithGoogle(idToken);
       commit("SET_CHECKED", false);
-      // await dispatch("fetchUser");
+      await dispatch("fetchUser");
       return true;
     } catch (err) {
       commit("SET_ERROR", err);
@@ -41,18 +41,6 @@ const actions = {
       throw err;
     } finally {
       commit("SET_LOADING", false);
-    }
-  },
-  async register({ commit }, { name, email, password, contact }) {
-    commit("SET_ERROR", null);
-    try {
-      const data = await authService.register(name, email, password, contact);
-
-      return data;
-    } catch (err) {
-      commit("SET_ERROR", err);
-
-      throw err;
     }
   },
   async logout({ commit }) {
@@ -80,7 +68,6 @@ const actions = {
       if (getUser) {
         commit("SET_USER", getUser);
       }
-      // console.log("User Store:", getUser);
     } catch (err) {
       commit("SET_USER", null);
       commit("SET_ERROR", err);

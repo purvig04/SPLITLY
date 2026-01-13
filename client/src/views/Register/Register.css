@@ -1,0 +1,27 @@
+
+.register {
+  padding-top: 5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(to right, #225750, #b0e7e0);
+}
+
+.register form {
+  width: 360px;
+  padding: 32px 28px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  text-align: center;
+}
+
+.register .heading {
+  margin-bottom: 28px;
+  font-weight: 600;
+  color: #225750;
+}
+
+
+

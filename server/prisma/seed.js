@@ -1,5 +1,5 @@
-import { PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient();
+import "dotenv/config";
+import prisma from "../src/loaders/prisma.js";
 
 async function main() {
   const categories = [
@@ -158,4 +158,3 @@ main()
     console.error(err);
   })
   .finally(() => prisma.$disconnect());
-

@@ -1,13 +1,11 @@
 import { createWebHistory, createRouter } from "vue-router";
 import RegisterPage from "../views/Register/RegisterPage.vue";
-import LoginPage from "../views/Login/LoginPage.vue";
 import LandingPage from "../views/Landing/LandingPage.vue";
 import MainLayoutRoutes from "@/router/mainLayout.routes";
 import store from "@/store";
 
 const routes = [
   { name: "Register", path: "/register", component: RegisterPage },
-  { name: "Login", path: "/login", component: LoginPage },
   { name: "Landing", path: "/", component: LandingPage },
   MainLayoutRoutes,
 ];
@@ -22,10 +20,10 @@ router.beforeEach(async (to, from, next) => {
   }
 
   const isPublic =
-    to.name === "Login" || to.name === "Register" || to.name === "Landing";
+    to.name === "Register" || to.name === "Landing";
 
   if (!auth.user && !isPublic) {
-    return next({ name: "Login" });
+    return next({ name: "Register" });
   }
 
   if (auth.user && isPublic) {

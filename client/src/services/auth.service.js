@@ -1,58 +1,36 @@
 import gql from "graphql-tag";
 import apolloClient from "@/apollo";
 
-const LOGIN_MUTATION = gql`
-  mutation Login($email: String!, $password: String!) {
-    login(email: $email, password: $password) {
+const LOGIN_WITH_GOOGLE = gql`
+  mutation LoginWithGoogle($idToken: String!) {
+    loginWithGoogle(idToken: $idToken) {
       user {
         id
-        email
-        name
       }
     }
   }
 `;
-const REGISTER_MUTATION = gql`
-  mutation Register(
-    $name: String!
-    $email: String!
-    $password: String!
-    $contact: String!
-  ) {
-    register(
-      name: $name
-      email: $email
-      password: $password
-      contact: $contact
-    ) {
-      id
-      email
-    }
-  }
-`;
+
 const LOGOUT_MUTATION = gql`
   mutation Logout {
     logout
   }
 `;
 export const authService = {
-  async login(email, password) {
+
+  async loginWithGoogle(idToken){
     const resp = await apolloClient.mutate({
-      mutation: LOGIN_MUTATION,
-      variables: { email, password },
-    });
-    return resp.data.login;
-  },
-  async register(name, email, password, contact) {
-    const resp = await apolloClient.mutate({
-      mutation: REGISTER_MUTATION,
-      variables: { name, email, password, contact },
+      mutation: LOGIN_WITH_GOOGLE,
+      variables: { idToken },
+      fetchPolicy: "no-cache",
     });
     return resp.data;
   },
+
   async logout() {
     const resp = await apolloClient.mutate({
       mutation: LOGOUT_MUTATION,
+      fetchPolicy: "no-cache",
     });
     return resp.data;
   },

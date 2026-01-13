@@ -20,8 +20,7 @@ export default {
     async Logout() {
       try {
         await this.logout();
-        // console.log("Logout successful");
-        this.$router.push({ name: "Login" });
+        this.$router.push({ name: "Register" });
       } catch (err) {
         console.error("Logout failed", err);
       }

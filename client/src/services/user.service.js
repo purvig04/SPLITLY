@@ -13,6 +13,7 @@ const GET_USER = gql`
       createdAt
       updatedAt
       shareCode
+      googleSub
     }
   }
 `;

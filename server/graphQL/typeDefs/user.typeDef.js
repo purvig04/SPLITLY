@@ -3,12 +3,13 @@ export const userTypeDefs = `#graphql
         id: ID!
         name:String!
         email:String!
-        contact:String!
+        contact:String
         createdAt:String!
         updatedAt:String!
         profilePic: String
         profilePicVersion: String
         shareCode: String!
+        googleSub:String!
     }
     
     type Query {
@@ -24,8 +25,7 @@ export const userTypeDefs = `#graphql
     }
 
     type Mutation {
-        register( name:String! password:String! email:String! contact:String! ):User!
-        login(password:String! email:String! ):AuthPayload
+        loginWithGoogle(idToken:String!):AuthPayload!
         logout:Boolean!
         updateUserDetails(input: UserInput!): User!
     }
